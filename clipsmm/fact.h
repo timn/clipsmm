@@ -34,6 +34,7 @@
 #include <tr1/boost_shared_ptr.h>
 
 #include <clipsmm/template.h>
+#include <clipsmm/factory.h>
 
 namespace CLIPS {
 
@@ -66,7 +67,7 @@ public:
      * @return true if the fact is still in the fact list, false otherwise
      */
     bool exists();
-    
+
     /**
      * Returns the fact index of a fact
      * @return the index of the fact or -1 if this fact object is uninitialized
@@ -76,6 +77,18 @@ public:
     typedef std::vector<std::string> SlotNames;
     /** Returns the slot names associated with this fact */
     SlotNames slot_names();
+
+		/** Return the values contained within a slot */
+		Values slot_value(const std::string& slot_name);
+
+		/** Returns the next fact in the fact list */
+		Fact::pointer next_fact();
+
+    /** Sets the named slot to a specific value or values */
+    bool set_slot(const std::string& slot_name, Values& values);
+
+		/** Retracts a fact from the fact list */
+		bool retract();
 
     /** Returns a pointer to the underlying CLIPS C object */
     void* cobj();

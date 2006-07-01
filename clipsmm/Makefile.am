@@ -19,11 +19,15 @@
 INCLUDES = -I$(top_srcdir)/. $(PROJECT_CFLAGS)
 METASOURCES = AUTO
 lib_LTLIBRARIES = libclipsmm.la
+
+libclipsmm_la_LDFLAGS = -version-info @LIBTOOL_SO_VERSION@
+
 libclipsmm_la_LIBADD = $(PROJECT_LIBS)
+
 library_includedir = $(includedir)/@PACKAGE_NAME@-@PACKAGE_RELEASE@/@PACKAGE_NAME@
 
 library_include_HEADERS = clipsmm.h environment.h valuebase.h value.h factory.h \
-	template.h
+		template.h fact.h
 libclipsmm_la_SOURCES = environment.cpp factory.cpp template.cpp fact.cpp
 
 
@@ -32,4 +36,4 @@ libclipsmm_la_SOURCES = environment.cpp factory.cpp template.cpp fact.cpp
 
 
 
-noinst_HEADERS = fact.h
+

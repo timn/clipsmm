@@ -27,9 +27,12 @@ extern "C" {
 }
 
 namespace CLIPS {
-  
+  class Environment;
+
   Values data_object_to_values(dataObject* clipsdo);
   Values data_object_to_values(dataObject& clipsdo);
+
+	dataObject* values_to_data_object( Environment& env, Values& values );
 
 }
 

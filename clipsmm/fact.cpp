@@ -100,4 +100,43 @@ namespace CLIPS {
     return slot_names;
   }
 
+	Values Fact::slot_value( const std::string & name )
+	{
+		DATA_OBJECT data_object;
+		int result;
+		result = EnvGetFactSlot( m_environment->cobj(), m_cobj, const_cast<char*>(name.c_str()), &data_object );
+		if (result)
+			return data_object_to_values( data_object );
+		else
+			return Values();
+	}
+
+	Fact::pointer Fact::next_fact( )
+{
+	void* next_fact;
+
+	// Can't call EnvGetNextFact on a fact that has been retracted
+	if ( ! this->exists() )
+		return Fact::pointer();
+
+	next_fact = EnvGetNextFact( m_environment->cobj(), m_cobj );
+	if ( next_fact )
+		return Fact::create( *m_environment, next_fact );
+	else
+		return Fact::pointer();
+}
+
+bool Fact::retract( )
+{
+	return EnvRetract( m_environment->cobj(), m_cobj );
+}
+
+bool Fact::set_slot( const std::string & slot_name, Values & values )
+{
+  DATA_OBJECT* clipsdo = values_to_data_object( *m_environment, values );
+  if ( !clipsdo || !m_cobj )
+    return false;
+  return EnvPutFactSlot( m_environment->cobj(), m_cobj, const_cast<char*>(slot_name.c_str()), clipsdo );
+}
+
 }

@@ -24,7 +24,10 @@
 
 namespace CLIPS {
 
-  template <typename T>
+/**
+	@author Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+ */
+  template <typename T, unsigned short CLIPSType>
   class Value: public ValueBase {
     public:
       typedef std::tr1::shared_ptr<Value> pointer;
@@ -42,6 +45,10 @@ namespace CLIPS {
 
       static pointer create( const T& value ) {
         return std::tr1::shared_ptr<Value>( new Value(value) );
+      }
+
+      static pointer pointer_cast( ValueBase::pointer p ) {
+        return std::tr1::dynamic_pointer_cast<Value<T,CLIPSType> >( p );
       }
       
       /** Destructor */
@@ -73,7 +80,7 @@ namespace CLIPS {
       T& operator() () const { return this->get(); }
 
       /** Function call syntax to set the value with var(value) notation. */
-      Value<T>& operator() ( const T& val ) {
+      Value<T,CLIPSType>& operator() ( const T& val ) {
         this->set( val );
         return *this;
       }
@@ -97,7 +104,7 @@ namespace CLIPS {
       size_t size() const { return sizeof( T ); }
 
       /** Allows assignment to the property from the contained value type. */
-      Value<T>& operator= ( const T& val ) {
+      Value<T,CLIPSType>& operator= ( const T& val ) {
         this->set( val );
         return *this;
       }
@@ -112,7 +119,7 @@ namespace CLIPS {
        * T + X must be well defined
        */
       template <typename X>
-      Value<T>& operator+=( X other ) {
+      Value<T,CLIPSType>& operator+=( X other ) {
         this->set( this->get() + other );
         return *this;
       }
@@ -127,7 +134,7 @@ namespace CLIPS {
        * T - X must be well defined
        */
       template <typename X>
-      Value<T>& operator-=( X other ) {
+      Value<T,CLIPSType>& operator-=( X other ) {
         this->set( this->get() - other );
         return *this;
       }
@@ -142,7 +149,7 @@ namespace CLIPS {
        * T * X must be well defined
        */
       template <typename X>
-      Value<T>& operator*=( X other ) {
+      Value<T,CLIPSType>& operator*=( X other ) {
         this->set( this->get() * other );
         return *this;
       }
@@ -157,7 +164,7 @@ namespace CLIPS {
        * T / X must be well defined
        */
       template <typename X>
-      Value<T>& operator/=( X other ) {
+      Value<T,CLIPSType>& operator/=( X other ) {
         this->set( this->get() / other );
         return *this;
       }
@@ -172,14 +179,27 @@ namespace CLIPS {
        * T % X must be well defined
        */
       template <typename X>
-      Value<T>& operator%=( X other ) {
+      Value<T,CLIPSType>& operator%=( X other ) {
         this->set( this->get() % other );
         return *this;
+      }
+
+      /** Returns the CLIPS library type of this value */
+      virtual int clips_type() {
+        return CLIPSType;
       }
 
     protected:
       T m_value;
   };
+
+  typedef Value<double,      0> Float;
+  typedef Value<long int,    1> Integer;
+  typedef Value<std::string, 2> Symbol;
+  typedef Value<std::string, 3> String;
+  typedef Value<void*,       5> ExternalAddress;
+  typedef Value<void*,       7> InstanceAddress;
+  typedef Value<std::string, 8> InstanceName;
 
 }
 

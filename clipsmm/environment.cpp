@@ -46,9 +46,9 @@ Environment::~Environment()
   EnvRemoveClearFunction( m_cobj, "clipsmm_clear_callback" );
   EnvRemovePeriodicFunction( m_cobj, "clipsmm_periodic_callback" );
   EnvRemoveResetFunction( m_cobj, "clipsmm_reset_callback" );
-  
+
   m_environment_map.erase(m_cobj);
-  
+
   DestroyEnvironment( m_cobj );
 }
 
@@ -57,19 +57,19 @@ void* Environment::cobj()
   return m_cobj;
 }
 
-bool Environment::batch_evaluate( std::string filename ) {
+bool Environment::batch_evaluate( const std::string& filename ) {
   return EnvBatchStar( m_cobj, const_cast<char*>( filename.c_str() ) );
 }
 
-bool Environment::binary_load( std::string filename ) {
+bool Environment::binary_load( const std::string& filename ) {
   return EnvBload( m_cobj, const_cast<char*>( filename.c_str() ) );
 }
 
-bool Environment::binary_save( std::string filename ) {
+bool Environment::binary_save( const std::string& filename ) {
   return EnvBsave( m_cobj, const_cast<char*>( filename.c_str() ) );
 }
 
-bool Environment::build( std::string construct ) {
+bool Environment::build( const std::string& construct ) {
   return EnvBuild( m_cobj, const_cast<char*>( construct.c_str() ) );
 }
 
@@ -77,7 +77,7 @@ void Environment::clear( ) {
   EnvClear( m_cobj );
 }
 
-int Environment::load( std::string filename )
+int Environment::load( const std::string& filename )
 {
   return EnvLoad( m_cobj, const_cast<char*>( filename.c_str() ) );
 }
@@ -87,7 +87,7 @@ void Environment::reset( )
   EnvReset( m_cobj );
 }
 
-bool Environment::save( std::string filename )
+bool Environment::save( const std::string& filename )
 {
   return EnvSave( m_cobj, const_cast<char*>( filename.c_str() ) );
 }
@@ -100,21 +100,21 @@ bool Environment::dribble_off( ) {
   return EnvDribbleOff( m_cobj );
 }
 
-bool Environment::dribble_on( std::string filename )
+bool Environment::dribble_on( const std::string& filename )
 {
   return EnvDribbleOn( m_cobj, const_cast<char*>( filename.c_str() ) );
 }
 
-int Environment::is_watched( std::string item ) {
+int Environment::is_watched( const std::string& item ) {
   return EnvGetWatchItem( m_cobj, const_cast<char*>( item.c_str() ) );
 }
 
-bool Environment::watch( std::string item )
+bool Environment::watch( const std::string& item )
 {
   return EnvWatch( m_cobj, const_cast<char*>( item.c_str() ) );
 }
 
-bool Environment::unwatch( std::string item )
+bool Environment::unwatch( const std::string& item )
 {
   return EnvUnwatch( m_cobj, const_cast<char*>( item.c_str() ) );
 }
@@ -199,7 +199,7 @@ void Environment::reset_callback( void * env )
   m_environment_map[env]->m_signal_reset.emit();
 }
 
-Fact::pointer Environment::assert( std::string factstring )
+Fact::pointer Environment::assert( const std::string& factstring )
 {
   void* clips_fact = EnvAssertString( m_cobj, const_cast<char*>(factstring.c_str()) );
   if ( clips_fact != NULL )

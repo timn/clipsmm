@@ -42,25 +42,25 @@ public:
      * Evaluates a series of commands in the specified file
      * @return false if an error occurred, true otherwise
      */
-    bool batch_evaluate( std::string filename );
+    bool batch_evaluate( const std::string& filename );
 
     /**
      * Loads a binary image of constructs into the CLIPS data base
      * @return false if an error occurred, true otherwise
      */
-    bool binary_load( std::string filename );
+    bool binary_load( const std::string& filename );
 
     /**
      * Saves a binary image of constructs from the CLIPS data base
      * @return false if an error occurred, true on success
      */
-    bool binary_save( std::string filename );
+    bool binary_save( const std::string& filename );
 
     /**
      * Allows a construct to be defined
      * @return false if the construct could not be parsed, true on success
      */
-    bool build( std::string construct );
+    bool build( const std::string& construct );
 
     /**
      * Clears the environment
@@ -86,7 +86,7 @@ public:
      * attempt to read the entire file and error notices will be sent
      * to werror.
      */
-    int load( std::string filename );
+    int load( const std::string& filename );
 
     /**
      * Resets the CLIPS environment
@@ -97,7 +97,7 @@ public:
      * Saves a set of constructs to the specified file
      * @return false if an error occurred, true on success
      */
-    bool save( std::string filename );
+    bool save( const std::string& filename );
 
     /**
      * Returns the current state of the auto-float dividend behavior.
@@ -199,7 +199,7 @@ public:
      * Allows the dribble function of CLIPS to be turned on
      * @return false if an error occurred opening the file; true on success.
      */
-    bool dribble_on( std::string dribble_file );
+    bool dribble_on( const std::string& dribble_file );
 
     /**
      * Determine if an item is being watched
@@ -208,11 +208,11 @@ public:
      *             message-handlers, generic-functions, method, or deffunctions.
      * @return 1 if the item is watched, 0 if the item is not watched, -1 if the item doesn't exist
      */
-    int is_watched( std::string item );
-    
-    bool watch( std::string item );
+    int is_watched( const std::string& item );
 
-    bool unwatch( std::string item );
+    bool watch( const std::string& item );
+
+    bool unwatch( const std::string& item );
 
     /**
      * Allows rules to execute
@@ -227,26 +227,26 @@ public:
     sigc::signal<void> signal_clear();
     sigc::signal<void> signal_periodic();
     sigc::signal<void> signal_reset();
-    
-    Fact::pointer assert( std::string factstring );
-    
+
+    Fact::pointer assert( const std::string& factstring );
+
     /** TODO Facts */
-        
+
     /** Returns a pointer to the underlying CLIPS C object */
     void* cobj();
-    
+
   protected:
     void* m_cobj;
 
     sigc::signal<void> m_signal_clear;
     sigc::signal<void> m_signal_periodic;
     sigc::signal<void> m_signal_reset;
-    
+
     static std::map<void*, Environment*> m_environment_map;
     static void clear_callback(void* env);
     static void periodic_callback(void* env);
     static void reset_callback(void* env);
-    
+
 
 };
 

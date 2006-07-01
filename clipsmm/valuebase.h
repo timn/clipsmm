@@ -34,6 +34,9 @@
 
 namespace CLIPS {
 
+/**
+	@author Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+ */
   class ValueBase: public sigc::trackable {
     public:
       typedef std::tr1::shared_ptr<ValueBase> pointer;
@@ -60,6 +63,9 @@ namespace CLIPS {
         return m_signal_changed;
       }
 
+      /** Returns the CLIPS library type of this value */
+      virtual int clips_type()= 0;
+      
     protected:
       /**
        * Signal emitted when underlying data is changed.
@@ -69,7 +75,7 @@ namespace CLIPS {
   };
 
   typedef std::vector<ValueBase::pointer> Values;
-  
+
 }
 
 #endif
