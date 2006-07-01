@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Directory
+Icon=./.folder.png
+Name=bit library
+SwallowExec=kdevelop

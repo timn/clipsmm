@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Path=/home/rvinyard/projects/clipsmm/
+Icon=/home/rvinyard/projects/clipsmm/.folder.png
+Name=clipsmm
+Exec=kdevelop clipsmm.kdevelop

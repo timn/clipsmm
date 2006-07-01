@@ -1,0 +1,158 @@
+#############################################################################
+##   Copyright (C) 2001 by Rick L. Vinyard, Jr.                            ##
+##   rvinyard@cs.nmsu.edu                                                  ##
+##                                                                         ##
+##   This program is free software; you can redistribute it and/or modify  ##
+##   it under the terms of the GNU General Public License as               ##
+##   published by the Free Software Foundation version 2.                  ##
+##                                                                         ##
+##   This program is distributed in the hope that it will be useful,       ##
+##   but WITHOUT ANY WARRANTY; without even the implied warranty of        ##
+##   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         ##
+##   GNU General Public License for more details.                          ##
+##                                                                         ##
+##   You should have received a copy of the GNU General Public             ##
+##   License along with this library; if not, write to the                 ##
+##   Free Software Foundation, Inc.,                                       ##
+##   51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA              ##
+#############################################################################
+
+#########################################################################
+#  package specific values
+#########################################################################
+AC_INIT(clipsmm, 0.0.1, rvinyard@cs.nmsu.edu)
+
+PACKAGE_SUMMARY="The clipsmm library is a C++ wrapper for the CLIPS C library"
+PACKAGE_LICENSE="GPL"
+PACKAGE_URL="http://clipsmm.sourceforge.net"
+PACKAGE_DOWNLOAD="http://download.sourceforge.net/clipsmm/"
+PACKAGE_WWWHOST="shell.sourceforge.net:/home/groups/c/cl/clipsmm/htdocs/"
+PACKAGE_RELEASEHOST="ftp://upload.sourceforge.net/incoming/"
+
+PACKAGE_MAJOR_VERSION=0
+PACKAGE_MINOR_VERSION=0
+PACKAGE_MICRO_VERSION=1
+
+PKGCONFIG_REQUIRES="clips-6 >= 6.24.0 sigc++-2.0 >= 2.0.17"
+
+RPM_RELEASE="1"
+
+FEDORA_5_BUILD_REQUIRES="pkgconfig"
+FEDORA_5_LIB_GROUP="System Environment/Libraries"
+FEDORA_5_DEVEL_GROUP="Development/Libraries"
+
+SUSE_10_1_LIB_GROUP="Development/Libraries"
+SUSE_10_1_DEVEL_GROUP="Development/Libraries"
+SUSE_10_1_BUILD_REQUIRES=$FEDORA_5_BUILD_REQUIRES
+
+DOXYGEN_INPUT="clipsmm"
+DOXYGEN_EXAMPLE_PATH=""
+DOXYGEN_EXAMPLE_PATTERNS="*.h *.cpp"
+DOXYGEN_IMAGE_PATH=""
+DOXYGEN_HTML_HEADER="docs/clipsmm_doxygen_header.html"
+DOXYGEN_HTML_FOOTER="docs/clipsmm_doxygen_footer.html"
+DOXYGEN_HTML_STYLESHEET="docs/doxygen.css"
+
+#########################################################################
+# Doxygen
+#########################################################################
+DX_DOXYGEN_FEATURE(OFF)
+DX_HTML_FEATURE(ON)
+DX_CHM_FEATURE(OFF)
+DX_CHI_FEATURE(OFF)
+DX_MAN_FEATURE(OFF)
+DX_RTF_FEATURE(OFF)
+DX_XML_FEATURE(OFF)
+DX_PDF_FEATURE(OFF)
+DX_PS_FEATURE(OFF)
+DX_INIT_DOXYGEN($PACKAGE_NAME, Doxyfile, docs/www/reference)
+
+#########################################################################
+#  don't touch this
+#########################################################################
+PACKAGE_RELEASE=$PACKAGE_MAJOR_VERSION.$PACKAGE_MINOR_VERSION
+AC_SUBST(PACKAGE_RELEASE)
+
+AC_SUBST(PACKAGE_SUMMARY)
+AC_SUBST(PACKAGE_LICENSE)
+AC_SUBST(PACKAGE_URL)
+AC_SUBST(PACKAGE_DOWNLOAD)
+AC_SUBST(PACKAGE_WWWHOST)
+AC_SUBST(PACKAGE_RELEASEHOST)
+
+AC_DEFINE_UNQUOTED(PACKAGE_MAJOR_VERSION, $PACKAGE_MAJOR_VERSION, [Major version])
+AC_DEFINE_UNQUOTED(PACKAGE_MINOR_VERSION, $PACKAGE_MINOR_VERSION, [Minor version])
+AC_DEFINE_UNQUOTED(PACKAGE_MICRO_VERSION, $PACKAGE_MICRO_VERSION, [Micro version])
+AC_SUBST(PACKAGE_MAJOR_VERSION)
+AC_SUBST(PACKAGE_MINOR_VERSION)
+AC_SUBST(PACKAGE_MICRO_VERSION)
+
+AC_SUBST(PKGCONFIG_REQUIRES)
+
+AC_SUBST(RPM_RELEASE)
+
+AC_SUBST(FEDORA_5_LIB_GROUP)
+AC_SUBST(FEDORA_5_DEVEL_GROUP)
+AC_SUBST(FEDORA_5_BUILD_REQUIRES)
+
+AC_SUBST(SUSE_10_1_LIB_GROUP)
+AC_SUBST(SUSE_10_1_DEVEL_GROUP)
+AC_SUBST(SUSE_10_1_BUILD_REQUIRES)
+
+AC_SUBST(DOXYGEN_INPUT)
+AC_SUBST(DOXYGEN_EXAMPLE_PATH)
+AC_SUBST(DOXYGEN_EXAMPLE_PATTERNS)
+AC_SUBST(DOXYGEN_IMAGE_PATH)
+AC_SUBST(DOXYGEN_HTML_HEADER)
+AC_SUBST(DOXYGEN_HTML_FOOTER)
+AC_SUBST(DOXYGEN_HTML_STYLESHEET)
+
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE([1.9 tar-ustar dist-bzip2])
+
+AC_LANG_CPLUSPLUS
+AC_PROG_CXX
+AC_PROG_INSTALL
+
+for top_builddir in . .. ../.. $ac_auxdir $ac_auxdir/..; do
+test -f $top_builddir/configure && break
+done
+AC_PROG_LIBTOOL
+
+#########################################################################
+#  header check utility macros
+#########################################################################
+AC_DEFUN([AC_REQUIRE_HEADERS],[AC_CHECK_HEADERS($1,,AC_MSG_ERROR(Header $1 not found))])
+AC_DEFUN([AC_REQUIRE_LIB],[AC_CHECK_LIB($1,$2,,AC_MSG_ERROR(Library $1 not found))])
+
+#########################################################################
+#  header checks
+#########################################################################
+AC_REQUIRE_HEADERS(bits/concurrence.h)
+AC_REQUIRE_HEADERS(ext/mt_allocator.h)
+AC_CHECK_HEADER([tr1/boost_shared_ptr.h],[],[AC_MSG_ERROR(Header tr1/boost_shared_ptr.h not found)],
+[
+#include <typeinfo>
+#include <memory>
+#include <functional>
+#include <bits/concurrence.h>
+#include <ext/mt_allocator.h>
+])
+
+#########################################################################
+#  pkgconfig package requirements
+#########################################################################
+PKG_CHECK_MODULES(PROJECT, $PKGCONFIG_REQUIRES)
+AC_SUBST(PROJECT_LIBS)
+AC_SUBST(PROJECT_CFLAGS)
+
+#########################################################################
+#  build package .in files
+#########################################################################
+cat packaging/fedora-5/fedora_5.1 packaging/rpm_description packaging/fedora-5/fedora_5.2 packaging/rpm_changelog > packaging/fedora-5/${PACKAGE_NAME}.spec.in
+
+cat packaging/suse-10.1/suse_10_1.1 packaging/rpm_description packaging/suse-10.1/suse_10_1.2 packaging/rpm_changelog > packaging/suse-10.1/${PACKAGE_NAME}.spec.in
+
+
+AC_OUTPUT(packaging/fedora-5/clipsmm.spec packaging/suse-10.1/clipsmm.spec clipsmm-1.0.pc docs/www/site.php Makefile clipsmm/Makefile examples/Makefile packaging/Makefile packaging/fedora-5/Makefile packaging/suse-10.1/Makefile examples/environment/Makefile examples/facts/Makefile)
+
