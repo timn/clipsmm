@@ -23,27 +23,16 @@
 #include <string>
 #include <vector>
 
-#include <sigc++/sigc++.h>
-
-// Headers for smart pointers
-#include <typeinfo>
-#include <memory>
-#include <functional>
-#include <bits/concurrence.h>
-#include <ext/mt_allocator.h>
-#include <tr1/boost_shared_ptr.h>
-
+#include <clipsmm/environmentobject.h>
 #include <clipsmm/template.h>
 #include <clipsmm/factory.h>
 
 namespace CLIPS {
 
-class Environment;
-
 /**
 	@author Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
 */
-class Fact: public sigc::trackable {
+class Fact: public EnvironmentObject {
 public:
   typedef std::tr1::shared_ptr<Fact> pointer;
 
@@ -74,28 +63,26 @@ public:
      */
     long int index();
 
-    typedef std::vector<std::string> SlotNames;
     /** Returns the slot names associated with this fact */
-    SlotNames slot_names();
+    std::vector<std::string> slot_names();
 
 		/** Return the values contained within a slot */
-		Values slot_value(const std::string& slot_name);
+    Values slot_value(const std::string& slot_name);
 
 		/** Returns the next fact in the fact list */
 		Fact::pointer next_fact();
 
     /** Sets the named slot to a specific value or values */
-    bool set_slot(const std::string& slot_name, Values& values);
+    bool set_slot(const std::string& slot_name, const Values& values);
 
-		/** Retracts a fact from the fact list */
+    /** Sets the named slot to a specific value or values */
+    bool set_slot(const std::string& slot_name, const Value& value);
+
+    /** Retracts a fact from the fact list */
 		bool retract();
 
-    /** Returns a pointer to the underlying CLIPS C object */
-    void* cobj();
-
   protected:
-    Environment* m_environment;
-    void* m_cobj;
+
 };
 
 }

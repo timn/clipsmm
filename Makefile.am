@@ -49,10 +49,10 @@ MOSTLYCLEANFILES = $(DX_CLEANFILES)
 
 EXTRA_DIST = $(PACKAGE).kdevelop packaging/fedora-5/$(PACKAGE).spec packaging/suse-10.1/$(PACKAGE).spec $(DX_CONFIG) docs/www/reference/html
 
-SUBDIRS = clipsmm examples packaging
+SUBDIRS = clipsmm examples packaging unit_tests
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = @PACKAGE_NAME@-1.0.pc
+pkgconfig_DATA = @PACKAGE_NAME@-@PKGCONFIG_RELEASE@.pc
 
 INCLUDES = $(PROJECT_CFLAGS)
 

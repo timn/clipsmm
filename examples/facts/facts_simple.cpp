@@ -25,8 +25,8 @@ int main( int argc, char** argv )
 {
   CLIPS::Environment environment;
   CLIPS::Fact::pointer fact;
-  CLIPS::Fact::SlotNames slot_names;
-  CLIPS::Fact::SlotNames::iterator iter;
+  std::vector<std::string> slot_names;
+  std::vector<std::string>::iterator iter;
 
   environment.load( "strips.clp" );
 

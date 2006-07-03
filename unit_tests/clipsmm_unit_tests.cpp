@@ -17,24 +17,43 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA              *
  ***************************************************************************/
-#ifndef CLIPSFACTORY_H
-#define CLIPSFACTORY_H
+#include <iostream>
 
-#include <clipsmm/value.h>
+#include <cppunit/TextTestRunner.h>
+#include <cppunit/TestResult.h>
+#include <cppunit/TestResultCollector.h>
+#include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/BriefTestProgressListener.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/TextOutputter.h>
 
-extern "C" {
-  struct dataObject;
+#include "fact_tests.h"
+#include "value_tests.h"
+
+CPPUNIT_TEST_SUITE_REGISTRATION( ValueTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( FactsTest );
+
+int main() {
+  // Create the event manager and test controller
+  CppUnit::TestResult controller;
+
+  // Add a listener that collects test result
+  CppUnit::TestResultCollector result;
+  controller.addListener( &result );
+
+  // Add a listener that print dots as test run.
+  CppUnit::BriefTestProgressListener progress;
+  controller.addListener( &progress );
+
+  // Add the top suite to the test runner
+  CppUnit::TestRunner runner;
+  runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() );
+  runner.run( controller );
+
+  CppUnit::TextOutputter output(&result, std::cout);
+  output.printStatistics();
+  output.printFailures();
+
+  return result.wasSuccessful() ? 0 : 1;
 }
 
-namespace CLIPS {
-  class Environment;
-
-  Values data_object_to_values(dataObject* clipsdo);
-  Values data_object_to_values(dataObject& clipsdo);
-
-	dataObject* value_to_data_object( const Environment& env, const Values& values );
-  dataObject* value_to_data_object( const Environment& env, const Value& value );
-
-}
-
-#endif

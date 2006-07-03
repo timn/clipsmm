@@ -19,8 +19,8 @@
   </general>
   <kdevautoproject>
     <general>
-      <useconfiguration>debug</useconfiguration>
-      <activetarget>examples/facts/facts_simple</activetarget>
+      <useconfiguration>default</useconfiguration>
+      <activetarget>unit_tests/clipsmm_unit_tests</activetarget>
     </general>
     <run>
       <mainprogram/>
@@ -29,6 +29,7 @@
       <runarguments>
         <envsimple/>
         <facts_simple/>
+        <clipsmm_unit_tests></clipsmm_unit_tests>
       </runarguments>
       <customdirectory>/</customdirectory>
       <programargs/>

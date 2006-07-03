@@ -19,13 +19,17 @@
 ***************************************************************************/
 #include "fact.h"
 
+#include <clipsmm/utility.h>
 #include <clipsmm/environment.h>
 #include <clips/clips.h>
 
 namespace CLIPS {
 
-  Fact::Fact( Environment& environment, void* cobj ) : m_environment( &environment ), m_cobj( cobj ) {
-    EnvIncrementFactCount( m_environment->cobj(), m_cobj );
+  Fact::Fact( Environment& environment, void* cobj ) :
+      EnvironmentObject(environment, cobj)
+      {
+        if (m_cobj)
+    EnvIncrementFactCount( m_environment.cobj(), m_cobj );
   }
 
   Fact::pointer Fact::create( Environment& environment, void* cobj ) {
@@ -33,110 +37,119 @@ namespace CLIPS {
   }
 
   Fact::~Fact() {
-    EnvDecrementFactCount( m_environment->cobj(), m_cobj );
+    EnvDecrementFactCount( m_environment.cobj(), m_cobj );
   }
 
   bool Fact::assign_slot_defaults() {
     if ( m_cobj )
-      return EnvAssignFactSlotDefaults( m_environment->cobj(), m_cobj );
+      return EnvAssignFactSlotDefaults( m_environment.cobj(), m_cobj );
+		return false;
   }
 
   Template::pointer Fact::get_template() {
     if ( !m_cobj )
       return Template::pointer();
 
-    void* tem = EnvFactDeftemplate( m_environment->cobj(), m_cobj );
+    void* tem = EnvFactDeftemplate( m_environment.cobj(), m_cobj );
 
     if ( tem )
-      return Template::create( *m_environment, tem );
+      return Template::create( m_environment, tem );
     else
       return Template::pointer();
   }
 
   bool Fact::exists() {
     if ( m_cobj )
-      return EnvFactExistp( m_environment->cobj(), m_cobj );
+      return EnvFactExistp( m_environment.cobj(), m_cobj );
     return false;
   }
 
   long int Fact::index() {
     if ( m_cobj )
-      return EnvFactIndex( m_environment->cobj(), m_cobj );
+      return EnvFactIndex( m_environment.cobj(), m_cobj );
     return -1;
   }
 
-  void* Fact::cobj() {
-    return m_cobj;
-  }
-
   std::vector<std::string> Fact::slot_names() {
-    DATA_OBJECT clips_data_object;
-    void* mfptr;
-    long int end, i;
-    std::string s;
-    SlotNames slot_names;
+    DATA_OBJECT clipsdo;
 
     if ( !m_cobj )
-      return SlotNames();
+      return std::vector<std::string>();
 
-    EnvFactSlotNames( m_environment->cobj(), m_cobj, &clips_data_object );
+    EnvFactSlotNames( m_environment.cobj(), m_cobj, &clipsdo );
 
-    if ( ! GetType( clips_data_object ) == MULTIFIELD )
-      return SlotNames();
-
-    end = GetDOEnd( clips_data_object );
-    mfptr = GetValue( clips_data_object );
-    for ( i = GetDOBegin( clips_data_object ); i <= end; i++ ) {
-      switch ( GetMFType( mfptr, i ) ) {
-        case STRING:
-        case SYMBOL:
-          s = ValueToString( GetMFValue( mfptr, i ) );
-          slot_names.push_back( s );
-          break;
-        default:
-          break;
-      }
-    }
-    return slot_names;
+    return data_object_to_strings( clipsdo );
   }
 
-	Values Fact::slot_value( const std::string & name )
+Values Fact::slot_value( const std::string & name )
 	{
 		DATA_OBJECT data_object;
 		int result;
-		result = EnvGetFactSlot( m_environment->cobj(), m_cobj, const_cast<char*>(name.c_str()), &data_object );
+
+		if ( !m_cobj )
+			return Values();
+
+    if ( name == "" ) {
+      result = EnvGetFactSlot( m_environment.cobj(), m_cobj, NULL, &data_object );
+//       result = EnvGetFactSlot( m_environment.cobj(), m_cobj, "", &data_object );
+    }
+    else
+  		result = EnvGetFactSlot( m_environment.cobj(), m_cobj, const_cast<char*>(name.c_str()), &data_object );
 		if (result)
 			return data_object_to_values( data_object );
-		else
+    else
 			return Values();
 	}
 
-	Fact::pointer Fact::next_fact( )
+Fact::pointer Fact::next_fact( )
 {
 	void* next_fact;
+
+	if ( !m_cobj )
+		return Fact::pointer();
 
 	// Can't call EnvGetNextFact on a fact that has been retracted
 	if ( ! this->exists() )
 		return Fact::pointer();
 
-	next_fact = EnvGetNextFact( m_environment->cobj(), m_cobj );
+	next_fact = EnvGetNextFact( m_environment.cobj(), m_cobj );
 	if ( next_fact )
-		return Fact::create( *m_environment, next_fact );
+		return Fact::create( m_environment, next_fact );
 	else
 		return Fact::pointer();
 }
 
 bool Fact::retract( )
 {
-	return EnvRetract( m_environment->cobj(), m_cobj );
+	if ( !m_cobj )
+		return false;
+	return EnvRetract( m_environment.cobj(), m_cobj );
 }
 
-bool Fact::set_slot( const std::string & slot_name, Values & values )
+bool Fact::set_slot( const std::string & slot_name, const Value & value )
 {
-  DATA_OBJECT* clipsdo = values_to_data_object( *m_environment, values );
+  DATA_OBJECT* clipsdo = value_to_data_object( m_environment, value );
   if ( !clipsdo || !m_cobj )
     return false;
-  return EnvPutFactSlot( m_environment->cobj(), m_cobj, const_cast<char*>(slot_name.c_str()), clipsdo );
+  return EnvPutFactSlot( m_environment.cobj(),
+                         m_cobj,
+                         const_cast<char*>(slot_name.c_str()),
+                         clipsdo
+                       );
+  delete clipsdo;
+}
+
+bool Fact::set_slot( const std::string & slot_name, const Values & values )
+{
+  DATA_OBJECT* clipsdo = value_to_data_object( m_environment, values );
+  if ( !clipsdo || !m_cobj )
+    return false;
+  return EnvPutFactSlot( m_environment.cobj(),
+                         m_cobj,
+                         const_cast<char*>(slot_name.c_str()),
+                         clipsdo
+                       );
+  delete clipsdo;
 }
 
 }

@@ -17,23 +17,30 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA              *
  ***************************************************************************/
-#ifndef CLIPSFACTORY_H
-#define CLIPSFACTORY_H
+#ifndef CLIPSENVIRONMENTOBJECT_H
+#define CLIPSENVIRONMENTOBJECT_H
 
-#include <clipsmm/value.h>
-
-extern "C" {
-  struct dataObject;
-}
+#include <clipsmm/object.h>
 
 namespace CLIPS {
-  class Environment;
 
-  Values data_object_to_values(dataObject* clipsdo);
-  Values data_object_to_values(dataObject& clipsdo);
+class Environment;
 
-	dataObject* value_to_data_object( const Environment& env, const Values& values );
-  dataObject* value_to_data_object( const Environment& env, const Value& value );
+/**
+	@author Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+*/
+class EnvironmentObject : public Object
+{
+public:
+    EnvironmentObject(Environment& environment, void* cobj=NULL);
+
+    ~EnvironmentObject();
+
+    Environment& environment() const;
+
+  protected:
+    Environment& m_environment;
+};
 
 }
 

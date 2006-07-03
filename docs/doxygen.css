@@ -17,7 +17,7 @@ H3 {
 CAPTION { font-weight: bold }
 DIV.qindex {
 	width: 100%;
-	background-color: azure;
+	background-color: honeydew;
 	border: 1px solid gainsboro;
 	text-align: center;
 	margin: 2px;
@@ -26,7 +26,7 @@ DIV.qindex {
 }
 DIV.nav {
 	width: 100%;
-	background-color: azure;
+	background-color: honeydew;
 	border: 1px solid gainsboro;
 	text-align: center;
 	margin: 2px;
@@ -34,7 +34,7 @@ DIV.nav {
 	line-height: 140%;
 }
 DIV.navtab {
-       background-color: azure;
+       background-color: honeydew;
        border: 1px solid gainsboro;
        text-align: center;
        margin: 2px;
@@ -61,16 +61,16 @@ A.qindex:hover {
 A.qindexHL {
 	text-decoration: none;
 	font-weight: bold;
-	background-color: teal;
+	background-color: SeaGreen;
 	color: white;
 	border: 1px double #9295C2;
 }
 A.qindexHL:hover {
 	text-decoration: none;
-	background-color: teal;
+	background-color: SeaGreen;
 	color: white;
 }
-A.qindexHL:visited { text-decoration: none; background-color: teal; color: white }
+A.qindexHL:visited { text-decoration: none; background-color: SeaGreen; color: white }
 A.el { text-decoration: none; font-weight: bold }
 A.elRef { font-weight: bold }
 A.code:link { text-decoration: none; font-weight: normal; color: #0000FF}
@@ -118,7 +118,7 @@ BODY {
 	margin-left: 20px;
 }
 TD.indexkey {
-	background-color: azure;
+	background-color: honeydew;
 	font-weight: bold;
 	padding-right  : 10px;
 	padding-top    : 2px;
@@ -131,7 +131,7 @@ TD.indexkey {
 	border: 1px solid lightgainsboro;
 }
 TD.indexvalue {
-	background-color: azure;
+	background-color: honeydew;
 	font-style: italic;
 	padding-right  : 10px;
 	padding-top    : 2px;
@@ -144,7 +144,7 @@ TD.indexvalue {
 	border: 1px solid lightgainsboro;
 }
 TR.memlist {
-   background-color: whitesmoke; 
+   background-color: whitesmoke;
 }
 P.formulaDsp { text-align: center; }
 IMG.formulaDsp { }
@@ -286,7 +286,7 @@ FORM.search {
 INPUT.search { font-size: 75%;
                color: #000080;
                font-weight: normal;
-               background-color: azure;
+               background-color: honeydew;
 }
 TD.tiny      { font-size: 75%;
 }
@@ -300,7 +300,7 @@ a:visited {
           border-collapse: collapse;
           border: 1px solid gainsboro;
 }
-TH.dirtab { background: azure;
+TH.dirtab { background: honeydew;
             font-weight: bold;
 }
 HR { height: 1px;

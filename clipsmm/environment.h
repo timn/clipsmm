@@ -23,17 +23,20 @@
 #include <string>
 #include <map>
 
-#include <sigc++/sigc++.h>
-
+#include <clipsmm/object.h>
 #include <clipsmm/fact.h>
+#include <clipsmm/template.h>
+#include <clipsmm/rule.h>
 
 namespace CLIPS {
 
 /**
  * @author Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
  */
-class Environment: public sigc::trackable {
+class Environment: public Object {
 public:
+  typedef std::tr1::shared_ptr<Environment> pointer;
+  
     Environment();
 
     ~Environment();
@@ -183,6 +186,10 @@ public:
      */
     bool use_fact_duplication(bool use=true);
 
+    bool incremental_reset_enabled();
+
+    bool use_incremental_reset(bool use=true);
+    
     /**
      * Determines if the storing of dribble information is active.
      * @return true if dribbling is active, false if it is inactive
@@ -232,12 +239,15 @@ public:
 
     /** TODO Facts */
 
-    /** Returns a pointer to the underlying CLIPS C object */
-    void* cobj();
+    Template::pointer get_template( const std::string& template_name );
+
+    /** TODO GetDeftemplateList */
+
+    Rule::pointer get_rule( const std::string& rule_name );
+
+    void remove_rules();
 
   protected:
-    void* m_cobj;
-
     sigc::signal<void> m_signal_clear;
     sigc::signal<void> m_signal_periodic;
     sigc::signal<void> m_signal_reset;
@@ -246,7 +256,6 @@ public:
     static void clear_callback(void* env);
     static void periodic_callback(void* env);
     static void reset_callback(void* env);
-
 
 };
 

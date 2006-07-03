@@ -20,94 +20,151 @@
 #ifndef CLIPSVALUE_H
 #define CLIPSVALUE_H
 
-#include <clipsmm/valuebase.h>
+#include <string>
+#include <vector>
+
+#include <sigc++/sigc++.h>
 
 namespace CLIPS {
 
+typedef enum Type {
+  TYPE_FLOAT = 0,
+  TYPE_INTEGER = 1,
+  TYPE_SYMBOL = 2,
+  TYPE_STRING = 3,
+  TYPE_EXTERNAL_ADDRESS = 5,
+  TYPE_INSTANCE_ADDRESS = 7,
+  TYPE_INSTANCE_NAME = 8,
+} Type;
+
 /**
 	@author Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
- */
-  template <typename T, unsigned short CLIPSType>
-  class Value: public ValueBase {
+ */  
+  class Value: public sigc::trackable {
     public:
-      typedef std::tr1::shared_ptr<Value> pointer;
-      typedef T value_type;
 
-      /** Default constructor that doesn't do much. */
-      Value () { }
+      /** Typeless constructor */
+      Value (Type type);
 
-      /** Initializing constructor */
-      Value( const T& value ) : m_value( value ) { }
+      /** Constructor sets value and CLIPS type to FLOAT */
+      Value( float x );
 
-      static pointer create() {
-        return std::tr1::shared_ptr<Value>( new Value() );
-      }
+      /** Constructor sets value and CLIPS type to FLOAT */
+      Value( double x );
 
-      static pointer create( const T& value ) {
-        return std::tr1::shared_ptr<Value>( new Value(value) );
-      }
+      /** Constructor sets value and CLIPS type to INTEGER */
+      Value( short int x );
 
-      static pointer pointer_cast( ValueBase::pointer p ) {
-        return std::tr1::dynamic_pointer_cast<Value<T,CLIPSType> >( p );
-      }
+      /** Constructor sets value and CLIPS type to INTEGER */
+      Value( unsigned short int x );
+
+      /** Constructor sets value and CLIPS type to INTEGER */
+      Value( int x );
+
+      /** Constructor sets value and CLIPS type to INTEGER */
+      Value( unsigned int x );
+
+      /** Constructor sets value and CLIPS type to INTEGER */
+      Value( long int x );
+
+      /** Constructor sets value and CLIPS type */
+      Value( char* x, Type type=TYPE_STRING );
+
+      /** Constructor sets value and CLIPS type */
+      Value( const std::string& x, Type type=TYPE_STRING );
       
+      /** Constructor sets value and CLIPS type to */
+      Value( void* x, Type type=TYPE_EXTERNAL_ADDRESS );
+
+      Value( const Value& value );
+
       /** Destructor */
-      virtual ~Value() { }
+      ~Value();
 
-      /** The canonical get() accessor method. */
-      virtual T get() const { return m_value; }
+      double as_float() const;
+      long int as_integer() const;
+      std::string& as_string() const;
+      void* as_address() const;
 
-      /**
-       * Returns a raw pointer to the underlying storage value.
-       * Note that using this method breaks encapsulation. Changing the
-       * underlying value through this pointer will not emit the
-       * changed signal.
-       */
-      virtual T* get_pointer() {
-        return & m_value;
-      }
-
-      /** The canonical set() accessor method that also emits the changed signal. */
-      virtual void set( const T& val ) {
-        m_value = val;
-        m_signal_changed.emit();
-      }
-
-      /** Allows for implicit casts to the contained type. */
-      operator T () const { return this->get(); }
+      Value& set( float x, bool change_type=false );
+      Value& set( double x, bool change_type=false  );
+      Value& set( short int x, bool change_type=false  );
+      Value& set( unsigned short int x, bool change_type=false  );
+      Value& set( int x, bool change_type=false  );
+      Value& set( unsigned int x, bool change_type=false  );
+      Value& set( long int x, bool change_type=false  );
+      Value& set( const std::string& x, bool change_type=false, Type type=TYPE_STRING );
+      Value& set( const char* x, bool change_type=false, Type type=TYPE_STRING );
+      Value& set( void* x, bool change_type=false, Type type=TYPE_EXTERNAL_ADDRESS  );
+      
+      operator float( ) const;
+      operator double( ) const;
+      operator short int( ) const;
+      operator unsigned short int( ) const;
+      operator int( ) const;
+      operator unsigned int( ) const;
+      operator long int( ) const;
+      operator std::string&( ) const;
+      operator const char*( ) const;
+      operator void*( ) const;
 
       /** Function call syntax to get the value with var() notation. */
-      T& operator() () const { return this->get(); }
+//       T& operator() () const { return this->get(); }
 
       /** Function call syntax to set the value with var(value) notation. */
-      Value<T,CLIPSType>& operator() ( const T& val ) {
-        this->set( val );
-        return *this;
-      }
-
-      /**
-       * A convenience operator when the value template type is a class.
-       *
-       * Allows class method to be accessed using notation var->class_method()
-       */
-      T* operator->() {
-        return get_pointer();
-      }
+//       Value<T,CLIPSType>& operator() ( const T& val ) {
+//         this->set( val );
+//         return *this;
+//       }
 
       /** Returns the RTTI type id of the contained type */
-      const std::type_info& type() const { return typeid( T ); }
+//       const std::type_info& type_info() const { return typeid( T ); }
 
       /**
        * Returns the size in bytes of the contained type,
        * and not necessarily the size of this class.
        */
-      size_t size() const { return sizeof( T ); }
+      size_t size() const;
 
       /** Allows assignment to the property from the contained value type. */
-      Value<T,CLIPSType>& operator= ( const T& val ) {
-        this->set( val );
-        return *this;
-      }
+//       Value<T,CLIPSType>& operator= ( const T& val ) {
+//         this->set( val );
+//         return *this;
+//       }
+
+      Value& operator=( float x );
+      Value& operator=( double x );
+      Value& operator=( short int x );
+      Value& operator=( unsigned short int x );
+      Value& operator=( int x );
+      Value& operator=( unsigned int x );
+      Value& operator=( long int x );
+      Value& operator=( const std::string& x );
+      Value& operator=( const char* x );
+      Value& operator=( void* x );
+      Value& operator=( const Value& x );
+      
+      bool operator==( float x ) const;
+      bool operator==( double x ) const;
+      bool operator==( short int x ) const;
+      bool operator==( unsigned short int x ) const;
+      bool operator==( int x ) const;
+      bool operator==( unsigned int x ) const;
+      bool operator==( long int x ) const;
+      bool operator==( const std::string& x ) const;
+      bool operator==( const char* x ) const;
+      bool operator==( void* x ) const;
+
+      bool operator!=( float x ) const;
+      bool operator!=( double x ) const;
+      bool operator!=( short int x ) const;
+      bool operator!=( unsigned short int x ) const;
+      bool operator!=( int x ) const;
+      bool operator!=( unsigned int x ) const;
+      bool operator!=( long int x ) const;
+      bool operator!=( const std::string& x ) const;
+      bool operator!=( const char* x ) const;
+      bool operator!=( void* x ) const;
 
       /**
        * Arithmetic assignment operator
@@ -118,11 +175,11 @@ namespace CLIPS {
        *
        * T + X must be well defined
        */
-      template <typename X>
-      Value<T,CLIPSType>& operator+=( X other ) {
-        this->set( this->get() + other );
-        return *this;
-      }
+//       template <typename X>
+//       Value& operator+=( X other ) {
+//         this->set( this->get() + other );
+//         return *this;
+//       }
 
       /**
        * Arithmetic assignment operator
@@ -133,11 +190,11 @@ namespace CLIPS {
        *
        * T - X must be well defined
        */
-      template <typename X>
-      Value<T,CLIPSType>& operator-=( X other ) {
-        this->set( this->get() - other );
-        return *this;
-      }
+//       template <typename X>
+//       Value& operator-=( X other ) {
+//         this->set( this->get() - other );
+//         return *this;
+//       }
 
       /**
        * Arithmetic assignment operator
@@ -148,11 +205,11 @@ namespace CLIPS {
        *
        * T * X must be well defined
        */
-      template <typename X>
-      Value<T,CLIPSType>& operator*=( X other ) {
-        this->set( this->get() * other );
-        return *this;
-      }
+//       template <typename X>
+//       Value& operator*=( X other ) {
+//         this->set( this->get() * other );
+//         return *this;
+//       }
 
       /**
        * Arithmetic assignment operator
@@ -163,11 +220,11 @@ namespace CLIPS {
        *
        * T / X must be well defined
        */
-      template <typename X>
-      Value<T,CLIPSType>& operator/=( X other ) {
-        this->set( this->get() / other );
-        return *this;
-      }
+//       template <typename X>
+//       Value& operator/=( X other ) {
+//         this->set( this->get() / other );
+//         return *this;
+//       }
 
       /**
        * Arithmetic assignment operator
@@ -178,28 +235,35 @@ namespace CLIPS {
        *
        * T % X must be well defined
        */
-      template <typename X>
-      Value<T,CLIPSType>& operator%=( X other ) {
-        this->set( this->get() % other );
-        return *this;
-      }
+//       template <typename X>
+//       Value& operator%=( X other ) {
+//         this->set( this->get() % other );
+//         return *this;
+//       }
 
       /** Returns the CLIPS library type of this value */
-      virtual int clips_type() {
-        return CLIPSType;
-      }
+      Type type() const;
+
+      /** Sets the underlying storage type */
+      Type set_type( Type type );
+
+      /** Signal emitted when the value is changed. */
+      sigc::signal<void> signal_changed();
 
     protected:
-      T m_value;
+      /** Storage for the underlying value */
+      void* m_value;
+
+      /** Stores the CLIPS type information */
+      Type m_clips_type;
+      
+      /** Signal emitted when underlying data is changed. */
+      sigc::signal<void> m_signal_changed;
+
+      void deallocate_storage();
   };
 
-  typedef Value<double,      0> Float;
-  typedef Value<long int,    1> Integer;
-  typedef Value<std::string, 2> Symbol;
-  typedef Value<std::string, 3> String;
-  typedef Value<void*,       5> ExternalAddress;
-  typedef Value<void*,       7> InstanceAddress;
-  typedef Value<std::string, 8> InstanceName;
+  typedef std::vector<Value> Values;
 
 }
 

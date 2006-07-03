@@ -20,39 +20,51 @@
 #ifndef CLIPSTEMPLATE_H
 #define CLIPSTEMPLATE_H
 
-#include <sigc++/sigc++.h>
+#include <vector>
 
-// Headers for smart pointers
-#include <typeinfo>
-#include <memory>
-#include <functional>
-#include <bits/concurrence.h>
-#include <ext/mt_allocator.h>
-#include <tr1/boost_shared_ptr.h>
+#include <clipsmm/environmentobject.h>
+#include <clipsmm/value.h>
 
 namespace CLIPS {
-
-class Environment;
 
 /**
 	@author Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
 */
-class Template: public sigc::trackable {
+class Template: public EnvironmentObject {
 public:
   typedef std::tr1::shared_ptr<Template> pointer;
-  
+
   Template( Environment& environment, void* cobj=NULL );
 
   static Template::pointer create( Environment& environment, void* cobj=NULL );
 
     ~Template();
 
-    /** Returns a pointer to the underlying CLIPS C object */
-    void* cobj();
+    /** The name of this template */
+    std::string name();
 
+    /** Returns the allowed values for a given slot */
+		Values allowed_slot_values( const std::string& slot_name );
+
+    /** Returns the cardinality information for a slot */
+    Values slot_cardinality( const std::string& slot_name );
+
+    /** Returns the range information for a slot */
+    Values slot_range( const std::string& slot_name );
+
+    /** Determines whether a slot exists in the template */
+    bool slot_exists( const std::string& slot_name );
+
+    /** Determines whether a slot is a multifield slot */
+    bool is_multifield_slot( const std::string& slot_name );
+
+    /** Determines whether a slot is a single field slot */
+    bool is_single_field_slot( const std::string& slot_name );
+
+    /** Returns the slot names associated with this template */
+    std::vector<std::string> slot_names();
+    
   protected:
-    Environment* m_environment;
-    void* m_cobj;
 
 };
 

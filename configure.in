@@ -20,7 +20,29 @@
 #########################################################################
 #  package specific values
 #########################################################################
-AC_INIT(clipsmm, 0.0.1, rvinyard@cs.nmsu.edu)
+pushdef([PACKAGE_MAJOR_VERSION], [0])
+pushdef([PACKAGE_MINOR_VERSION], [0])
+pushdef([PACKAGE_MICRO_VERSION], [1])
+pushdef([PKG_VERSION], PACKAGE_MAJOR_VERSION.PACKAGE_MINOR_VERSION.PACKAGE_MICRO_VERSION)
+
+AC_INIT([clipsmm], PKG_VERSION, [rvinyard@cs.nmsu.edu])
+
+[PACKAGE_MAJOR_VERSION]=PACKAGE_MAJOR_VERSION
+[PACKAGE_MINOR_VERSION]=PACKAGE_MINOR_VERSION
+[PACKAGE_MICRO_VERSION]=PACKAGE_MICRO_VERSION
+
+popdef([PACKAGE_MAJOR_VERSION])
+popdef([PACKAGE_MINOR_VERSION])
+popdef([PACKAGE_MICRO_VERSION])
+popdef([PKG_VERSION])
+
+#
+# +1 :  ? : +1 == new interface that does not break old one
+# +1 :  ? :  0 == new interface that breaks old one
+#  ? :  ? :  0 == no new interfaces, but breaks apps
+#  ? : +1 :  ? == just some internal changes, nothing breaks but might work better
+# CURRENT : REVISION : AGE
+LIBTOOL_SO_VERSION=2:0:0
 
 PACKAGE_SUMMARY="The clipsmm library is a C++ wrapper for the CLIPS C library"
 PACKAGE_LICENSE="GPL"
@@ -33,6 +55,7 @@ PACKAGE_MAJOR_VERSION=0
 PACKAGE_MINOR_VERSION=0
 PACKAGE_MICRO_VERSION=1
 
+PKGCONFIG_RELEASE="1.0"
 PKGCONFIG_REQUIRES="clips-6 >= 6.24.0 sigc++-2.0 >= 2.0.17"
 
 RPM_RELEASE="1"
@@ -73,6 +96,8 @@ DX_INIT_DOXYGEN($PACKAGE_NAME, Doxyfile, docs/www/reference)
 PACKAGE_RELEASE=$PACKAGE_MAJOR_VERSION.$PACKAGE_MINOR_VERSION
 AC_SUBST(PACKAGE_RELEASE)
 
+AC_SUBST(LIBTOOL_SO_VERSION)
+
 AC_SUBST(PACKAGE_SUMMARY)
 AC_SUBST(PACKAGE_LICENSE)
 AC_SUBST(PACKAGE_URL)
@@ -87,6 +112,7 @@ AC_SUBST(PACKAGE_MAJOR_VERSION)
 AC_SUBST(PACKAGE_MINOR_VERSION)
 AC_SUBST(PACKAGE_MICRO_VERSION)
 
+AC_SUBST(PKGCONFIG_RELEASE)
 AC_SUBST(PKGCONFIG_REQUIRES)
 
 AC_SUBST(RPM_RELEASE)
@@ -154,5 +180,5 @@ cat packaging/fedora-5/fedora_5.1 packaging/rpm_description packaging/fedora-5/f
 cat packaging/suse-10.1/suse_10_1.1 packaging/rpm_description packaging/suse-10.1/suse_10_1.2 packaging/rpm_changelog > packaging/suse-10.1/${PACKAGE_NAME}.spec.in
 
 
-AC_OUTPUT(packaging/fedora-5/clipsmm.spec packaging/suse-10.1/clipsmm.spec clipsmm-1.0.pc docs/www/site.php Makefile clipsmm/Makefile examples/Makefile packaging/Makefile packaging/fedora-5/Makefile packaging/suse-10.1/Makefile examples/environment/Makefile examples/facts/Makefile)
+AC_OUTPUT(packaging/fedora-5/clipsmm.spec packaging/suse-10.1/clipsmm.spec clipsmm-1.0.pc docs/www/site.php Makefile clipsmm/Makefile examples/Makefile packaging/Makefile packaging/fedora-5/Makefile packaging/suse-10.1/Makefile examples/environment/Makefile examples/facts/Makefile unit_tests/Makefile)
 

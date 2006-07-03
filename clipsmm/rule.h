@@ -17,23 +17,57 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA              *
  ***************************************************************************/
-#ifndef CLIPSFACTORY_H
-#define CLIPSFACTORY_H
+#ifndef CLIPSRULE_H
+#define CLIPSRULE_H
 
-#include <clipsmm/value.h>
-
-extern "C" {
-  struct dataObject;
-}
+#include <clipsmm/environmentobject.h>
 
 namespace CLIPS {
-  class Environment;
 
-  Values data_object_to_values(dataObject* clipsdo);
-  Values data_object_to_values(dataObject& clipsdo);
+/**
+	@author Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+*/
+class Rule: public EnvironmentObject {
+public:
+  typedef std::tr1::shared_ptr<Rule> pointer;
+  
+  Rule( Environment& environment, void* cobj=NULL );
 
-	dataObject* value_to_data_object( const Environment& env, const Values& values );
-  dataObject* value_to_data_object( const Environment& env, const Value& value );
+  static Rule::pointer create( Environment& environment, void* cobj=NULL );
+
+    ~Rule();
+
+    bool is_breakpoint_set();
+
+    std::string module();
+
+    std::string name();
+
+    std::string formatted();
+
+    bool activations_watched();
+
+    bool firings_watched();
+
+    Rule::pointer next_rule();
+
+    bool is_deletable();
+
+    void refresh();
+
+    bool remove_break();
+
+    void set_break();
+
+    void set_watch_activations( bool set=true );
+
+    void set_watch_firings( bool set=true );
+
+    bool remove();
+    
+  protected:
+    
+};
 
 }
 

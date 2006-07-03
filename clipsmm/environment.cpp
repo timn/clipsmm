@@ -52,11 +52,6 @@ Environment::~Environment()
   DestroyEnvironment( m_cobj );
 }
 
-void* Environment::cobj()
-{
-  return m_cobj;
-}
-
 bool Environment::batch_evaluate( const std::string& filename ) {
   return EnvBatchStar( m_cobj, const_cast<char*>( filename.c_str() ) );
 }
@@ -169,6 +164,19 @@ bool Environment::use_fact_duplication(bool use) {
   return EnvSetFactDuplication( m_cobj, use );
 }
 
+Template::pointer Environment::get_template( const std::string & template_name )
+{
+  if ( ! m_cobj )
+    return Template::pointer();
+  
+  void* tem = EnvFindDeftemplate( m_cobj, const_cast<char*>( template_name.c_str() ) );
+
+  if ( !tem )
+    return Template::pointer();
+
+  return Template::create( *this, tem );
+}
+
 sigc::signal< void > Environment::signal_clear( )
 {
   return m_signal_clear;
@@ -202,11 +210,37 @@ void Environment::reset_callback( void * env )
 Fact::pointer Environment::assert( const std::string& factstring )
 {
   void* clips_fact = EnvAssertString( m_cobj, const_cast<char*>(factstring.c_str()) );
-  if ( clips_fact != NULL )
+  if ( clips_fact )
     return Fact::create( *this, clips_fact );
   else
     return Fact::pointer();
 }
+
+Rule::pointer Environment::get_rule( const std::string & rule_name )
+{
+  void* rule;
+  rule = EnvFindDefrule( m_cobj, const_cast<char*>(rule_name.c_str()) );
+  if ( rule )
+    return Rule::create( *this, rule );
+  else
+    return Rule::pointer();
+}
+
+bool Environment::incremental_reset_enabled( )
+{
+  return EnvGetIncrementalReset( m_cobj );
+}
+
+bool Environment::use_incremental_reset( bool use )
+{
+  return EnvSetIncrementalReset( m_cobj, use );
+}
+
+void Environment::remove_rules( )
+{
+  EnvUndefrule( m_cobj, NULL );
+}
+
 
 }
 

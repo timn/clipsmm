@@ -17,23 +17,41 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA              *
  ***************************************************************************/
-#ifndef CLIPSFACTORY_H
-#define CLIPSFACTORY_H
+#ifndef CLIPSOBJECT_H
+#define CLIPSOBJECT_H
 
-#include <clipsmm/value.h>
+#include <sigc++/sigc++.h>
 
-extern "C" {
-  struct dataObject;
-}
+// Headers for smart pointers
+#include <typeinfo>
+#include <memory>
+#include <functional>
+#include <bits/concurrence.h>
+#include <ext/mt_allocator.h>
+#include <tr1/boost_shared_ptr.h>
 
 namespace CLIPS {
-  class Environment;
 
-  Values data_object_to_values(dataObject* clipsdo);
-  Values data_object_to_values(dataObject& clipsdo);
+/**
+	@author Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+*/
+class Object : public sigc::trackable
+{
+public:
+  typedef std::tr1::shared_ptr<Object> pointer;
+  
+    Object(void* cobj=NULL);
 
-	dataObject* value_to_data_object( const Environment& env, const Values& values );
-  dataObject* value_to_data_object( const Environment& env, const Value& value );
+    ~Object();
+
+    /** Returns a pointer to the underlying CLIPS C object */
+    void* cobj() const;
+
+  protected:
+    /** The underlying CLIPS C object */
+    void* m_cobj;
+
+};
 
 }
 

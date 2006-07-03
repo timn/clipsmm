@@ -17,24 +17,24 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA              *
  ***************************************************************************/
-#ifndef CLIPSFACTORY_H
-#define CLIPSFACTORY_H
-
-#include <clipsmm/value.h>
-
-extern "C" {
-  struct dataObject;
-}
+#include "environmentobject.h"
 
 namespace CLIPS {
-  class Environment;
 
-  Values data_object_to_values(dataObject* clipsdo);
-  Values data_object_to_values(dataObject& clipsdo);
+EnvironmentObject::EnvironmentObject(Environment& environment, void* cobj)
+  : Object(cobj), m_environment(environment)
+{
+}
 
-	dataObject* value_to_data_object( const Environment& env, const Values& values );
-  dataObject* value_to_data_object( const Environment& env, const Value& value );
+
+EnvironmentObject::~EnvironmentObject()
+{
+}
+
+Environment & EnvironmentObject::environment( ) const
+{
+  return m_environment;
+}
 
 }
 
-#endif

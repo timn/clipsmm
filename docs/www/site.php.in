@@ -27,69 +27,68 @@ $site = array(
 
 $other_docs = array(
 array(
-//"url" => "reference/html/index.html",
-//"name" => "Guide / Intro",
+"url" => "reference/html/index.html",
+"name" => "Guide / Intro",
 ),
 array(
-//"url" => "reference/html/classes.html",
-//"name" => "Class Reference",
+"url" => "reference/html/classes.html",
+"name" => "Class Reference",
 ),
 array(
-//"url" => "reference/html/hierarchy.html",
-//"name" => "Class Hierarchy",
+"url" => "reference/html/hierarchy.html",
+"name" => "Class Hierarchy",
 ),
 );
 
 $releases = array (
-  ${tarballversion}." (unstable)" => array (
-    array(
-      "type" => "Source tarball (tar.bz2)",
-      "url"  => "http://download.sourceforge.net/libbit/@PACKAGE_NAME@-".${tarballversion}.".tar.bz2",
-      "name" => "@PACKAGE_NAME@-".${tarballversion}.".tar.bz2"
-    ),
-    array(
-      "type" => "Fedora Core 5 srpm",
-      "url"  => "http://miskatonic.cs.nmsu.edu/pub/fedora/5/srpms/@PACKAGE_NAME@-".${rpmversion}.".src.rpm",
-      "name" => "@PACKAGE_NAME@-".${rpmversion}.".srpm"
-    ),
-    array(
-      "type" => "Fedora Core 5 i386 rpm",
-      "url"  => "http://miskatonic.cs.nmsu.edu/pub/fedora/5/i386/@PACKAGE_NAME@-".${rpmversion}.".i386.rpm",
-      "name" => "@PACKAGE_NAME@-".${rpmversion}.".i386.rpm"
-    ),
-    array(
-      "type" => "Fedora Core 5 i386 devel rpm",
-      "url"  => "http://miskatonic.cs.nmsu.edu/pub/fedora/5/i386/@PACKAGE_NAME@-devel-".${rpmversion}.".i386.rpm",
-      "name" => "@PACKAGE_NAME@-devel-".${rpmversion}.".i386.rpm"
-    ),
-    array(
-      "type" => "Fedora Core 5 x86_64 rpm",
-      "url"  => "http://miskatonic.cs.nmsu.edu/pub/fedora/5/x86_64/@PACKAGE_NAME@-".${rpmversion}.".x86_64.rpm",
-      "name" => "@PACKAGE_NAME@-".${rpmversion}.".x86_64.rpm"
-    ),
-    array(
-      "type" => "Fedora Core 5 x86_64 devel rpm",
-      "url"  => "http://miskatonic.cs.nmsu.edu/pub/fedora/5/x86_64/@PACKAGE_NAME@-devel-".${rpmversion}.".x86_64.rpm",
-      "name" => "@PACKAGE_NAME@-devel-".${rpmversion}.".x86_64.rpm"
-    ),
-)
+//   ${tarballversion}." (unstable)" => array (
+//     array(
+//       "type" => "Source tarball (tar.bz2)",
+//       "url"  => "http://download.sourceforge.net/libbit/@PACKAGE_NAME@-".${tarballversion}.".tar.bz2",
+//       "name" => "@PACKAGE_NAME@-".${tarballversion}.".tar.bz2"
+//     ),
+//     array(
+//       "type" => "Fedora Core 5 srpm",
+//       "url"  => "http://miskatonic.cs.nmsu.edu/pub/fedora/5/srpms/@PACKAGE_NAME@-".${rpmversion}.".src.rpm",
+//       "name" => "@PACKAGE_NAME@-".${rpmversion}.".srpm"
+//     ),
+//     array(
+//       "type" => "Fedora Core 5 i386 rpm",
+//       "url"  => "http://miskatonic.cs.nmsu.edu/pub/fedora/5/i386/@PACKAGE_NAME@-".${rpmversion}.".i386.rpm",
+//       "name" => "@PACKAGE_NAME@-".${rpmversion}.".i386.rpm"
+//     ),
+//     array(
+//       "type" => "Fedora Core 5 i386 devel rpm",
+//       "url"  => "http://miskatonic.cs.nmsu.edu/pub/fedora/5/i386/@PACKAGE_NAME@-devel-".${rpmversion}.".i386.rpm",
+//       "name" => "@PACKAGE_NAME@-devel-".${rpmversion}.".i386.rpm"
+//     ),
+//     array(
+//       "type" => "Fedora Core 5 x86_64 rpm",
+//       "url"  => "http://miskatonic.cs.nmsu.edu/pub/fedora/5/x86_64/@PACKAGE_NAME@-".${rpmversion}.".x86_64.rpm",
+//       "name" => "@PACKAGE_NAME@-".${rpmversion}.".x86_64.rpm"
+//     ),
+//     array(
+//       "type" => "Fedora Core 5 x86_64 devel rpm",
+//       "url"  => "http://miskatonic.cs.nmsu.edu/pub/fedora/5/x86_64/@PACKAGE_NAME@-devel-".${rpmversion}.".x86_64.rpm",
+//       "name" => "@PACKAGE_NAME@-devel-".${rpmversion}.".x86_64.rpm"
+//     ),
+// )
 );
 
 $dependencies = array (
-//"Gtkmm" => "http://www.gtkmm.org",
-//"bit" => "http://libbit.sourceforge.net",
+"clips" => "http://www.ghg.net/clips/CLIPS.html",
 );
 
 
 $css = array (
    "background_image" => "images/clipsmm-background.png",
-   "light_color" => "azure",
-   "dark_color" => "teal",
-   "menu_bgcolor" => "teal",
-   "release_bgcolor" => "azure",
-   "code_bgcolor" => "azure",
-   "code_fgcolor" => "darkblue",
-   "pre_bgcolor" => "azure",
+   "light_color" => "honeydew",
+   "dark_color" => "seagreen",
+   "menu_bgcolor" => "goldenrod",
+   "release_bgcolor" => "lightgreen",
+   "code_bgcolor" => "lightgreen",
+   "code_fgcolor" => "darkgreen",
+   "pre_bgcolor" => "honeydew",
 );
 
 ?>

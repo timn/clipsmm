@@ -17,24 +17,47 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA              *
  ***************************************************************************/
-#ifndef CLIPSFACTORY_H
-#define CLIPSFACTORY_H
+#include "utility.h"
 
-#include <clipsmm/value.h>
-
-extern "C" {
-  struct dataObject;
-}
+#include <clips/clips.h>
 
 namespace CLIPS {
-  class Environment;
 
-  Values data_object_to_values(dataObject* clipsdo);
-  Values data_object_to_values(dataObject& clipsdo);
+  std::vector<std::string> data_object_to_strings( dataObject* clipsdo ) {
+    return data_object_to_strings( *clipsdo );
+  }
 
-	dataObject* value_to_data_object( const Environment& env, const Values& values );
-  dataObject* value_to_data_object( const Environment& env, const Value& value );
+  std::vector<std::string> data_object_to_strings( dataObject& clipsdo ) {
+    void* mfptr;
+    long int end, i;
+    std::string s;
+    std::vector<std::string> strings;
+
+    switch ( GetType(clipsdo) ) {
+      case SYMBOL:
+      case INSTANCE_NAME:
+      case STRING:
+        strings.push_back( DOToString( clipsdo ) );
+        break;
+      case MULTIFIELD:
+        end = GetDOEnd( clipsdo );
+        mfptr = GetValue( clipsdo );
+        for ( i = GetDOBegin( clipsdo ); i <= end; i++ ) {
+          switch ( GetMFType( mfptr, i ) ) {
+            case SYMBOL:
+            case STRING:
+            case INSTANCE_NAME:
+              strings.push_back( ValueToString( GetMFValue( mfptr, i ) ) );
+              break;
+            default:
+              break;
+          }
+        }
+      default:
+        break;
+    }
+    
+    return strings;
+  }
 
 }
-
-#endif

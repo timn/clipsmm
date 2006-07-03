@@ -45,31 +45,31 @@ namespace CLIPS {
     switch ( GetType( clipsdo ) ) {
       case STRING:
         s = DOToString( clipsdo );
-        values.push_back( String::create( s ) );
+        values.push_back( Value( s, TYPE_STRING ) );
         return values;
       case INSTANCE_NAME:
         s = DOToString( clipsdo );
-        values.push_back( InstanceName::create( s ) );
+        values.push_back( Value( s, TYPE_INSTANCE_NAME ) );
         return values;
       case SYMBOL:
         s = DOToString( clipsdo );
-        values.push_back( Symbol::create( s ) );
+        values.push_back( Value( s, TYPE_SYMBOL ) );
         return values;
       case FLOAT:
         d = DOToDouble( clipsdo );
-        values.push_back( Float::create( d ) );
+        values.push_back( Value( d ) );
         return values;
-      case INTEGER: 
+      case INTEGER:
         i = DOToLong( clipsdo );
-        values.push_back( Integer::create( i ) );
+        values.push_back( Value( i ) );
         return values;
       case INSTANCE_ADDRESS:
         p = DOToPointer( clipsdo );
-        values.push_back( InstanceAddress::create( p ) );
+        values.push_back( Value( p, TYPE_INSTANCE_ADDRESS ) );
         return values;
       case EXTERNAL_ADDRESS:
         p = DOToPointer( clipsdo );
-        values.push_back( ExternalAddress::create( p ) );
+        values.push_back( Value( p, TYPE_EXTERNAL_ADDRESS ) );
         return values;
       case MULTIFIELD:
         end = GetDOEnd( clipsdo );
@@ -78,19 +78,19 @@ namespace CLIPS {
           switch ( GetMFType( mfptr, iter ) ) {
             case STRING:
               s = ValueToString( GetMFValue( mfptr, iter ) );
-              values.push_back( String::create( s ) );
+              values.push_back( Value( s, TYPE_STRING ) );
               break;
             case SYMBOL:
               s = ValueToString( GetMFValue( mfptr, iter ) );
-              values.push_back( Symbol::create( s ) );
+              values.push_back( Value( s, TYPE_SYMBOL ) );
               break;
             case FLOAT:
               d = ValueToDouble( GetMFValue( mfptr, iter ) );
-              values.push_back( Float::create( d ) );
+              values.push_back( Value( d ) );
               break;
             case INTEGER:
               i = ValueToLong( GetMFValue( mfptr, iter ) );
-              values.push_back( Integer::create( i ) );
+              values.push_back( Value( i ) );
               break;
             default:
               throw std::logic_error( "clipsmm: Unhandled multifield type" );
@@ -102,83 +102,75 @@ namespace CLIPS {
     }
   }
 
-	dataObject * values_to_data_object( Environment& env, Values & values )
+	dataObject * value_to_data_object( const Environment& env, const Value & value )
 	{
-    void *p, *p2;
+    void *p;
 		dataObject* clipsdo = new dataObject;
 
-    switch ( values.size() ) {
-      case 0:
-        return NULL;
-      case 1:
-        switch ( values[0]->clips_type() ) {
-          case SYMBOL:
-            p = EnvAddSymbol( env.cobj(), const_cast<char*>(Symbol::pointer_cast( values[0] )->get().c_str()));
-            SetpType(clipsdo, SYMBOL);
-            SetpValue(clipsdo, p);
-            return clipsdo;
-          case STRING:
-            p = EnvAddSymbol( env.cobj(), const_cast<char*>(String::pointer_cast( values[0] )->get().c_str()));
-            SetpType(clipsdo, STRING);
-            SetpValue(clipsdo, p);
-            return clipsdo;
-          case INSTANCE_NAME:
-            p = EnvAddSymbol( env.cobj(), const_cast<char*>(InstanceName::pointer_cast( values[0] )->get().c_str()));
-            SetpType(clipsdo, INSTANCE_NAME);
-            SetpValue(clipsdo, p);
-            return clipsdo;
-          case INTEGER:
-            p = EnvAddLong( env.cobj(), Integer::pointer_cast( values[0] )->get());
-            SetpType(clipsdo, INTEGER);
-            SetpValue(clipsdo, p);
-            return clipsdo;
-          case FLOAT:
-            p = EnvAddDouble( env.cobj(), Float::pointer_cast( values[0] )->get());
-            SetpType(clipsdo, FLOAT);
-            SetpValue(clipsdo, p);
-            return clipsdo;
-          default:
-            throw std::logic_error( "clipsmm: Unhandled data object type" );
-        }
-      default:
-        p = EnvCreateMultifield( env.cobj(), values.size() );
-        for (int iter = 0; iter < values.size(); iter++) {
-          switch ( values[iter]->clips_type() ) {
-            case SYMBOL:
-              p2 = EnvAddSymbol( env.cobj(), const_cast<char*>(Symbol::pointer_cast( values[iter] )->get().c_str()));
-              SetMFType(p, iter, SYMBOL);
-              SetMFValue(p, iter, p2);
-              break;
-            case STRING:
-              p2 = EnvAddSymbol( env.cobj(), const_cast<char*>(String::pointer_cast( values[iter] )->get().c_str()));
-              SetMFType(p, iter, STRING);
-              SetMFValue(p, iter, p2);
-              break;
-            case INSTANCE_NAME:
-              p2 = EnvAddSymbol( env.cobj(), const_cast<char*>(InstanceName::pointer_cast( values[iter] )->get().c_str()));
-              SetMFType(p, iter, INSTANCE_NAME);
-              SetMFValue(p, iter, p2);
-              break;
-            case INTEGER:
-              p2 = EnvAddLong( env.cobj(), Integer::pointer_cast( values[iter] )->get());
-              SetMFType(p, iter, INTEGER);
-              SetMFValue(p, iter, p2);
-              break;
-            case FLOAT:
-              p2 = EnvAddDouble( env.cobj(), Float::pointer_cast( values[iter] )->get());
-              SetMFType(p, iter, FLOAT);
-              SetMFValue(p, iter, p2);
-              break;
-            default:
-              throw std::logic_error( "clipsmm: Unhandled data object type" );
-          }
-        }
-        SetpType(clipsdo, MULTIFIELD);
+    SetpType(clipsdo, value.type() );
+    switch ( value.type() ) {
+      case SYMBOL:
+      case STRING:
+      case INSTANCE_NAME:
+        p = EnvAddSymbol( env.cobj(),
+                          const_cast<char*>( value.as_string().c_str())
+                        );
         SetpValue(clipsdo, p);
         return clipsdo;
+      case INTEGER:
+        p = EnvAddLong( env.cobj(), value.as_integer() );
+        SetpValue(clipsdo, p);
+        return clipsdo;
+      case FLOAT:
+        p = EnvAddDouble( env.cobj(), value.as_float() );
+        SetpValue(clipsdo, p);
+        return clipsdo;
+      default:
+        throw std::logic_error( "clipsmm: Unhandled data object type" );
     }
 
 		return NULL;
 	}
+
+  dataObject * value_to_data_object( const Environment& env, const Values & values )
+  {
+    void *p, *p2;
+
+    if (values.size() == 0 )
+      return NULL;
+    
+    if ( values.size() == 1 )
+      return value_to_data_object( env, values[0] );
+    
+    dataObject* clipsdo = new dataObject;
+
+    p = EnvCreateMultifield( env.cobj(), values.size() );
+    for (int iter = 0; iter < values.size(); iter++) {
+      SetMFType(p, iter, values[iter].type());
+      switch ( values[iter].type() ) {
+        case SYMBOL:
+        case STRING:
+        case INSTANCE_NAME:
+          p2 = EnvAddSymbol( env.cobj(),
+                             const_cast<char*>(values[iter].as_string().c_str())
+                           );
+          SetMFValue(p, iter, p2);
+          break;
+        case INTEGER:
+          p2 = EnvAddLong( env.cobj(), values[iter].as_integer() );
+          SetMFValue(p, iter, p2);
+          break;
+        case FLOAT:
+          p2 = EnvAddDouble( env.cobj(), values[iter].as_float() );
+          SetMFValue(p, iter, p2);
+          break;
+        default:
+          throw std::logic_error( "clipsmm: Unhandled data object type" );
+      }
+    }
+    SetpType(clipsdo, MULTIFIELD);
+    SetpValue(clipsdo, p);
+    return clipsdo;
+  }
 
 }

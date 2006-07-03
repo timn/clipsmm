@@ -26,9 +26,15 @@ libclipsmm_la_LIBADD = $(PROJECT_LIBS)
 
 library_includedir = $(includedir)/@PACKAGE_NAME@-@PACKAGE_RELEASE@/@PACKAGE_NAME@
 
-library_include_HEADERS = clipsmm.h environment.h valuebase.h value.h factory.h \
-		template.h fact.h
-libclipsmm_la_SOURCES = environment.cpp factory.cpp template.cpp fact.cpp
+library_include_HEADERS = clipsmm.h environment.h value.h factory.h template.h \
+	fact.h utility.h enum.h rule.h object.h environmentobject.h
+libclipsmm_la_SOURCES = environment.cpp factory.cpp template.cpp fact.cpp \
+		utility.cpp enum.cpp rule.cpp object.cpp environmentobject.cpp value.cpp
+
+
+
+
+
 
 
 

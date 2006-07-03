@@ -19,11 +19,15 @@
  ***************************************************************************/
 #include "template.h"
 
+#include <clips/clips.h>
+
 #include <clipsmm/environment.h>
+#include <clipsmm/utility.h>
 
 namespace CLIPS {
 
-Template::Template( Environment& environment, void* cobj ): m_environment( &environment ), m_cobj( cobj )
+Template::Template( Environment& environment, void* cobj ):
+    EnvironmentObject(environment, cobj)
 {
 }
 
@@ -34,6 +38,87 @@ Template::pointer Template::create( Environment& environment, void* cobj ) {
 Template::~Template()
 {
 }
+
+std::string Template::name() {
+  if ( !m_cobj )
+    return std::string();
+  return EnvGetDeftemplateName( m_environment.cobj(), m_cobj );
+}
+
+Values Template::allowed_slot_values( const std::string& slot_name )
+{
+  DATA_OBJECT clipsdo;
+  if ( !m_cobj )
+    return Values();
+  EnvDeftemplateSlotAllowedValues( m_environment.cobj(),
+                                   m_cobj,
+                                   const_cast<char*>(slot_name.c_str()),
+                                   &clipsdo );
+  return data_object_to_values( clipsdo );
+}
+
+Values Template::slot_cardinality( const std::string & slot_name )
+{
+  DATA_OBJECT clipsdo;
+  if ( !m_cobj )
+    return Values();
+  EnvDeftemplateSlotCardinality( m_environment.cobj(),
+                                 m_cobj,
+                                 const_cast<char*>(slot_name.c_str()),
+                                 &clipsdo );
+  return data_object_to_values( clipsdo );
+}
+
+bool Template::slot_exists( const std::string & slot_name )
+{
+  if ( !m_cobj )
+    return false;
+  return EnvDeftemplateSlotExistP( m_environment.cobj(),
+                                   m_cobj,
+                                   const_cast<char*>(slot_name.c_str()) );
+}
+
+bool Template::is_multifield_slot( const std::string & slot_name )
+{
+  if ( !m_cobj )
+    return false;
+  return EnvDeftemplateSlotMultiP( m_environment.cobj(),
+                                   m_cobj,
+                                   const_cast<char*>(slot_name.c_str()) );
+}
+
+bool Template::is_single_field_slot( const std::string & slot_name )
+{
+  if ( !m_cobj )
+    return false;
+  return EnvDeftemplateSlotSingleP( m_environment.cobj(),
+                                   m_cobj,
+                                   const_cast<char*>(slot_name.c_str()) );
+}
+
+  std::vector<std::string> Template::slot_names() {
+    DATA_OBJECT clipsdo;
+
+    if ( !m_cobj )
+      return std::vector<std::string>();
+
+    EnvDeftemplateSlotNames( m_environment.cobj(), m_cobj, &clipsdo );
+
+    return data_object_to_strings( clipsdo );
+  }
+
+  Values Template::slot_range( const std::string & slot_name )
+  {
+    DATA_OBJECT clipsdo;
+    if ( !m_cobj )
+      return Values();
+    EnvDeftemplateSlotRange( m_environment.cobj(),
+                             m_cobj,
+                             const_cast<char*>(slot_name.c_str()),
+                             &clipsdo );
+    return data_object_to_values( clipsdo );
+  }
+
 
 
 }
