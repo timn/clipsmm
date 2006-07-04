@@ -166,6 +166,53 @@ bool Environment::use_fact_duplication(bool use) {
   return EnvSetFactDuplication( m_cobj, use );
 }
 
+DefaultFacts::pointer Environment::get_default_facts( const std::string & default_facts_name )
+{
+  void* deffacts;
+  deffacts = EnvFindDeffacts( m_cobj, const_cast<char*>(default_facts_name.c_str()) );
+  if ( deffacts )
+    return DefaultFacts::create( *this, deffacts );
+  else
+    return DefaultFacts::pointer();
+}
+
+std::vector< std::string > Environment::get_default_facts_names( )
+{
+  DATA_OBJECT clipsdo;
+  EnvGetDeffactsList( m_cobj, &clipsdo, NULL );
+  return data_object_to_strings( clipsdo );
+}
+
+std::vector<std::string> Environment::get_default_facts_names(const Module& module) {
+  DATA_OBJECT clipsdo;
+  if ( module.cobj() ) {
+    EnvGetDeffactsList( m_cobj, &clipsdo, module.cobj() );
+    return data_object_to_strings( clipsdo );
+  }
+  else
+    return std::vector<std::string>();
+}
+
+std::vector<std::string> Environment::get_default_facts_names(Module::pointer module) {
+  DATA_OBJECT clipsdo;
+  if ( module->cobj() ) {
+    EnvGetDeffactsList( m_cobj, &clipsdo, module->cobj() );
+    return data_object_to_strings( clipsdo );
+  }
+  else
+    return std::vector<std::string>();
+}
+
+DefaultFacts::pointer Environment::get_default_facts_list_head( )
+{
+  void* df;
+  df = EnvGetNextDeffacts( m_cobj, NULL );
+  if (df)
+    return DefaultFacts::create( *this, df );
+  else
+    return DefaultFacts::pointer();
+}
+
 Template::pointer Environment::get_template( const std::string & template_name )
 {
   if ( ! m_cobj )
@@ -216,6 +263,58 @@ Template::pointer Environment::get_template_list_head( )
     return Template::pointer();
 }
 
+Rule::pointer Environment::get_rule( const std::string & rule_name )
+{
+  void* rule;
+  rule = EnvFindDefrule( m_cobj, const_cast<char*>(rule_name.c_str()) );
+  if ( rule )
+    return Rule::create( *this, rule );
+  else
+    return Rule::pointer();
+}
+
+std::vector< std::string > Environment::get_rule_names( )
+{
+  DATA_OBJECT clipsdo;
+  EnvGetDefruleList( m_cobj, &clipsdo, NULL );
+  return data_object_to_strings( clipsdo );
+}
+
+std::vector<std::string> Environment::get_rule_names(const Module& module) {
+  DATA_OBJECT clipsdo;
+  if ( module.cobj() ) {
+    EnvGetDefruleList( m_cobj, &clipsdo, module.cobj() );
+    return data_object_to_strings( clipsdo );
+  }
+  else
+    return std::vector<std::string>();
+}
+
+std::vector<std::string> Environment::get_rule_names(Module::pointer module) {
+  DATA_OBJECT clipsdo;
+  if ( module->cobj() ) {
+    EnvGetDefruleList( m_cobj, &clipsdo, module->cobj() );
+    return data_object_to_strings( clipsdo );
+  }
+  else
+    return std::vector<std::string>();
+}
+
+Rule::pointer Environment::get_rule_list_head( )
+{
+  void* r;
+  r = EnvGetNextDefrule( m_cobj, NULL );
+  if (r)
+    return Rule::create( *this, r );
+  else
+    return Rule::pointer();
+}
+
+void Environment::remove_rules( )
+{
+  EnvUndefrule( m_cobj, NULL );
+}
+
 sigc::signal< void > Environment::signal_clear( )
 {
   return m_signal_clear;
@@ -255,16 +354,6 @@ Fact::pointer Environment::assert( const std::string& factstring )
     return Fact::pointer();
 }
 
-Rule::pointer Environment::get_rule( const std::string & rule_name )
-{
-  void* rule;
-  rule = EnvFindDefrule( m_cobj, const_cast<char*>(rule_name.c_str()) );
-  if ( rule )
-    return Rule::create( *this, rule );
-  else
-    return Rule::pointer();
-}
-
 bool Environment::incremental_reset_enabled( )
 {
   return EnvGetIncrementalReset( m_cobj );
@@ -273,11 +362,6 @@ bool Environment::incremental_reset_enabled( )
 bool Environment::use_incremental_reset( bool use )
 {
   return EnvSetIncrementalReset( m_cobj, use );
-}
-
-void Environment::remove_rules( )
-{
-  EnvUndefrule( m_cobj, NULL );
 }
 
 Module::pointer Environment::get_module( const std::string & module_name )

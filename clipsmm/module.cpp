@@ -40,16 +40,18 @@ Module::~Module()
 
 std::string Module::name( )
 {
-  if ( !m_cobj )
+  if ( m_cobj )
+    return EnvGetDefmoduleName( m_environment.cobj(), m_cobj );
+  else
     return std::string();
-  return EnvGetDefmoduleName( m_environment.cobj(), m_cobj );
 }
 
 std::string Module::formatted( )
 {
-  if ( !m_cobj )
+  if ( m_cobj )
+    return EnvGetDefmodulePPForm( m_environment.cobj(), m_cobj );
+  else
     return std::string();
-  return EnvGetDefmodulePPForm( m_environment.cobj(), m_cobj );
 }
 
 Module::pointer Module::next( )

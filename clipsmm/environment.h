@@ -25,6 +25,7 @@
 
 #include <clipsmm/object.h>
 #include <clipsmm/fact.h>
+#include <clipsmm/defaultfacts.h>
 #include <clipsmm/template.h>
 #include <clipsmm/rule.h>
 #include <clipsmm/module.h>
@@ -246,6 +247,19 @@ public:
 
     /** TODO Facts */
 
+    DefaultFacts::pointer get_default_facts( const std::string& default_facts_name );
+
+    /** Gets a list of default facts names from all modules */
+    std::vector<std::string> get_default_facts_names();
+
+    /** Gets a list of default facts names from a specific module */
+    std::vector<std::string> get_default_facts_names(const Module& module);
+
+    /** Gets a list of default facts names from a specific module */
+    std::vector<std::string> get_default_facts_names(Module::pointer module);
+
+    DefaultFacts::pointer get_default_facts_list_head();
+
     Template::pointer get_template( const std::string& template_name );
 
     /** Gets a list of template names from all modules */
@@ -260,6 +274,17 @@ public:
     Template::pointer get_template_list_head();
 
     Rule::pointer get_rule( const std::string& rule_name );
+
+    /** Gets a list of rule names from all modules */
+    std::vector<std::string> get_rule_names();
+
+    /** Gets a list of rule names from a specific module */
+    std::vector<std::string> get_rule_names(const Module& module);
+
+    /** Gets a list of rule names from a specific module */
+    std::vector<std::string> get_rule_names(Module::pointer module);
+
+    Rule::pointer get_rule_list_head();
 
     void remove_rules();
 

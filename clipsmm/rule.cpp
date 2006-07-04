@@ -79,16 +79,16 @@ bool Rule::firings_watched( )
   return EnvGetDefruleWatchFirings( m_environment.cobj(), m_cobj );
 }
 
-Rule::pointer Rule::next_rule( )
+Rule::pointer Rule::next( )
 {
-  void* next_rule;
+  void* nxt;
   
   if ( !m_cobj )
     return Rule::pointer();
 
-  next_rule = EnvGetNextDefrule( m_environment.cobj(), m_cobj );
-  if ( next_rule )
-    return Rule::create( m_environment, next_rule );
+  nxt = EnvGetNextDefrule( m_environment.cobj(), m_cobj );
+  if ( nxt )
+    return Rule::create( m_environment, nxt );
   else
     return Rule::pointer();
 }

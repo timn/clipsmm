@@ -18,9 +18,13 @@
  *   51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA              *
  ***************************************************************************/
 
+#include <clipsmm/defaultfacts.h>
 #include <clipsmm/environment.h>
 #include <clipsmm/fact.h>
 #include <clipsmm/factory.h>
+#include <clipsmm/module.h>
+#include <clipsmm/rule.h>
 #include <clipsmm/template.h>
+#include <clipsmm/utility.h>
 #include <clipsmm/value.h>
 

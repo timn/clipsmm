@@ -29,7 +29,7 @@
       <runarguments>
         <envsimple/>
         <facts_simple/>
-        <clipsmm_unit_tests></clipsmm_unit_tests>
+        <clipsmm_unit_tests/>
       </runarguments>
       <customdirectory>/</customdirectory>
       <programargs/>

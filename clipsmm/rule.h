@@ -49,7 +49,7 @@ public:
 
     bool firings_watched();
 
-    Rule::pointer next_rule();
+    Rule::pointer next();
 
     bool is_deletable();
 
