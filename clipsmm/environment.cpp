@@ -23,6 +23,8 @@
 
 #include <clips/clips.h>
 
+#include <clipsmm/utility.h>
+
 namespace CLIPS {
 
 std::map<void*, Environment*> Environment::m_environment_map;
@@ -177,6 +179,43 @@ Template::pointer Environment::get_template( const std::string & template_name )
   return Template::create( *this, tem );
 }
 
+std::vector< std::string > Environment::get_template_names( )
+{
+  DATA_OBJECT clipsdo;
+  EnvGetDeftemplateList( m_cobj, &clipsdo, NULL );
+  return data_object_to_strings( clipsdo );
+}
+
+std::vector<std::string> Environment::get_template_names(const Module& module) {
+  DATA_OBJECT clipsdo;
+  if ( module.cobj() ) {
+    EnvGetDeftemplateList( m_cobj, &clipsdo, module.cobj() );
+    return data_object_to_strings( clipsdo );
+  }
+  else
+    return std::vector<std::string>();
+}
+
+std::vector<std::string> Environment::get_template_names(Module::pointer module) {
+  DATA_OBJECT clipsdo;
+  if ( module->cobj() ) {
+    EnvGetDeftemplateList( m_cobj, &clipsdo, module->cobj() );
+    return data_object_to_strings( clipsdo );
+  }
+  else
+    return std::vector<std::string>();
+}
+
+Template::pointer Environment::get_template_list_head( )
+{
+  void* tem;
+  tem = EnvGetNextDeftemplate( m_cobj, NULL );
+  if (tem)
+    return Template::create( *this, tem );
+  else
+    return Template::pointer();
+}
+
 sigc::signal< void > Environment::signal_clear( )
 {
   return m_signal_clear;
@@ -241,6 +280,68 @@ void Environment::remove_rules( )
   EnvUndefrule( m_cobj, NULL );
 }
 
+Module::pointer Environment::get_module( const std::string & module_name )
+{
+  void* module;
+  module = EnvFindDefmodule( m_cobj, const_cast<char*>(module_name.c_str()) );
+  if (module)
+    return Module::create( *this, module );
+  else
+    return Module::pointer();
+}
+
+Module::pointer Environment::get_current_module( )
+{
+  void* module;
+  module = EnvGetCurrentModule( m_cobj );
+  if ( module )
+    return Module::create( *this, module );
+  else
+    return Module::pointer();
+}
+
+std::vector< std::string > Environment::get_module_names( )
+{
+  DATA_OBJECT clipsdo;
+  EnvGetDefmoduleList( m_cobj, &clipsdo );
+  return data_object_to_strings( clipsdo );
+}
+
+Module::pointer Environment::get_module_list_head( )
+{
+  void* module;
+  module = EnvGetNextDefmodule( m_cobj, NULL );
+  if (module)
+    return Module::create( *this, module );
+  else
+    return Module::pointer();
+}
+
+Values Environment::evaluate( const std::string& expression )
+{
+  DATA_OBJECT clipsdo;
+  int result;
+  result = EnvEval( m_cobj, const_cast<char*>(expression.c_str()), &clipsdo );
+  if ( result )
+    return data_object_to_values( clipsdo );
+  else
+    return Values();
+}
+
+Values Environment::function( const std::string & function_name,
+                              const std::string & arguments )
+{
+  DATA_OBJECT clipsdo;
+  int result;
+  result = EnvFunctionCall( m_cobj,
+                            const_cast<char*>(function_name.c_str()),
+                            const_cast<char*>(arguments.c_str()),
+                            &clipsdo);
+  if ( result )
+    return data_object_to_values( clipsdo );
+  else
+    return Values();
+}
 
 }
 

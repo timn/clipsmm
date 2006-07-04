@@ -17,71 +17,34 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA              *
  ***************************************************************************/
-#ifndef CLIPSFACT_H
-#define CLIPSFACT_H
-
-#include <string>
-#include <vector>
+#ifndef CLIPSMODULE_H
+#define CLIPSMODULE_H
 
 #include <clipsmm/environmentobject.h>
-#include <clipsmm/template.h>
-#include <clipsmm/factory.h>
 
 namespace CLIPS {
 
 /**
 	@author Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
 */
-class Fact: public EnvironmentObject {
+class Module: public EnvironmentObject {
 public:
-  typedef std::tr1::shared_ptr<Fact> pointer;
+  typedef std::tr1::shared_ptr<Module> pointer;
+  
+  Module( Environment& environment, void* cobj=NULL );
 
-    Fact( Environment& environment, void* cobj=NULL );
+  static Module::pointer create( Environment& environment, void* cobj=NULL );
 
-    static Fact::pointer create( Environment& environment, void* cobj=NULL );
+  ~Module();
 
-    ~Fact();
+  std::string name();
 
-    /**
-     * Assigns default values to a fact.
-     * @return true if the default values were successfully set, false otherwise
-     */
-    bool assign_slot_defaults();
+  std::string formatted();
 
-    /** Returns the template associated with a fact. */
-    Template::pointer get_template();
+  Module::pointer next();
 
-    /**
-     * Indicates whether a fact is still in the fact list or has been retracted
-     * @return true if the fact is still in the fact list, false otherwise
-     */
-    bool exists();
-
-    /**
-     * Returns the fact index of a fact
-     * @return the index of the fact or -1 if this fact object is uninitialized
-     */
-    long int index();
-
-    /** Returns the slot names associated with this fact */
-    std::vector<std::string> slot_names();
-
-		/** Return the values contained within a slot */
-    Values slot_value(const std::string& slot_name);
-
-		/** Returns the next fact in the fact list */
-		Fact::pointer next();
-
-    /** Sets the named slot to a specific value or values */
-    bool set_slot(const std::string& slot_name, const Values& values);
-
-    /** Sets the named slot to a specific value or values */
-    bool set_slot(const std::string& slot_name, const Value& value);
-
-    /** Retracts a fact from the fact list */
-		bool retract();
-
-  protected:
+  /** Sets the current module and returns the old module */
+  Module::pointer set_current();
 
 };
 

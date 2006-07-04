@@ -101,7 +101,7 @@ Values Fact::slot_value( const std::string & name )
 			return Values();
 	}
 
-Fact::pointer Fact::next_fact( )
+Fact::pointer Fact::next( )
 {
 	void* next_fact;
 

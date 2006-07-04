@@ -27,6 +27,7 @@
 #include <clipsmm/fact.h>
 #include <clipsmm/template.h>
 #include <clipsmm/rule.h>
+#include <clipsmm/module.h>
 
 namespace CLIPS {
 
@@ -71,12 +72,18 @@ public:
     void clear( );
 
     /**
-     * \todo Eval
+     * Evaluates and expression and returns a vector of the results.
+     * If the expression could not be evaluated a zero-length vector
+     * is returned.
      */
+    Values evaluate( const std::string& expression );
 
     /**
-     * \todo FunctionCall
+     * Evaluates a CLIPS function.
+     * If the function could not be evaluated a zero-length vector
+     * is returned.
      */
+    Values function( const std::string& function_name, const std::string& arguments );
 
     /**
      * Loads a set of constructs into the CLIPS data base
@@ -241,11 +248,30 @@ public:
 
     Template::pointer get_template( const std::string& template_name );
 
-    /** TODO GetDeftemplateList */
+    /** Gets a list of template names from all modules */
+    std::vector<std::string> get_template_names();
+
+    /** Gets a list of template names from a specific module */
+    std::vector<std::string> get_template_names(const Module& module);
+
+    /** Gets a list of template names from a specific module */
+    std::vector<std::string> get_template_names(Module::pointer module);
+
+    Template::pointer get_template_list_head();
 
     Rule::pointer get_rule( const std::string& rule_name );
 
     void remove_rules();
+
+    Module::pointer get_module( const std::string& module_name );
+
+    Module::pointer get_current_module();
+
+    std::vector<std::string> get_module_names();
+
+    Module::pointer get_module_list_head();
+
+    /** TODO ListDefmodules */
 
   protected:
     sigc::signal<void> m_signal_clear;

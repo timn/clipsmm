@@ -17,9 +17,9 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA              *
  ***************************************************************************/
-#include "template.h"
-
 #include <clips/clips.h>
+
+#include "template.h"
 
 #include <clipsmm/environment.h>
 #include <clipsmm/utility.h>
@@ -45,7 +45,21 @@ std::string Template::name() {
   return EnvGetDeftemplateName( m_environment.cobj(), m_cobj );
 }
 
-Values Template::allowed_slot_values( const std::string& slot_name )
+std::string Template::module( )
+{
+  if ( !m_cobj )
+    return std::string();
+  return EnvDeftemplateModule( m_environment.cobj(), m_cobj );
+}
+
+std::string Template::formatted( )
+{
+  if ( !m_cobj )
+    return std::string();
+  return EnvGetDeftemplatePPForm( m_environment.cobj(), m_cobj );
+}
+
+Values Template::slot_allowed_values( const std::string& slot_name )
 {
   DATA_OBJECT clipsdo;
   if ( !m_cobj )
@@ -107,6 +121,25 @@ bool Template::is_single_field_slot( const std::string & slot_name )
     return data_object_to_strings( clipsdo );
   }
 
+  DefaultType Template::slot_default_type( const std::string & slot_name )
+  {
+    if ( !m_cobj )
+      return NO_DEFAULT;
+    return (DefaultType) EnvDeftemplateSlotDefaultP( m_environment.cobj(), m_cobj, const_cast<char*>(slot_name.c_str()) );
+  }
+
+  Values Template::slot_default_value( const std::string & slot_name )
+  {
+    DATA_OBJECT clipsdo;
+    if ( !m_cobj )
+      return Values();
+    EnvDeftemplateSlotDefaultValue( m_environment.cobj(),
+                                    m_cobj,
+                                    const_cast<char*>(slot_name.c_str()),
+                                    &clipsdo);
+    return data_object_to_values( clipsdo );
+  }
+
   Values Template::slot_range( const std::string & slot_name )
   {
     DATA_OBJECT clipsdo;
@@ -119,6 +152,44 @@ bool Template::is_single_field_slot( const std::string & slot_name )
     return data_object_to_values( clipsdo );
   }
 
+  bool Template::is_watched( )
+  {
+    if ( !m_cobj )
+      return false;
+    return EnvGetDeftemplateWatch( m_environment.cobj(), m_cobj );
+  }
 
+  Template::pointer Template::next( )
+  {
+    void* nxt;
+    if ( !m_cobj )
+      return Template::pointer();
+    nxt = EnvGetNextDeftemplate( m_environment.cobj(), m_cobj );
+    if ( nxt )
+      return Template::create( m_environment, nxt );
+    else
+      return Template::pointer();
+  }
+
+  bool Template::is_deletable( )
+  {
+    if ( !m_cobj )
+      return false;
+    return EnvIsDeftemplateDeletable( m_environment.cobj(), m_cobj );
+  }
+
+  void Template::set_watch( unsigned state )
+  {
+    if ( m_cobj )
+      EnvSetDeftemplateWatch( m_environment.cobj(), state, m_cobj );
+  }
+
+  bool Template::undefine( )
+  {
+    if ( !m_cobj )
+      return false;
+    return EnvUndeftemplate( m_environment.cobj(), m_cobj );
+  }
 
 }
+

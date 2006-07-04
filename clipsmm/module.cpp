@@ -17,25 +17,64 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA              *
  ***************************************************************************/
-#ifndef CLIPSFACTORY_H
-#define CLIPSFACTORY_H
+#include "module.h"
 
-#include <clipsmm/value.h>
-
-extern "C" {
-  struct dataObject;
-}
+#include <clips/clips.h>
+#include <clipsmm/environment.h>
 
 namespace CLIPS {
-  class Environment;
 
-  /** TODO Move to utility, since these are no longer factory methods */
-  Values data_object_to_values(dataObject* clipsdo);
-  Values data_object_to_values(dataObject& clipsdo);
+Module::Module( Environment& environment, void* cobj ):
+    EnvironmentObject( environment, cobj )
+{
+}
 
-	dataObject* value_to_data_object( const Environment& env, const Values& values );
-  dataObject* value_to_data_object( const Environment& env, const Value& value );
+Module::pointer Module::create( Environment & environment, void * cobj )
+{
+  return Module::pointer( new Module( environment, cobj ) );
+}
+
+Module::~Module()
+{
+}
+
+std::string Module::name( )
+{
+  if ( !m_cobj )
+    return std::string();
+  return EnvGetDefmoduleName( m_environment.cobj(), m_cobj );
+}
+
+std::string Module::formatted( )
+{
+  if ( !m_cobj )
+    return std::string();
+  return EnvGetDefmodulePPForm( m_environment.cobj(), m_cobj );
+}
+
+Module::pointer Module::next( )
+{
+  void* nxt;
+  if ( !m_cobj )
+    return Module::pointer();
+  nxt = EnvGetNextDefmodule( m_environment.cobj(), m_cobj );
+  if ( nxt )
+    return Module::create( m_environment, nxt );
+  else
+    return Module::pointer();
+}
+
+Module::pointer Module::set_current( )
+{
+  void* old;
+  if ( !m_cobj )
+    return Module::pointer();
+  old = EnvSetCurrentModule( m_environment.cobj(), m_cobj );
+  if ( old )
+    return Module::create( m_environment, old );
+  else
+    return Module::pointer();
+}
 
 }
 
-#endif
