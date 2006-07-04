@@ -173,7 +173,7 @@ namespace CLIPS {
       EnvSetDeftemplateWatch( m_environment.cobj(), state, m_cobj );
   }
 
-  bool Template::undefine( ) {
+  bool Template::retract( ) {
     if ( !m_cobj )
       return false;
     return EnvUndeftemplate( m_environment.cobj(), m_cobj );

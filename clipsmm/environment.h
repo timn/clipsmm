@@ -25,6 +25,7 @@
 
 #include <clipsmm/object.h>
 #include <clipsmm/fact.h>
+#include <clipsmm/activation.h>
 #include <clipsmm/defaultfacts.h>
 #include <clipsmm/template.h>
 #include <clipsmm/rule.h>
@@ -229,22 +230,12 @@ public:
 
     bool unwatch( const std::string& item );
 
-    /**
-     * Allows rules to execute
-     * @return The number of rules that fired
-     * @param runlimit How many rules should file
-     * If runlimit is negative, rules will fire until the agenda is empty
-     */
-    long int run( long int runlimit );
-
     void set_as_current();
-
-    sigc::signal<void> signal_clear();
-    sigc::signal<void> signal_periodic();
-    sigc::signal<void> signal_reset();
 
     Fact::pointer assert( const std::string& factstring );
 
+    void clear_focus_stack();
+    
     /** TODO Facts */
 
     DefaultFacts::pointer get_default_facts( const std::string& default_facts_name );
@@ -296,17 +287,95 @@ public:
 
     Module::pointer get_module_list_head();
 
+    /**
+     * Refreshes the agenda for all modules.
+     * Recomputes the salience values for all activations on the agenda
+     * and then reorders the agenda.
+     */
+    void refresh_agenda();
+
+    /**
+     * Refreshes the agenda for a specific module.
+     * Recomputes the salience values for all activations on the agenda
+     * and then reorders the agenda.
+     */
+    void refresh_agenda(const Module& module);
+
+    /**
+     * Refreshes the agenda for a specific module.
+     * Recomputes the salience values for all activations on the agenda
+     * and then reorders the agenda.
+     */
+    void refresh_agenda(Module::pointer module);
+
+    /**
+     * Reorders the agenda for all modules.
+     * Reorders the agenda based on the current conflict resolution
+     * strategy and current activation saliences.
+     */
+    void reorder_agenda();
+
+    /**
+     * Reorders the agenda for a specific module.
+     * Reorders the agenda based on the current conflict resolution
+     * strategy and current activation saliences.
+     */
+    void reorder_agenda(const Module& module);
+
+    /**
+     * Reorders the agenda for a specific module.
+     * Reorders the agenda based on the current conflict resolution
+     * strategy and current activation saliences.
+     */
+    void reorder_agenda(Module::pointer module);
+
+    /**
+     * Allows rules to execute
+     * @return The number of rules that fired
+     * @param runlimit How many rules should file
+     * If runlimit is negative, rules will fire until the agenda is empty
+     */
+    long int run( long int runlimit=-1 );
+
+    /** TODO SetSalienceEvaluation */
+
+    /** TODO SetStrategy */
+
     /** TODO ListDefmodules */
+
+    /**
+     * Checks whether the agenda has changed and emits the agenda changed signal if it has.
+     * The agenda does not include any callbacks when the agenda is changed.
+     * This method returns true if the agenda has changed and emits the
+     * agenda changed signal.
+     */
+    bool check_agenda_changed();
+    
+    Module::pointer get_focused_module();
+
+    std::vector<std::string> get_focus_stack();
+
+    Activation::pointer get_activation_list_head();
+
+    sigc::signal<void> signal_clear();
+    sigc::signal<void> signal_periodic();
+    sigc::signal<void> signal_reset();
+    sigc::signal<void> signal_rule_firing();
+    sigc::signal<void> signal_agenda_changed();
 
   protected:
     sigc::signal<void> m_signal_clear;
     sigc::signal<void> m_signal_periodic;
     sigc::signal<void> m_signal_reset;
+    sigc::signal<void> m_signal_rule_firing;
+    sigc::signal<void> m_signal_agenda_changed;
 
     static std::map<void*, Environment*> m_environment_map;
+    
     static void clear_callback(void* env);
     static void periodic_callback(void* env);
     static void reset_callback(void* env);
+    static void rule_firing_callback(void* end);
 
 };
 

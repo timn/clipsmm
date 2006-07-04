@@ -94,7 +94,7 @@ public:
 
     void set_watch( unsigned state );
 
-    bool undefine();
+    bool retract();
     
   protected:
 

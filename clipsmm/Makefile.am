@@ -28,10 +28,11 @@ library_includedir = $(includedir)/@PACKAGE_NAME@-@PACKAGE_RELEASE@/@PACKAGE_NAM
 
 library_include_HEADERS = clipsmm.h environment.h value.h factory.h template.h \
 			fact.h utility.h enum.h rule.h object.h environmentobject.h module.h \
-	defaultfacts.h
+	defaultfacts.h activation.h
 libclipsmm_la_SOURCES = environment.cpp factory.cpp template.cpp fact.cpp \
 				utility.cpp enum.cpp rule.cpp object.cpp environmentobject.cpp value.cpp module.cpp \
-	defaultfacts.cpp
+	defaultfacts.cpp activation.cpp
+
 
 
 

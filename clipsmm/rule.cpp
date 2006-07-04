@@ -131,7 +131,7 @@ void Rule::set_watch_firings( bool set )
     EnvSetDefruleWatchFirings( m_environment.cobj(), set, m_cobj );
 }
 
-bool Rule::remove( )
+bool Rule::retract( )
 {
   if ( m_cobj )
     return EnvUndefrule( m_environment.cobj(), m_cobj );

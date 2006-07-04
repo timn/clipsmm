@@ -63,8 +63,10 @@ public:
 
     void set_watch_firings( bool set=true );
 
-    bool remove();
-    
+    bool retract();
+
+    /** TODO Matches */
+  
   protected:
     
 };

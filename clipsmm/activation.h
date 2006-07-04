@@ -17,8 +17,8 @@
 *   Free Software Foundation, Inc.,                                       *
 *   51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA              *
 ***************************************************************************/
-#ifndef CLIPSDEFAULTFACTS_H
-#define CLIPSDEFAULTFACTS_H
+#ifndef CLIPSACTIVATION_H
+#define CLIPSACTIVATION_H
 
 #include <string>
 
@@ -29,27 +29,31 @@ namespace CLIPS {
   /**
     @author Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
   */
-  class DefaultFacts : public EnvironmentObject {
+  class Activation : public EnvironmentObject {
     public:
-      typedef std::tr1::shared_ptr<DefaultFacts> pointer;
+      typedef std::tr1::shared_ptr<Activation> pointer;
 
-      DefaultFacts( Environment& environment, void* cobj = NULL );
+      Activation( Environment& environment, void* cobj = NULL );
 
-      static DefaultFacts::pointer create( Environment& environment, void* cobj = NULL );
+      static Activation::pointer create( Environment& environment, void* cobj = NULL );
 
-      ~DefaultFacts();
+      ~Activation();
 
       std::string name();
 
-      std::string module();
-
       std::string formatted();
+      
+      bool deactivate();
 
-      DefaultFacts::pointer next();
+      int salience();
 
-      bool is_deletable();
+      /**
+       * Sets the salience value.
+       * @return the old salience value
+       */
+      int set_salience( int sal );
 
-      bool retract();
+      Activation::pointer next();
 
   };
 

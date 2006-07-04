@@ -17,69 +17,78 @@
 *   Free Software Foundation, Inc.,                                       *
 *   51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA              *
 ***************************************************************************/
-#include "defaultfacts.h"
+#include "activation.h"
 
 #include <clips/clips.h>
 #include <clipsmm/environment.h>
 
+#include <limits.h>
+
 namespace CLIPS {
 
-  DefaultFacts::DefaultFacts( Environment& environment, void* cobj ) :
+  Activation::Activation( Environment& environment, void* cobj ) :
   EnvironmentObject( environment, cobj ) {}
 
-  DefaultFacts::pointer DefaultFacts::create( Environment & environment, void * cobj ) {
-    return DefaultFacts::pointer( new DefaultFacts( environment, cobj ) );
+  Activation::pointer Activation::create( Environment & environment, void * cobj ) {
+    return Activation::pointer( new Activation( environment, cobj ) );
   }
 
-  DefaultFacts::~DefaultFacts() {}
 
-  std::string DefaultFacts::name( ) {
+  Activation::~Activation() {}
+
+  std::string Activation::name( )
+  {
     if ( m_cobj )
-      return EnvGetDeffactsName( m_environment.cobj(), m_cobj );
+      return EnvGetActivationName( m_environment.cobj(), m_cobj );
     else
       return std::string();
   }
 
-  std::string DefaultFacts::module( ) {
-    if ( m_cobj )
-      return EnvDeffactsModule( m_environment.cobj(), m_cobj );
+  std::string Activation::formatted( )
+  {
+    char temp[2001];
+    if ( m_cobj ) {
+      EnvGetActivationPPForm( m_environment.cobj(), temp, 2000, m_cobj );
+      return temp;
+    }
     else
       return std::string();
   }
 
-  std::string DefaultFacts::formatted( ) {
+  bool Activation::deactivate( )
+  {
     if ( m_cobj )
-      return EnvGetDeffactsPPForm( m_environment.cobj(), m_cobj );
-    else
-      return std::string();
-  }
-
-  DefaultFacts::pointer DefaultFacts::next( ) {
-    void * nxt;
-
-    if ( !m_cobj )
-      return DefaultFacts::pointer();
-
-    nxt = EnvGetNextDeffacts( m_environment.cobj(), m_cobj );
-
-    if ( nxt )
-      return DefaultFacts::create( m_environment, nxt );
-    else
-      return DefaultFacts::pointer();
-  }
-
-  bool DefaultFacts::is_deletable( ) {
-    if ( m_cobj )
-      return EnvIsDeffactsDeletable( m_environment.cobj(), m_cobj );
+      return EnvDeleteActivation( m_environment.cobj(), m_cobj );
     else
       return false;
   }
 
-  bool DefaultFacts::retract( ) {
+  int Activation::salience( )
+  {
     if ( m_cobj )
-      return EnvUndeffacts( m_environment.cobj(), m_cobj );
+      return EnvGetActivationSalience( m_environment.cobj(), m_cobj );
     else
-      return false;
+      return INT_MIN;
+  }
+
+  int Activation::set_salience( int sal )
+  {
+    if ( m_cobj )
+      return EnvSetActivationSalience( m_environment.cobj(), m_cobj, sal );
+    else
+      return INT_MIN;
+  }
+
+  Activation::pointer Activation::next( )
+  {
+    void* nxt = NULL;
+    if ( m_cobj ) {
+      nxt = EnvGetNextActivation( m_environment.cobj(), m_cobj );  
+      if ( nxt )
+        return Activation::create( m_environment, nxt );
+    }
+    
+    return Activation::pointer();
   }
 
 }

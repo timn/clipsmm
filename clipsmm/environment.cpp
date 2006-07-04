@@ -41,6 +41,8 @@ Environment::Environment()
     throw std::logic_error("clipsmm: Error adding periodic callback to clips environment");
   if ( EnvAddResetFunction( m_cobj, "clipsmm_reset_callback", Environment::reset_callback, 2001 ) == 0 )
     throw std::logic_error("clipsmm: Error adding reset callback to clips environment");
+  if ( EnvAddRunFunction( m_cobj, "clipsmm_rule_firing_callback", Environment::rule_firing_callback, 2001 ) == 0 )
+    throw std::logic_error("clipsmm: Error adding rule firing callback to clips environment");
 }
 
 Environment::~Environment()
@@ -48,6 +50,7 @@ Environment::~Environment()
   EnvRemoveClearFunction( m_cobj, "clipsmm_clear_callback" );
   EnvRemovePeriodicFunction( m_cobj, "clipsmm_periodic_callback" );
   EnvRemoveResetFunction( m_cobj, "clipsmm_reset_callback" );
+  EnvRemoveRunFunction( m_cobj, "clipsmm_rule_firing_callback" );
 
   m_environment_map.erase(m_cobj);
 
@@ -126,6 +129,11 @@ void Environment::set_as_current( )
   SetCurrentEnvironment( m_cobj );
 }
 
+void Environment::clear_focus_stack( )
+{
+  EnvClearFocusStack( m_cobj );
+}
+
 bool Environment::auto_float_dividend_enabled() {
   return EnvGetAutoFloatDividend( m_cobj );
 }
@@ -195,7 +203,7 @@ std::vector<std::string> Environment::get_default_facts_names(const Module& modu
 
 std::vector<std::string> Environment::get_default_facts_names(Module::pointer module) {
   DATA_OBJECT clipsdo;
-  if ( module->cobj() ) {
+  if ( module && module->cobj() ) {
     EnvGetDeffactsList( m_cobj, &clipsdo, module->cobj() );
     return data_object_to_strings( clipsdo );
   }
@@ -245,7 +253,7 @@ std::vector<std::string> Environment::get_template_names(const Module& module) {
 
 std::vector<std::string> Environment::get_template_names(Module::pointer module) {
   DATA_OBJECT clipsdo;
-  if ( module->cobj() ) {
+  if ( module && module->cobj() ) {
     EnvGetDeftemplateList( m_cobj, &clipsdo, module->cobj() );
     return data_object_to_strings( clipsdo );
   }
@@ -292,7 +300,7 @@ std::vector<std::string> Environment::get_rule_names(const Module& module) {
 
 std::vector<std::string> Environment::get_rule_names(Module::pointer module) {
   DATA_OBJECT clipsdo;
-  if ( module->cobj() ) {
+  if ( module && module->cobj() ) {
     EnvGetDefruleList( m_cobj, &clipsdo, module->cobj() );
     return data_object_to_strings( clipsdo );
   }
@@ -313,36 +321,6 @@ Rule::pointer Environment::get_rule_list_head( )
 void Environment::remove_rules( )
 {
   EnvUndefrule( m_cobj, NULL );
-}
-
-sigc::signal< void > Environment::signal_clear( )
-{
-  return m_signal_clear;
-}
-
-sigc::signal< void > Environment::signal_periodic( )
-{
-  return m_signal_periodic;
-}
-
-sigc::signal< void > Environment::signal_reset( )
-{
-  return m_signal_reset;
-}
-
-void Environment::clear_callback( void * env )
-{
-  m_environment_map[env]->m_signal_clear.emit();
-}
-
-void Environment::periodic_callback( void * env )
-{
-  m_environment_map[env]->m_signal_periodic.emit();
-}
-
-void Environment::reset_callback( void * env )
-{
-  m_environment_map[env]->m_signal_reset.emit();
 }
 
 Fact::pointer Environment::assert( const std::string& factstring )
@@ -382,6 +360,60 @@ Module::pointer Environment::get_current_module( )
     return Module::create( *this, module );
   else
     return Module::pointer();
+}
+
+Module::pointer Environment::get_focused_module( )
+{
+  void* module;
+  module = EnvGetFocus( m_cobj );
+  if ( module )
+    return Module::create( *this, module );
+  else
+    return Module::pointer();
+}
+
+std::vector<std::string> Environment::get_focus_stack() {
+  DATA_OBJECT clipsdo;
+  EnvGetFocusStack( m_cobj, &clipsdo );
+  return data_object_to_strings( clipsdo );
+}
+
+Activation::pointer Environment::get_activation_list_head( )
+{
+  void* head;
+  head = EnvGetNextActivation( m_cobj, NULL );
+  if (head)
+    return Activation::create( *this, head );
+  else
+    return Activation::pointer();
+}
+
+void Environment::refresh_agenda() {
+  EnvRefreshAgenda( m_cobj, NULL );
+}
+
+void Environment::refresh_agenda(const Module& module) {
+  if ( module.cobj() )
+    EnvRefreshAgenda( m_cobj, module.cobj() );
+}
+
+void Environment::refresh_agenda(Module::pointer module) {
+  if ( module && module->cobj() )
+    EnvRefreshAgenda( m_cobj, module->cobj() );
+}
+
+void Environment::reorder_agenda() {
+  EnvReorderAgenda( m_cobj, NULL );
+}
+
+void Environment::reorder_agenda(const Module& module) {
+  if ( module.cobj() )
+    EnvReorderAgenda( m_cobj, module.cobj() );
+}
+
+void Environment::reorder_agenda(Module::pointer module) {
+  if ( module && module->cobj() )
+    EnvReorderAgenda( m_cobj, module->cobj() );
 }
 
 std::vector< std::string > Environment::get_module_names( )
@@ -425,6 +457,61 @@ Values Environment::function( const std::string & function_name,
     return data_object_to_values( clipsdo );
   else
     return Values();
+}
+
+sigc::signal< void > Environment::signal_clear( )
+{
+  return m_signal_clear;
+}
+
+sigc::signal< void > Environment::signal_periodic( )
+{
+  return m_signal_periodic;
+}
+
+sigc::signal< void > Environment::signal_reset( )
+{
+  return m_signal_reset;
+}
+
+sigc::signal< void > Environment::signal_rule_firing( )
+{
+  return m_signal_rule_firing;
+}
+
+bool Environment::check_agenda_changed() {
+  if ( EnvGetAgendaChanged( m_cobj ) ) {
+    EnvSetAgendaChanged( m_cobj, 0 );
+    m_signal_agenda_changed.emit();
+    return true;
+  }
+  else
+    return false;
+}
+
+sigc::signal< void > Environment::signal_agenda_changed()
+{
+  return m_signal_agenda_changed;
+}
+
+void Environment::clear_callback( void * env )
+{
+  m_environment_map[env]->m_signal_clear.emit();
+}
+
+void Environment::periodic_callback( void * env )
+{
+  m_environment_map[env]->m_signal_periodic.emit();
+}
+
+void Environment::reset_callback( void * env )
+{
+  m_environment_map[env]->m_signal_reset.emit();
+}
+
+void Environment::rule_firing_callback( void * env )
+{
+  m_environment_map[env]->m_signal_rule_firing.emit();
 }
 
 }

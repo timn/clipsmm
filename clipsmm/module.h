@@ -46,6 +46,8 @@ public:
   /** Sets the current module and returns the old module */
   Module::pointer set_current();
 
+  void focus();
+
 };
 
 }

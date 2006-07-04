@@ -78,5 +78,11 @@ Module::pointer Module::set_current( )
     return Module::pointer();
 }
 
+void Module::focus( )
+{
+  if ( m_cobj )
+    EnvFocus( m_environment.cobj(), m_cobj );
+}
+
 }
 
