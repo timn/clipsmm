@@ -22,6 +22,29 @@
 
 namespace CLIPS {
 
+/**
+ * \note This typedef is dependent upon the enum values matching the #defines in CLIPS
+ */
+typedef enum SalienceEvaluation {
+  SALIENCE_EVAL_WHEN_DEFINED,
+    SALIENCE_EVAL_WHEN_ACTIVATED,
+    SALIENCE_EVAL_EVERY_CYCLE,
+} SalienceEvaluation;
+
+/**
+ * \note This typedef is dependent upon the enum values matching the #defines in CLIPS
+ */
+typedef enum ConflictResolution {
+  CONFLICT_DEPTH_STRATEGY,
+    CONFLICT_BREADTH_STRATEGY,
+    CONFLICT_LEX_STRATEGY,
+    CONFLICT_MEA_STRATEGY,
+    CONFLICT_COMPLEXITY_STRATEGY,
+    CONFLICT_SIMPLICITY_STRATEGY,
+    CONFLICT_RANDOM_STRATEGY,
+    CONFLICT_DEFAULT_STRATEGY=CONFLICT_DEPTH_STRATEGY,
+} ConflictResolution;
+
 }
 
 #endif

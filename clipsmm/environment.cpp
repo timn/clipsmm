@@ -225,7 +225,7 @@ Template::pointer Environment::get_template( const std::string & template_name )
 {
   if ( ! m_cobj )
     return Template::pointer();
-  
+
   void* tem = EnvFindDeftemplate( m_cobj, const_cast<char*>( template_name.c_str() ) );
 
   if ( !tem )
@@ -416,6 +416,26 @@ void Environment::reorder_agenda(Module::pointer module) {
     EnvReorderAgenda( m_cobj, module->cobj() );
 }
 
+SalienceEvaluation Environment::get_salience_evaluation( )
+{
+  return (SalienceEvaluation) EnvGetSalienceEvaluation( m_cobj );
+}
+
+SalienceEvaluation Environment::set_salience_evaluation( SalienceEvaluation se )
+{
+  return (SalienceEvaluation) EnvSetSalienceEvaluation( m_cobj, se );
+}
+
+ConflictResolution Environment::get_conflict_resolution_strategy( )
+{
+  return (ConflictResolution) EnvGetStrategy( m_cobj );
+}
+
+ConflictResolution Environment::set_conflict_resolution_strategy( ConflictResolution cr )
+{
+  return (ConflictResolution) EnvSetStrategy( m_cobj, cr );
+}
+
 std::vector< std::string > Environment::get_module_names( )
 {
   DATA_OBJECT clipsdo;
@@ -453,10 +473,17 @@ Values Environment::function( const std::string & function_name,
                             const_cast<char*>(function_name.c_str()),
                             const_cast<char*>(arguments.c_str()),
                             &clipsdo);
-  if ( result )
+  if ( !result )
     return data_object_to_values( clipsdo );
   else
     return Values();
+}
+
+bool Environment::remove_function( std::string name )
+{
+  bool result = UndefineFunction( m_cobj, const_cast<char*>(name.c_str()) );
+  m_slots.erase(name);
+  return result;
 }
 
 sigc::signal< void > Environment::signal_clear( )
@@ -512,6 +539,18 @@ void Environment::reset_callback( void * env )
 void Environment::rule_firing_callback( void * env )
 {
   m_environment_map[env]->m_signal_rule_firing.emit();
+}
+
+int Environment::get_arg_count( void* env ) {
+  return EnvRtnArgCount( env );
+}
+
+void* Environment::get_user_data( void* env ) {
+  return EnvRtnExtUserData( env );
+}
+
+void* Environment::add_symbol( const char* s ) {
+  return AddSymbol( const_cast<char*>(s) );
 }
 
 }

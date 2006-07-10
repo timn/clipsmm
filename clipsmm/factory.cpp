@@ -43,6 +43,8 @@ namespace CLIPS {
     long int end;
 
     switch ( GetType( clipsdo ) ) {
+      case RVOID:
+        return values;
       case STRING:
         s = DOToString( clipsdo );
         values.push_back( Value( s, TYPE_STRING ) );
@@ -93,12 +95,13 @@ namespace CLIPS {
               values.push_back( Value( i ) );
               break;
             default:
-              throw std::logic_error( "clipsmm: Unhandled multifield type" );
+              throw std::logic_error( "clipsmm::data_object_to_values: Unhandled multifield type" );
           }
         }
         return values;
       default:
-        throw std::logic_error( "clipsmm: Unhandled data object type" );
+        std::cout << std::endl << "Type: " << GetType(clipsdo) << std::endl;
+        throw std::logic_error( "clipsmm::data_object_to_values: Unhandled data object type" );
     }
   }
 
@@ -126,7 +129,7 @@ namespace CLIPS {
         SetpValue(clipsdo, p);
         return clipsdo;
       default:
-        throw std::logic_error( "clipsmm: Unhandled data object type" );
+        throw std::logic_error( "clipsmm::value_to_data_object: Unhandled data object type" );
     }
 
 		return NULL;
@@ -165,7 +168,7 @@ namespace CLIPS {
           SetMFValue(p, iter, p2);
           break;
         default:
-          throw std::logic_error( "clipsmm: Unhandled data object type" );
+          throw std::logic_error( "clipsmm::value_to_data_object: Unhandled data object type" );
       }
     }
     SetpType(clipsdo, MULTIFIELD);

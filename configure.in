@@ -51,10 +51,6 @@ PACKAGE_DOWNLOAD="http://download.sourceforge.net/clipsmm/"
 PACKAGE_WWWHOST="shell.sourceforge.net:/home/groups/c/cl/clipsmm/htdocs/"
 PACKAGE_RELEASEHOST="ftp://upload.sourceforge.net/incoming/"
 
-PACKAGE_MAJOR_VERSION=0
-PACKAGE_MINOR_VERSION=0
-PACKAGE_MICRO_VERSION=1
-
 PKGCONFIG_RELEASE="1.0"
 PKGCONFIG_REQUIRES="clips-6 >= 6.24.0 sigc++-2.0 >= 2.0.17"
 

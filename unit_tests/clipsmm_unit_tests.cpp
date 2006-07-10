@@ -29,9 +29,11 @@
 
 #include "fact_tests.h"
 #include "value_tests.h"
+#include "function_tests.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ValueTest );
 CPPUNIT_TEST_SUITE_REGISTRATION( FactsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( FunctionTest );
 
 int main() {
   // Create the event manager and test controller

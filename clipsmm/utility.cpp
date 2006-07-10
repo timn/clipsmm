@@ -60,4 +60,36 @@ namespace CLIPS {
     return strings;
   }
 
+  void get_argument(void* env, int argposition, double& value) {
+    value = EnvRtnDouble(env, argposition);
+  }
+  
+  void get_argument(void* env, int argposition, float& value) {
+    value = static_cast<float>( EnvRtnDouble(env, argposition) );
+  }
+
+  void get_argument(void* env, int argposition, short& value) {
+    value = static_cast<short>( EnvRtnLong(env, argposition) );
+  }
+
+  void get_argument(void* env, int argposition, short unsigned& value) {
+    value = static_cast<short unsigned>( EnvRtnLong(env, argposition) );
+  }
+
+  void get_argument(void* env, int argposition, int& value) {
+    value = static_cast<int>( EnvRtnLong(env, argposition) );
+  }
+
+  void get_argument(void* env, int argposition, unsigned& value) {
+    value = static_cast<unsigned>( EnvRtnLong(env, argposition) );
+  }
+
+  void get_argument(void* env, int argposition, long& value) {
+    value = EnvRtnLong(env, argposition);
+  }
+
+  void get_argument(void* env, int argposition, std::string& value) {
+    value = EnvRtnLexeme(env, argposition);
+  }
+
 }
