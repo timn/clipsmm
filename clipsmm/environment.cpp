@@ -174,6 +174,14 @@ bool Environment::use_fact_duplication(bool use) {
   return EnvSetFactDuplication( m_cobj, use );
 }
 
+bool Environment::global_reset_enable() {
+  return EnvGetResetGlobals( m_cobj );
+}
+
+bool Environment::use_global_reset( bool use ) {
+  return EnvSetResetGlobals( m_cobj, use );
+}
+
 DefaultFacts::pointer Environment::get_default_facts( const std::string & default_facts_name )
 {
   void* deffacts;
@@ -486,6 +494,44 @@ bool Environment::remove_function( std::string name )
   return result;
 }
 
+Global::pointer Environment::get_global( const std::string& global_name ) {
+  void* clips_global = EnvFindDefglobal( m_cobj, const_cast<char*>(global_name.c_str()));
+  if ( clips_global )
+    return Global::create( *this, clips_global );
+  else
+    return Global::pointer();
+}
+
+std::vector<std::string> Environment::get_globals_names()
+{
+  DATA_OBJECT clipsdo;
+  EnvGetDefglobalList( m_cobj, &clipsdo, NULL );
+  return data_object_to_strings( clipsdo );
+}
+
+std::vector<std::string> Environment::get_globals_names( const Module& module )
+{
+  DATA_OBJECT clipsdo;
+  if ( module.cobj() ) {
+    EnvGetDefglobalList( m_cobj, &clipsdo, module.cobj() );
+    return data_object_to_strings( clipsdo );
+  }
+  else
+    return std::vector<std::string>();
+}
+
+std::vector<std::string> Environment::get_globals_names( Module::pointer module )
+{
+  DATA_OBJECT clipsdo;
+  if ( module && module->cobj() ) {
+    EnvGetDefglobalList( m_cobj, &clipsdo, module->cobj() );
+    return data_object_to_strings( clipsdo );
+  }
+  else
+    return std::vector<std::string>();
+}
+
+
 sigc::signal< void > Environment::signal_clear( )
 {
   return m_signal_clear;
@@ -521,6 +567,21 @@ sigc::signal< void > Environment::signal_agenda_changed()
   return m_signal_agenda_changed;
 }
 
+bool Environment::check_globals_changed() {
+  if ( EnvGetGlobalsChanged( m_cobj ) ) {
+    EnvSetGlobalsChanged( m_cobj, 0 );
+    m_signal_globals_changed.emit();
+    return true;
+  }
+  else
+    return false;
+}
+
+sigc::signal< void > Environment::signal_globals_changed()
+{
+  return m_signal_globals_changed;
+}
+
 void Environment::clear_callback( void * env )
 {
   m_environment_map[env]->m_signal_clear.emit();
@@ -545,8 +606,8 @@ int Environment::get_arg_count( void* env ) {
   return EnvRtnArgCount( env );
 }
 
-void* Environment::get_user_data( void* env ) {
-  return EnvRtnExtUserData( env );
+void* Environment::get_function_context( void* env ) {
+  return GetEnvironmentFunctionContext( env );
 }
 
 void* Environment::add_symbol( const char* s ) {

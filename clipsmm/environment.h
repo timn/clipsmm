@@ -32,17 +32,20 @@
 
 #include <clipsmm/enum.h>
 #include <clipsmm/object.h>
-#include <clipsmm/fact.h>
+
 #include <clipsmm/activation.h>
 #include <clipsmm/defaultfacts.h>
-#include <clipsmm/template.h>
-#include <clipsmm/rule.h>
+#include <clipsmm/fact.h>
+#include <clipsmm/global.h>
 #include <clipsmm/module.h>
+#include <clipsmm/rule.h>
+#include <clipsmm/template.h>
+
 #include <clipsmm/utility.h>
 #include <clipsmm/any.h>
 
 extern "C" {
-  int EnvDefineFunction5( void *, char *, int, int ( * ) ( void * ), char *, char *, void * );
+  int EnvDefineFunction2WithContext( void *, char *, int, int ( * ) ( void * ), char *, char *, void * );
 }
 
 namespace CLIPS {
@@ -213,6 +216,10 @@ namespace CLIPS {
 
       bool use_incremental_reset( bool use = true );
 
+      bool global_reset_enable();
+
+      bool use_global_reset( bool use=true );
+      
       /**
        * Determines if the storing of dribble information is active.
        * @return true if dribbling is active, false if it is inactive
@@ -385,20 +392,31 @@ namespace CLIPS {
 
       Activation::pointer get_activation_list_head();
 
+      Global::pointer get_global( const std::string& global_name );
+      
+      /** Gets a list of global names from all modules */
+      std::vector<std::string> get_globals_names();
+
+      /** Gets a list of global names from a specific module */
+      std::vector<std::string> get_globals_names( const Module& module );
+
+      /** Gets a list of global names from a specific module */
+      std::vector<std::string> get_globals_names( Module::pointer module );
+
+      bool check_globals_changed();
+
       sigc::signal<void> signal_clear();
       sigc::signal<void> signal_periodic();
       sigc::signal<void> signal_reset();
       sigc::signal<void> signal_rule_firing();
       sigc::signal<void> signal_agenda_changed();
+      sigc::signal<void> signal_globals_changed();
 
       template < typename T_return >
       bool add_function( std::string name, const sigc::slot0<T_return>& slot);
 
       template < typename T_return, typename T_arg1 >
       bool add_function( std::string name, const sigc::slot1<T_return, T_arg1>& slot);
-
-      template < typename T_arg1, typename T_arg2 >
-      bool add_function( std::string name, const sigc::slot2<std::string, T_arg1, T_arg2>& slot);
 
       template < typename T_return, typename T_arg1, typename T_arg2 >
       bool add_function( std::string name, const sigc::slot2<T_return, T_arg1, T_arg2>& slot);
@@ -442,6 +460,29 @@ namespace CLIPS {
       static void reset_callback( void* env );
       static void rule_firing_callback( void* end );
 
+      static void* strcallback( void* theEnv );
+
+      template < typename T_arg1 >
+      static void* strcallback( void* theEnv );
+
+      template < typename T_arg1, typename T_arg2 >
+      static void* strcallback( void* theEnv );
+
+      template < typename T_arg1, typename T_arg2, typename T_arg3 >
+      static void* strcallback( void* theEnv );
+
+      template < typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4 >
+      static void* strcallback( void* theEnv );
+
+      template < typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5 >
+      static void* strcallback( void* theEnv );
+
+      template < typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5, typename T_arg6 >
+      static void* strcallback( void* theEnv );
+
+      template < typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5, typename T_arg6, typename T_arg7 >
+      static void* strcallback( void* theEnv );
+
       template < typename T_return >
       static T_return callback( void* theEnv );
 
@@ -450,9 +491,6 @@ namespace CLIPS {
 
       template < typename T_return, typename T_arg1, typename T_arg2 >
       static T_return callback( void* theEnv );
-
-      template < typename T_arg1, typename T_arg2 >
-      static void* strcallback( void* theEnv );
 
       template < typename T_return, typename T_arg1, typename T_arg2, typename T_arg3 >
       static T_return callback( void* theEnv );
@@ -469,8 +507,71 @@ namespace CLIPS {
       template < typename T_return, typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5, typename T_arg6, typename T_arg7 >
       static T_return callback( void* theEnv );
 
+      int ( *get_callback( const sigc::slot0<std::string>& slot ))( void* )
+        { return ( int ( * ) ( void* ) ) ( std::string ( * ) ( void* ) ) callback<std::string>; }
+
+      template < typename T_arg1 >
+      int ( *get_callback( const sigc::slot1<std::string,T_arg1>& slot ))( void* )
+        { return ( int ( * ) ( void* ) ) ( std::string ( * ) ( void* ) ) callback<std::string,T_arg1>; }
+
+      template < typename T_arg1, typename T_arg2 >
+      int ( *get_callback( const sigc::slot2<std::string,T_arg1,T_arg2>& slot ))( void* )
+        { return ( int ( * ) ( void* ) ) ( void* ( * ) ( void* ) ) strcallback<T_arg1,T_arg2>; }
+
+      template < typename T_arg1, typename T_arg2, typename T_arg3 >
+      int ( *get_callback( const sigc::slot3<std::string,T_arg1,T_arg2,T_arg3>& slot ))( void* )
+        { return (int(*)(void*)) (std::string(*)(void*)) callback<std::string,T_arg1,T_arg2,T_arg3>; }
+
+      template < typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4 >
+      int ( *get_callback( const sigc::slot4<std::string,T_arg1,T_arg2,T_arg3,T_arg4>& slot ))( void* )
+        { return (int(*)(void*)) (std::string(*)(void*)) callback<std::string,T_arg1,T_arg2,T_arg3,T_arg4>; }
+
+      template < typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5 >
+      int ( *get_callback( const sigc::slot5<std::string,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5>& slot ))( void* )
+        { return (int(*)(void*)) (std::string(*)(void*)) callback<std::string,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5>; }
+
+      template < typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5, typename T_arg6 >
+      int ( *get_callback( const sigc::slot6<std::string,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6>& slot ))( void* )
+        { return (int(*)(void*)) (std::string(*)(void*)) callback<std::string,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6>; }
+
+      template < typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5, typename T_arg6, typename T_arg7 >
+      int ( *get_callback( const sigc::slot7<std::string,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>& slot ))( void* )
+        { return (int(*)(void*)) (std::string(*)(void*)) callback<std::string,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>; }
+
+      template < typename T_return >
+      int ( *get_callback( const sigc::slot0<T_return>& slot ))( void* )
+        { return ( int ( * ) ( void* ) ) ( T_return ( * ) ( void* ) ) callback<T_return>; }
+
+      template < typename T_return, typename T_arg1 >
+      int ( *get_callback( const sigc::slot1<T_return,T_arg1>& slot ))( void* )
+        { return ( int ( * ) ( void* ) ) ( T_return ( * ) ( void* ) ) callback<T_return,T_arg1>; }
+
+      template < typename T_return, typename T_arg1, typename T_arg2 >
+      int ( *get_callback( const sigc::slot2<T_return,T_arg1,T_arg2>& slot ))( void* )
+        { return ( int ( * ) ( void* ) ) ( T_return ( * ) ( void* ) ) callback<T_return,T_arg1,T_arg2>; }
+
+      template < typename T_return, typename T_arg1, typename T_arg2, typename T_arg3 >
+      int ( *get_callback( const sigc::slot3<T_return,T_arg1,T_arg2,T_arg3>& slot ))( void* )
+        { return (int(*)(void*)) (T_return(*)(void*)) callback<T_return,T_arg1,T_arg2,T_arg3>; }
+
+      template < typename T_return, typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4 >
+      int ( *get_callback( const sigc::slot4<T_return,T_arg1,T_arg2,T_arg3,T_arg4>& slot ))( void* )
+        { return (int(*)(void*)) (T_return(*)(void*)) callback<T_return,T_arg1,T_arg2,T_arg3,T_arg4>; }
+
+      template < typename T_return, typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5 >
+      int ( *get_callback( const sigc::slot5<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5>& slot ))( void* )
+        { return (int(*)(void*)) (T_return(*)(void*)) callback<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5>; }
+
+      template < typename T_return, typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5, typename T_arg6 >
+      int ( *get_callback( const sigc::slot6<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6>& slot ))( void* )
+        { return (int(*)(void*)) (T_return(*)(void*)) callback<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6>; }
+
+      template < typename T_return, typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5, typename T_arg6, typename T_arg7 >
+      int ( *get_callback( const sigc::slot7<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>& slot ))( void* )
+        { return (int(*)(void*)) (T_return(*)(void*)) callback<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>; }
+
       static int get_arg_count( void* env );
-      static void* get_user_data( void* env );
+      static void* get_function_context( void* env );
       static void* add_symbol( const char* s );
   };
 
@@ -478,7 +579,7 @@ namespace CLIPS {
   inline
   T_return Environment::callback( void* theEnv ) {
     sigc::slot0<T_return>* cb;
-    void * cbptr = get_user_data( theEnv );
+    void * cbptr = get_function_context( theEnv );
     if ( cbptr ) {
       if ( get_arg_count( theEnv ) != 0 )
         throw std::logic_error( "clipsmm: wrong # args on slot callback; expected 0" );
@@ -492,7 +593,7 @@ namespace CLIPS {
   inline
   T_return Environment::callback( void* theEnv ) {
     sigc::slot1<T_return,T_arg1>* cb;
-    void * cbptr = get_user_data( theEnv );
+    void * cbptr = get_function_context( theEnv );
     T_arg1 arg1;
     if ( cbptr ) {
       if ( get_arg_count( theEnv ) != 1 )
@@ -508,7 +609,7 @@ namespace CLIPS {
   inline
   T_return Environment::callback( void* theEnv ) {
     sigc::slot2<T_return, T_arg1, T_arg2>* cb;
-    void * cbptr = get_user_data( theEnv );
+    void * cbptr = get_function_context( theEnv );
     T_arg1 arg1;
     T_arg2 arg2;
     if ( cbptr ) {
@@ -522,31 +623,11 @@ namespace CLIPS {
     throw;
   }
 
-  template < typename T_arg1, typename T_arg2 >
-  inline
-  void* Environment::strcallback( void* theEnv ) {
-    sigc::slot2<std::string, T_arg1, T_arg2>* cb;
-    void * cbptr = get_user_data( theEnv );
-    T_arg1 arg1;
-    T_arg2 arg2;
-    std::string s;
-    if ( cbptr ) {
-      if ( get_arg_count( theEnv ) != 2 )
-        throw std::logic_error( "clipsmm: wrong # args on slot callback; expected 2" );
-      get_argument( theEnv, 1, arg1 );
-      get_argument( theEnv, 2, arg2 );
-      cb = static_cast<sigc::slot2<std::string, T_arg1, T_arg2>*>( cbptr );
-      s = ( *cb ) ( arg1, arg2 );
-      return add_symbol( s.c_str() );
-    }
-    throw;
-  }
-
   template < typename T_return, typename T_arg1, typename T_arg2, typename T_arg3 >
   inline
   T_return Environment::callback( void* theEnv ) {
     sigc::slot3<T_return,T_arg1,T_arg2,T_arg3>* cb;
-    void * cbptr = get_user_data( theEnv );
+    void * cbptr = get_function_context( theEnv );
     T_arg1 arg1;
     T_arg2 arg2;
     T_arg3 arg3;
@@ -566,7 +647,7 @@ namespace CLIPS {
   inline
   T_return Environment::callback( void* theEnv ) {
     sigc::slot4<T_return,T_arg1,T_arg2,T_arg3,T_arg4>* cb;
-    void * cbptr = get_user_data( theEnv );
+    void * cbptr = get_function_context( theEnv );
     T_arg1 arg1;
     T_arg2 arg2;
     T_arg3 arg3;
@@ -588,7 +669,7 @@ namespace CLIPS {
   inline
   T_return Environment::callback( void* theEnv ) {
     sigc::slot5<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5>* cb;
-    void * cbptr = get_user_data( theEnv );
+    void * cbptr = get_function_context( theEnv );
     T_arg1 arg1;
     T_arg2 arg2;
     T_arg3 arg3;
@@ -612,7 +693,7 @@ namespace CLIPS {
  inline
  T_return Environment::callback( void* theEnv ) {
    sigc::slot6<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6>* cb;
-   void * cbptr = get_user_data( theEnv );
+   void * cbptr = get_function_context( theEnv );
    T_arg1 arg1;
    T_arg2 arg2;
    T_arg3 arg3;
@@ -638,7 +719,7 @@ namespace CLIPS {
   inline
   T_return Environment::callback( void* theEnv ) {
     sigc::slot7<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>* cb;
-    void * cbptr = get_user_data( theEnv );
+    void * cbptr = get_function_context( theEnv );
     T_arg1 arg1;
     T_arg2 arg2;
     T_arg3 arg3;
@@ -662,7 +743,181 @@ namespace CLIPS {
     throw;
   }
 
-  template < typename T_return >
+  inline
+  void* Environment::strcallback( void* theEnv ) {
+    sigc::slot0<std::string>* cb;
+    void * cbptr = get_function_context( theEnv );
+    if ( cbptr ) {
+      if ( get_arg_count( theEnv ) != 0 )
+        throw std::logic_error( "clipsmm: wrong # args on slot callback; expected 0" );
+      cb = static_cast<sigc::slot0<std::string>*>( cbptr );
+      return add_symbol( ( ( *cb ) ( )).c_str() );
+    }
+    throw;
+  }
+
+  template < typename T_arg1 >
+  inline
+  void* Environment::strcallback( void* theEnv ) {
+    sigc::slot1<std::string,T_arg1>* cb;
+    void * cbptr = get_function_context( theEnv );
+    T_arg1 arg1;
+    if ( cbptr ) {
+      if ( get_arg_count( theEnv ) != 1 )
+        throw std::logic_error( "clipsmm: wrong # args on slot callback; expected 1" );
+      get_argument( theEnv, 1, arg1 );
+      cb = static_cast<sigc::slot1<std::string,T_arg1>*>( cbptr );
+      return add_symbol( ( ( *cb ) ( arg1 )).c_str() );
+    }
+    throw;
+  }
+
+  template < typename T_arg1, typename T_arg2 >
+  inline
+  void* Environment::strcallback( void* theEnv ) {
+    sigc::slot2<std::string, T_arg1, T_arg2>* cb;
+    void * cbptr = get_function_context( theEnv );
+    T_arg1 arg1;
+    T_arg2 arg2;
+    if ( cbptr ) {
+      if ( get_arg_count( theEnv ) != 2 )
+        throw std::logic_error( "clipsmm: wrong # args on slot callback; expected 2" );
+      get_argument( theEnv, 1, arg1 );
+      get_argument( theEnv, 2, arg2 );
+      cb = static_cast<sigc::slot2<std::string, T_arg1, T_arg2>*>( cbptr );
+      return add_symbol( ( ( *cb ) ( arg1, arg2 )).c_str() );
+    }
+    throw;
+  }
+
+  template < typename T_arg1, typename T_arg2, typename T_arg3 >
+  inline
+  void* Environment::strcallback( void* theEnv ) {
+    sigc::slot3<std::string,T_arg1,T_arg2,T_arg3>* cb;
+    void * cbptr = get_function_context( theEnv );
+    T_arg1 arg1;
+    T_arg2 arg2;
+    T_arg3 arg3;
+    if ( cbptr ) {
+      if ( get_arg_count( theEnv ) != 3 )
+        throw std::logic_error( "clipsmm: wrong # args on slot callback; expected 3" );
+      get_argument( theEnv, 1, arg1 );
+      get_argument( theEnv, 2, arg2 );
+      get_argument( theEnv, 3, arg3 );
+      cb = static_cast<sigc::slot3<std::string, T_arg1, T_arg2,T_arg3>*>( cbptr );
+      return add_symbol( ( ( *cb ) ( arg1, arg2, arg3 )).c_str() );
+    }
+    throw;
+  }
+
+  template < typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4 >
+  inline
+  void* Environment::strcallback( void* theEnv ) {
+    sigc::slot4<std::string,T_arg1,T_arg2,T_arg3,T_arg4>* cb;
+    void * cbptr = get_function_context( theEnv );
+    T_arg1 arg1;
+    T_arg2 arg2;
+    T_arg3 arg3;
+    T_arg4 arg4;
+    std::string s;
+    if ( cbptr ) {
+      if ( get_arg_count( theEnv ) != 4 )
+        throw std::logic_error( "clipsmm: wrong # args on slot callback; expected 4" );
+      get_argument( theEnv, 1, arg1 );
+    std::cout << "Arg1: " << arg1 << std::endl;
+      get_argument( theEnv, 2, arg2 );
+    std::cout << "Arg2: " << arg2 << std::endl;
+      get_argument( theEnv, 3, arg3 );
+    std::cout << "Arg3: " << arg3 << std::endl;
+      get_argument( theEnv, 4, arg4 );
+    std::cout << "Arg4: " << arg4 << std::endl;
+      cb = static_cast<sigc::slot4<std::string, T_arg1, T_arg2,T_arg3,T_arg4>*>( cbptr );
+      s = ( *cb ) ( arg1, arg2, arg3, arg4 );
+    std::cout << "Adding: " << s << std::endl;
+      return add_symbol( s.c_str() );
+    }
+    throw;
+  }
+
+  template < typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5 >
+  inline
+  void* Environment::strcallback( void* theEnv ) {
+    sigc::slot5<std::string,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5>* cb;
+    void * cbptr = get_function_context( theEnv );
+    T_arg1 arg1;
+    T_arg2 arg2;
+    T_arg3 arg3;
+    T_arg4 arg4;
+    T_arg5 arg5;
+    if ( cbptr ) {
+      if ( get_arg_count( theEnv ) != 5 )
+        throw std::logic_error( "clipsmm: wrong # args on slot callback; expected 5" );
+      get_argument( theEnv, 1, arg1 );
+      get_argument( theEnv, 2, arg2 );
+      get_argument( theEnv, 3, arg3 );
+      get_argument( theEnv, 4, arg4 );
+      get_argument( theEnv, 5, arg5 );
+      cb = static_cast<sigc::slot5<std::string, T_arg1, T_arg2,T_arg3,T_arg4,T_arg5>*>( cbptr );
+      return add_symbol( ( ( *cb ) ( arg1, arg2, arg3, arg4, arg5 )).c_str() );
+    }
+    throw;
+  }
+
+  template < typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5, typename T_arg6 >
+  inline
+  void* Environment::strcallback( void* theEnv ) {
+    sigc::slot6<std::string,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6>* cb;
+    void * cbptr = get_function_context( theEnv );
+    T_arg1 arg1;
+    T_arg2 arg2;
+    T_arg3 arg3;
+    T_arg4 arg4;
+    T_arg5 arg5;
+    T_arg6 arg6;
+    if ( cbptr ) {
+      if ( get_arg_count( theEnv ) != 6 )
+        throw std::logic_error( "clipsmm: wrong # args on slot callback; expected 6" );
+      get_argument( theEnv, 1, arg1 );
+      get_argument( theEnv, 2, arg2 );
+      get_argument( theEnv, 3, arg3 );
+      get_argument( theEnv, 4, arg4 );
+      get_argument( theEnv, 5, arg5 );
+      get_argument( theEnv, 6, arg6 );
+      cb = static_cast<sigc::slot6<std::string, T_arg1, T_arg2,T_arg3,T_arg4,T_arg5,T_arg6>*>( cbptr );
+      return add_symbol( ( ( *cb ) ( arg1, arg2, arg3, arg4, arg5, arg6 )).c_str() );
+    }
+    throw;
+  }
+
+  template < typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5, typename T_arg6, typename T_arg7 >
+  inline
+  void* Environment::strcallback( void* theEnv ) {
+    sigc::slot7<std::string,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>* cb;
+    void * cbptr = get_function_context( theEnv );
+    T_arg1 arg1;
+    T_arg2 arg2;
+    T_arg3 arg3;
+    T_arg4 arg4;
+    T_arg5 arg5;
+    T_arg6 arg6;
+    T_arg7 arg7;
+    if ( cbptr ) {
+      if ( get_arg_count( theEnv ) != 7 )
+        throw std::logic_error( "clipsmm: wrong # args on slot callback; expected 7" );
+      get_argument( theEnv, 1, arg1 );
+      get_argument( theEnv, 2, arg2 );
+      get_argument( theEnv, 3, arg3 );
+      get_argument( theEnv, 4, arg4 );
+      get_argument( theEnv, 5, arg5 );
+      get_argument( theEnv, 6, arg6 );
+      get_argument( theEnv, 7, arg7 );
+      cb = static_cast<sigc::slot7<std::string, T_arg1, T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>*>( cbptr );
+      return add_symbol( ( ( *cb ) ( arg1, arg2, arg3, arg4, arg5, arg6, arg7 )).c_str() );
+    }
+    throw;
+  }
+
+template < typename T_return >
   inline
   bool Environment::add_function( std::string name, const sigc::slot0<T_return>& slot) {
     char retcode = get_return_code<T_return>( );
@@ -670,10 +925,10 @@ namespace CLIPS {
     sigc::slot0<T_return>* scb = new sigc::slot0<T_return>(slot);
     any holder = std::tr1::shared_ptr<sigc::slot0<T_return> >(scb);
     m_slots[name] = holder;
-    return ( EnvDefineFunction5( m_cobj,
+    return ( EnvDefineFunction2WithContext( m_cobj,
                                  const_cast<char*>( name.c_str() ),
                                  retcode,
-                                 ( int ( * ) ( void* ) ) ( T_return ( * ) ( void* ) ) callback<T_return>,
+                                 get_callback(slot),
                                  const_cast<char*>( name.c_str() ),
                                  argstring,
                                  ( void* ) scb ) );
@@ -688,10 +943,10 @@ namespace CLIPS {
     sigc::slot1<T_return, T_arg1>* scb = new sigc::slot1<T_return, T_arg1>(slot);
     any holder = std::tr1::shared_ptr<sigc::slot1<T_return, T_arg1> >(scb);
     m_slots[name] = holder;
-    return ( EnvDefineFunction5( m_cobj,
+    return ( EnvDefineFunction2WithContext( m_cobj,
                                  const_cast<char*>( name.c_str() ),
                                  retcode,
-                                 ( int ( * ) ( void* ) ) ( T_return ( * ) ( void* ) ) callback<T_return, T_arg1>,
+                                 get_callback(slot),
                                  const_cast<char*>( name.c_str() ),
                                  argstring,
                                  scb ) );
@@ -707,33 +962,14 @@ namespace CLIPS {
     sigc::slot2<T_return, T_arg1, T_arg2>* scb = new sigc::slot2<T_return, T_arg1, T_arg2>(slot);
     any holder = std::tr1::shared_ptr<sigc::slot2<T_return, T_arg1, T_arg2> >(scb);
     m_slots[name] = holder;
-    return ( EnvDefineFunction5( m_cobj,
+    return ( EnvDefineFunction2WithContext( m_cobj,
                                  const_cast<char*>( name.c_str() ),
                                  retcode,
-                                 ( int ( * ) ( void* ) ) ( T_return ( * ) ( void* ) ) callback<T_return, T_arg1, T_arg2>,
+                                 get_callback(slot),
                                  const_cast<char*>( name.c_str() ),
                                  argstring,
                                  scb ) );
   }
-
-  template < typename T_arg1, typename T_arg2 >
-      inline
-          bool Environment::add_function( std::string name, const sigc::slot2<std::string, T_arg1, T_arg2>& slot) {
-        char retcode = get_return_code<std::string>( );
-        char argstring[ 10 ] = { '2', '2', 'u', 0x00 };
-        argstring[ 3 ] = get_argument_code<T_arg1>( );
-        argstring[ 4 ] = get_argument_code<T_arg2>( );
-        sigc::slot2<std::string, T_arg1, T_arg2>* scb = new sigc::slot2<std::string, T_arg1, T_arg2>(slot);
-        any holder = std::tr1::shared_ptr<sigc::slot2<std::string, T_arg1, T_arg2> >(scb);
-        m_slots[name] = holder;
-        return ( EnvDefineFunction5( m_cobj,
-                 const_cast<char*>( name.c_str() ),
-                 retcode,
-                 ( int ( * ) ( void* ) ) ( void* ( * ) ( void* ) ) strcallback<T_arg1, T_arg2>,
-                 const_cast<char*>( name.c_str() ),
-                 argstring,
-                 scb ) );
-          }
 
   template < typename T_return, typename T_arg1, typename T_arg2, typename T_arg3 >
   inline
@@ -747,10 +983,10 @@ namespace CLIPS {
         new sigc::slot3<T_return,T_arg1,T_arg2,T_arg3>(slot);
     any holder = std::tr1::shared_ptr<sigc::slot3<T_return,T_arg1,T_arg2,T_arg3> >(scb);
     m_slots[name] = holder;
-    return ( EnvDefineFunction5( m_cobj,
+    return ( EnvDefineFunction2WithContext( m_cobj,
                                  const_cast<char*>( name.c_str() ),
                                  retcode,
-                                 ( int ( * ) ( void* ) ) ( T_return ( * ) ( void* ) ) callback<T_return,T_arg1,T_arg2,T_arg3>,
+                                 get_callback(slot),
                                  const_cast<char*>( name.c_str() ),
                                  argstring,
                                  scb )
@@ -770,10 +1006,10 @@ namespace CLIPS {
         new sigc::slot4<T_return,T_arg1,T_arg2,T_arg3,T_arg4>(slot);
     any holder = std::tr1::shared_ptr<sigc::slot4<T_return,T_arg1,T_arg2,T_arg3,T_arg4> >(scb);
     m_slots[name] = holder;
-    return ( EnvDefineFunction5( m_cobj,
+    return ( EnvDefineFunction2WithContext( m_cobj,
                                  const_cast<char*>( name.c_str() ),
                                  retcode,
-                                 ( int ( * ) ( void* ) ) ( T_return ( * ) ( void* ) ) callback<T_return,T_arg1,T_arg2,T_arg3,T_arg4>,
+                                 get_callback(slot),
                                  const_cast<char*>( name.c_str() ),
                                  argstring,
                                  scb )
@@ -795,10 +1031,10 @@ namespace CLIPS {
         new sigc::slot5<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5>(slot);
     any holder = std::tr1::shared_ptr<sigc::slot5<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5> >(scb);
     m_slots[name] = holder;
-    return ( EnvDefineFunction5( m_cobj,
+    return ( EnvDefineFunction2WithContext( m_cobj,
                                  const_cast<char*>( name.c_str() ),
                                  retcode,
-                                 ( int ( * ) ( void* ) ) ( T_return ( * ) ( void* ) ) callback<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5>,
+                                 get_callback(slot),
                                  const_cast<char*>( name.c_str() ),
                                  argstring,
                                  scb )
@@ -821,10 +1057,10 @@ namespace CLIPS {
         new sigc::slot6<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6>(slot);
     any holder = std::tr1::shared_ptr<sigc::slot6<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6> >(scb);
     m_slots[name] = holder;
-    return ( EnvDefineFunction5( m_cobj,
+    return ( EnvDefineFunction2WithContext( m_cobj,
                                  const_cast<char*>( name.c_str() ),
                                  retcode,
-                                 ( int ( * ) ( void* ) ) ( T_return ( * ) ( void* ) ) callback<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6>,
+                                 get_callback(slot),
                                  const_cast<char*>( name.c_str() ),
                                  argstring,
                                  scb )
@@ -848,10 +1084,10 @@ namespace CLIPS {
         new sigc::slot7<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>(slot);
     any holder = std::tr1::shared_ptr<sigc::slot7<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7> >(scb);
     m_slots[name] = holder;
-    return ( EnvDefineFunction5( m_cobj,
+    return ( EnvDefineFunction2WithContext( m_cobj,
                                  const_cast<char*>( name.c_str() ),
                                  retcode,
-                                 ( int ( * ) ( void* ) ) ( T_return ( * ) ( void* ) ) callback<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>,
+                                 get_callback(slot),
                                  const_cast<char*>( name.c_str() ),
                                  argstring,
                                  scb )
