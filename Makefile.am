@@ -1,4 +1,4 @@
-############################################################################
+#############################################################################
 ##   Copyright (C) 2001 by Rick L. Vinyard, Jr.                            ##
 ##   rvinyard@cs.nmsu.edu                                                  ##
 ##                                                                         ##
@@ -25,8 +25,8 @@ dist_man3_MANS = @DX_DOCDIR@/man/man3/*
 
 $(dist_man3_MANS): doxygen-doc
 
-dist-hook:
-	rm ${distdir}/@DX_DOCDIR@/man/man3/_*.3 || test true
+#dist-hook:
+#	rm ${distdir}/@DX_DOCDIR@/man/man3/_*.3 || test true
 
 endif
 
@@ -38,47 +38,58 @@ $(html_DATA): doxygen-doc
 
 dist-hook:
 	rm -rf `find $(distdir)/docs -name CVS`
+	rm -rf `find $(distdir)/docs/www/reference/html -name *.md5`
+	rm -rf `find $(distdir)/docs/www/reference/html -name *.map`
+	rm -rf `find $(distdir)/docs/www/reference/html -name *.dot`
 	mkdir -p $(distdir)/docs/reference
 	mv $(distdir)/docs/www/reference/html $(distdir)/docs/reference/html
 
 endif
 
-CLEANFILES = $(DX_CLEANFILES)
-
-MOSTLYCLEANFILES = $(DX_CLEANFILES)
-
-EXTRA_DIST = $(PACKAGE).kdevelop packaging/fedora-5/$(PACKAGE).spec packaging/suse-10.1/$(PACKAGE).spec $(DX_CONFIG) docs/www/reference/html
+EXTRA_DIST = \
+	$(PACKAGE).kdevelop \
+	packaging/fedora-5/$(PACKAGE).spec \
+	packaging/suse-10.1/$(PACKAGE).spec \
+	$(DX_CONFIG) \
+	$(html_DATA) \
+	docs/www/site.php.in
 
 SUBDIRS = clipsmm examples packaging unit_tests
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = @PACKAGE_NAME@-@PKGCONFIG_RELEASE@.pc
+pkgconfig_DATA = @PACKAGE_NAME@-@PKGCONFIG_VERSION@.pc
 
-INCLUDES = $(PROJECT_CFLAGS)
+INCLUDES = -I$(top_srcdir)/. $(PROJECT_CFLAGS)
+
+CLEANFILES = $(DX_CLEANFILES)
+
+MOSTLYCLEANFILES = $(DX_CLEANFILES)
+
+doxygen-clean:
+	rm -rf $(DX_CLEANFILES)
 
 upload-www:
-	make clean
+	make doxygen-clean
 	make doxygen-doc
 	rsync -azvcu --delete --cvs-exclude docs/www/* $(PACKAGE_WWWHOST)
 
 upload-release:
-	make clean
+	make doxygen-clean
 	make doxygen-doc
 	make dist-bzip2
 	curl -T $(PACKAGE)-$(VERSION).tar.bz2 $(PACKAGE_RELEASEHOST)
 
 fedora-rpms:
-	make clean
+	make doxygen-clean
 	make doxygen-doc
 	make dist-bzip2
 	cp $(PACKAGE)-$(VERSION).tar.bz2 /usr/src/redhat/SOURCES/
 	rpmbuild -ba --sign packaging/fedora-5/$(PACKAGE_NAME).spec
 
 suse-rpms:
-	make clean
+	make doxygen-clean
 	make doxygen-doc
 	make dist-bzip2
 	cp $(PACKAGE)-$(VERSION).tar.bz2 /usr/src/packages/SOURCES/
 	rpmbuild -ba --sign packaging/suse-10.1/$(PACKAGE_NAME).spec
-
 

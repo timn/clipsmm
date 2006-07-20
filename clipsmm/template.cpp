@@ -42,7 +42,7 @@ namespace CLIPS {
       return std::string();
   }
 
-  std::string Template::module( ) {
+  std::string Template::module_name( ) {
     if ( m_cobj )
       return EnvDeftemplateModule( m_environment.cobj(), m_cobj );
     else

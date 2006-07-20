@@ -41,17 +41,17 @@ array(
 );
 
 $releases = array (
-//   ${tarballversion}." (unstable)" => array (
-//     array(
-//       "type" => "Source tarball (tar.bz2)",
-//       "url"  => "http://download.sourceforge.net/libbit/@PACKAGE_NAME@-".${tarballversion}.".tar.bz2",
-//       "name" => "@PACKAGE_NAME@-".${tarballversion}.".tar.bz2"
-//     ),
-//     array(
-//       "type" => "Fedora Core 5 srpm",
-//       "url"  => "http://miskatonic.cs.nmsu.edu/pub/fedora/5/srpms/@PACKAGE_NAME@-".${rpmversion}.".src.rpm",
-//       "name" => "@PACKAGE_NAME@-".${rpmversion}.".srpm"
-//     ),
+   ${tarballversion}." (unstable)" => array (
+     array(
+       "type" => "Source tarball (tar.bz2)",
+       "url"  => "http://download.sourceforge.net/libbit/@PACKAGE_NAME@-".${tarballversion}.".tar.bz2",
+       "name" => "@PACKAGE_NAME@-".${tarballversion}.".tar.bz2"
+     ),
+     array(
+       "type" => "Fedora Core 5 srpm",
+       "url"  => "http://miskatonic.cs.nmsu.edu/pub/fedora/5/srpms/@PACKAGE_NAME@-".${rpmversion}.".src.rpm",
+       "name" => "@PACKAGE_NAME@-".${rpmversion}.".srpm"
+     ),
 //     array(
 //       "type" => "Fedora Core 5 i386 rpm",
 //       "url"  => "http://miskatonic.cs.nmsu.edu/pub/fedora/5/i386/@PACKAGE_NAME@-".${rpmversion}.".i386.rpm",
@@ -62,20 +62,22 @@ $releases = array (
 //       "url"  => "http://miskatonic.cs.nmsu.edu/pub/fedora/5/i386/@PACKAGE_NAME@-devel-".${rpmversion}.".i386.rpm",
 //       "name" => "@PACKAGE_NAME@-devel-".${rpmversion}.".i386.rpm"
 //     ),
-//     array(
-//       "type" => "Fedora Core 5 x86_64 rpm",
-//       "url"  => "http://miskatonic.cs.nmsu.edu/pub/fedora/5/x86_64/@PACKAGE_NAME@-".${rpmversion}.".x86_64.rpm",
-//       "name" => "@PACKAGE_NAME@-".${rpmversion}.".x86_64.rpm"
-//     ),
-//     array(
-//       "type" => "Fedora Core 5 x86_64 devel rpm",
-//       "url"  => "http://miskatonic.cs.nmsu.edu/pub/fedora/5/x86_64/@PACKAGE_NAME@-devel-".${rpmversion}.".x86_64.rpm",
-//       "name" => "@PACKAGE_NAME@-devel-".${rpmversion}.".x86_64.rpm"
-//     ),
-// )
+     array(
+       "type" => "Fedora Core 5 x86_64 rpm",
+       "url"  => "http://miskatonic.cs.nmsu.edu/pub/fedora/5/x86_64/@PACKAGE_NAME@-".${rpmversion}.".x86_64.rpm",
+       "name" => "@PACKAGE_NAME@-".${rpmversion}.".x86_64.rpm"
+     ),
+     array(
+       "type" => "Fedora Core 5 x86_64 devel rpm",
+       "url"  => "http://miskatonic.cs.nmsu.edu/pub/fedora/5/x86_64/@PACKAGE_NAME@-devel-".${rpmversion}.".x86_64.rpm",
+       "name" => "@PACKAGE_NAME@-devel-".${rpmversion}.".x86_64.rpm"
+     ),
+ )
 );
 
 $dependencies = array (
+"sigc++" => "http://libsigc.sourceforge.net/",
+"glibmm" => "http://ftp.gnome.org/pub/GNOME/sources/glibmm/",
 "clips" => "http://www.ghg.net/clips/CLIPS.html",
 );
 

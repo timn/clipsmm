@@ -40,7 +40,7 @@ namespace CLIPS {
       return std::string();
   }
 
-  std::string DefaultFacts::module( ) {
+  std::string DefaultFacts::module_name( ) {
     if ( m_cobj )
       return EnvDeffactsModule( m_environment.cobj(), m_cobj );
     else

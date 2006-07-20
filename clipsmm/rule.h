@@ -39,7 +39,7 @@ public:
 
     bool is_breakpoint_set();
 
-    std::string module();
+    std::string module_name();
 
     std::string name();
 

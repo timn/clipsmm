@@ -45,7 +45,7 @@ bool Rule::is_breakpoint_set( )
   return EnvDefruleHasBreakpoint( m_environment.cobj(), m_cobj );
 }
 
-std::string Rule::module( )
+std::string Rule::module_name( )
 {
   if ( !m_cobj )
     return std::string();

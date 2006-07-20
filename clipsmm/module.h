@@ -43,6 +43,8 @@ public:
 
   Module::pointer next();
 
+  // TODO add accessors for getting items associated with a module
+  
   /** Sets the current module and returns the old module */
   Module::pointer set_current();
 

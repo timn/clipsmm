@@ -1,0 +1,10 @@
+2006-07-20 Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+	Added Global class to support CLIPS globals 
+
+2006-07-18 Rick L Vinyard Jr <rvinyard@cs.nmsu.edu>
+  Renamed module() methods module_name() when returning a string name
+
+2006-07-16 Rick L Vinyard Jr <rvinyard@cs.nmsu.edu>
+  ===== 0.0.1 =====
+  Initial release
+

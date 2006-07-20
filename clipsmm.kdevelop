@@ -19,7 +19,7 @@
   </general>
   <kdevautoproject>
     <general>
-      <useconfiguration>default</useconfiguration>
+      <useconfiguration>debug</useconfiguration>
       <activetarget>unit_tests/clipsmm_unit_tests</activetarget>
     </general>
     <run>

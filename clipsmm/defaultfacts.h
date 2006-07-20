@@ -41,7 +41,7 @@ namespace CLIPS {
 
       std::string name();
 
-      std::string module();
+      std::string module_name();
 
       std::string formatted();
 

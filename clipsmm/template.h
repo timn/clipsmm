@@ -54,7 +54,7 @@ public:
     std::string name();
 
     /** The name of the module this template is in */
-    std::string module();
+    std::string module_name();
 
     std::string formatted();
 
