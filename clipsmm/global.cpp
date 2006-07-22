@@ -71,15 +71,15 @@ Values Global::value() {
 void Global::set_value( const Values& value ) {
   DATA_OBJECT* clips_do;
   if ( m_cobj ) {
-    clips_do = values_to_data_object( m_environment, value );
-    QSetDefglobalValue( m_environment.cobj(), m_cobj, clips_do, false );
+    clips_do = value_to_data_object( m_environment, value );
+    QSetDefglobalValue( m_environment.cobj(), (defglobal*)m_cobj, clips_do, false );
     delete clips_do;
   }
 }
 
 void Global::reset_value() {
   if ( m_cobj ) 
-    QSetDefglobalValue( m_environment.cobj(), m_cobj, NULL, true );
+    QSetDefglobalValue( m_environment.cobj(), (defglobal*)m_cobj, NULL, true );
 }
 
 bool Global::is_watched() {

@@ -63,7 +63,6 @@ public:
 
     bool undefine();
 
-    // TODO finish defglobal
 };
 
 }

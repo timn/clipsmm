@@ -1,3 +1,9 @@
+2006-07-21 Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+	Added Function class for handling deffunctions 
+
+2006-07-21 Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+	Environment: Added method for getting list head of globals 
+
 2006-07-20 Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
 	Added Global class to support CLIPS globals 
 
