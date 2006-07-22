@@ -22,7 +22,7 @@
 #########################################################################
 pushdef([PACKAGE_MAJOR_VERSION], [0])
 pushdef([PACKAGE_MINOR_VERSION], [0])
-pushdef([PACKAGE_MICRO_VERSION], [2])
+pushdef([PACKAGE_MICRO_VERSION], [3])
 pushdef([PKG_VERSION], PACKAGE_MAJOR_VERSION.PACKAGE_MINOR_VERSION.PACKAGE_MICRO_VERSION)
 
 AC_INIT([clipsmm], PKG_VERSION, [rvinyard@cs.nmsu.edu])
@@ -42,7 +42,7 @@ popdef([PKG_VERSION])
 #  ? :  ? :  0 == no new interfaces, but breaks apps
 #  ? : +1 :  ? == just some internal changes, nothing breaks but might work better
 # CURRENT : REVISION : AGE
-LIBTOOL_SO_VERSION=3:0:0
+LIBTOOL_SO_VERSION=4:0:1
 AC_SUBST(LIBTOOL_SO_VERSION)
 
 PACKAGE_SUMMARY="The clipsmm library is a C++ wrapper for the CLIPS C library"
