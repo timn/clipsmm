@@ -36,6 +36,7 @@
 #include <clipsmm/activation.h>
 #include <clipsmm/defaultfacts.h>
 #include <clipsmm/fact.h>
+#include <clipsmm/function.h>
 #include <clipsmm/global.h>
 #include <clipsmm/module.h>
 #include <clipsmm/rule.h>
@@ -394,6 +395,8 @@ namespace CLIPS {
 
       Global::pointer get_global( const std::string& global_name );
       
+      Global::pointer get_global_list_head();
+
       /** Gets a list of global names from all modules */
       std::vector<std::string> get_globals_names();
 
@@ -404,6 +407,19 @@ namespace CLIPS {
       std::vector<std::string> get_globals_names( Module::pointer module );
 
       bool check_globals_changed();
+
+      Function::pointer get_function( const std::string& function_name );
+      
+      Function::pointer get_function_list_head();
+
+      /** Gets a list of function names from all modules */
+      std::vector<std::string> get_function_names();
+
+      /** Gets a list of function names from a specific module */
+      std::vector<std::string> get_function_names( const Module& module );
+
+      /** Gets a list of function names from a specific module */
+      std::vector<std::string> get_function_names( Module::pointer module );
 
       sigc::signal<void> signal_clear();
       sigc::signal<void> signal_periodic();
@@ -452,6 +468,7 @@ namespace CLIPS {
       sigc::signal<void> m_signal_reset;
       sigc::signal<void> m_signal_rule_firing;
       sigc::signal<void> m_signal_agenda_changed;
+      sigc::signal<void> m_signal_globals_changed;
 
       static std::map<void*, Environment*> m_environment_map;
 

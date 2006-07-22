@@ -502,6 +502,16 @@ Global::pointer Environment::get_global( const std::string& global_name ) {
     return Global::pointer();
 }
 
+Global::pointer Environment::get_global_list_head( )
+{
+  void* global;
+  global = EnvGetNextDefglobal( m_cobj, NULL );
+  if (global)
+    return Global::create( *this, global );
+  else
+    return Global::pointer();
+}
+
 std::vector<std::string> Environment::get_globals_names()
 {
   DATA_OBJECT clipsdo;
@@ -531,6 +541,52 @@ std::vector<std::string> Environment::get_globals_names( Module::pointer module 
     return std::vector<std::string>();
 }
 
+Function::pointer Environment::get_function( const std::string& function_name ) {
+  void* clips_function = EnvFindDeffunction( m_cobj, const_cast<char*>(function_name.c_str()));
+  if ( clips_function )
+    return Function::create( *this, clips_function );
+  else
+    return Function::pointer();
+}
+
+Function::pointer Environment::get_function_list_head( )
+{
+  void* function;
+  function = EnvGetNextDeffunction( m_cobj, NULL );
+  if (function)
+    return Function::create( *this, function );
+  else
+    return Function::pointer();
+}
+
+std::vector<std::string> Environment::get_function_names()
+{
+  DATA_OBJECT clipsdo;
+  EnvGetDeffunctionList( m_cobj, &clipsdo, NULL );
+  return data_object_to_strings( clipsdo );
+}
+
+std::vector<std::string> Environment::get_function_names( const Module& module )
+{
+  DATA_OBJECT clipsdo;
+  if ( module.cobj() ) {
+    EnvGetDeffunctionList( m_cobj, &clipsdo, (defmodule*)(module.cobj()) );
+    return data_object_to_strings( clipsdo );
+  }
+  else
+    return std::vector<std::string>();
+}
+
+std::vector<std::string> Environment::get_function_names( Module::pointer module )
+{
+  DATA_OBJECT clipsdo;
+  if ( module && module->cobj() ) {
+    EnvGetDeffunctionList( m_cobj, &clipsdo, (defmodule*)(module->cobj()) );
+    return data_object_to_strings( clipsdo );
+  }
+  else
+    return std::vector<std::string>();
+}
 
 sigc::signal< void > Environment::signal_clear( )
 {
