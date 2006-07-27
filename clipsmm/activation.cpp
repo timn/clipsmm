@@ -19,7 +19,10 @@
 ***************************************************************************/
 #include "activation.h"
 
-#include <clips/clips.h>
+extern "C" {
+  #include <clips/clips.h>
+};
+
 #include <clipsmm/environment.h>
 
 #include <limits.h>
@@ -83,11 +86,11 @@ namespace CLIPS {
   {
     void* nxt = NULL;
     if ( m_cobj ) {
-      nxt = EnvGetNextActivation( m_environment.cobj(), m_cobj );  
+      nxt = EnvGetNextActivation( m_environment.cobj(), m_cobj );
       if ( nxt )
         return Activation::create( m_environment, nxt );
     }
-    
+
     return Activation::pointer();
   }
 

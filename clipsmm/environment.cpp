@@ -21,7 +21,9 @@
 
 #include <stdexcept>
 
-#include <clips/clips.h>
+extern "C" {
+  #include <clips/clips.h>
+};
 
 #include <clipsmm/utility.h>
 
@@ -331,7 +333,7 @@ void Environment::remove_rules( )
   EnvUndefrule( m_cobj, NULL );
 }
 
-Fact::pointer Environment::assert( const std::string& factstring )
+Fact::pointer Environment::assert_fact( const std::string& factstring )
 {
   void* clips_fact = EnvAssertString( m_cobj, const_cast<char*>(factstring.c_str()) );
   if ( clips_fact )

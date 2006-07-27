@@ -19,7 +19,10 @@
  ***************************************************************************/
 #include "rule.h"
 
-#include <clips/clips.h>
+extern "C" {
+  #include <clips/clips.h>
+};
+
 #include <clipsmm/environment.h>
 
 namespace CLIPS {
@@ -82,7 +85,7 @@ bool Rule::firings_watched( )
 Rule::pointer Rule::next( )
 {
   void* nxt;
-  
+
   if ( !m_cobj )
     return Rule::pointer();
 

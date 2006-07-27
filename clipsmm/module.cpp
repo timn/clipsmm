@@ -19,7 +19,10 @@
  ***************************************************************************/
 #include "module.h"
 
-#include <clips/clips.h>
+extern "C" {
+  #include <clips/clips.h>
+};
+
 #include <clipsmm/environment.h>
 
 namespace CLIPS {

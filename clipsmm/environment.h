@@ -254,7 +254,7 @@ namespace CLIPS {
 
       void set_as_current();
 
-      Fact::pointer assert( const std::string& factstring );
+      Fact::pointer assert_fact( const std::string& factstring );
 
       void clear_focus_stack();
 

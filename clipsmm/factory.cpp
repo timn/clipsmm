@@ -22,7 +22,10 @@
 #include <string>
 #include <stdexcept>
 
-#include <clips/clips.h>
+extern "C" {
+  #include <clips/clips.h>
+};
+
 #include <clipsmm/environment.h>
 
 namespace CLIPS {
@@ -33,12 +36,12 @@ namespace CLIPS {
 
   Values data_object_to_values( dataObject& clipsdo ) {
     Values values;
-    
+
     std::string s;
     double d;
     long int i;
     void* p;
-    
+
     void* mfptr;
     long int end;
 
@@ -141,10 +144,10 @@ namespace CLIPS {
 
     if (values.size() == 0 )
       return NULL;
-    
+
     if ( values.size() == 1 )
       return value_to_data_object( env, values[0] );
-    
+
     dataObject* clipsdo = new dataObject;
 
     p = EnvCreateMultifield( env.cobj(), values.size() );

@@ -19,7 +19,10 @@
  ***************************************************************************/
 #include "global.h"
 
-#include <clips.h>
+extern "C" {
+  #include <clips/clips.h>
+};
+
 #include <clipsmm/environment.h>
 
 namespace CLIPS {
@@ -78,7 +81,7 @@ void Global::set_value( const Values& value ) {
 }
 
 void Global::reset_value() {
-  if ( m_cobj ) 
+  if ( m_cobj )
     QSetDefglobalValue( m_environment.cobj(), (defglobal*)m_cobj, NULL, true );
 }
 

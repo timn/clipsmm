@@ -19,7 +19,9 @@
  ***************************************************************************/
 #include "utility.h"
 
-#include <clips/clips.h>
+extern "C" {
+  #include <clips/clips.h>
+};
 
 namespace CLIPS {
 
@@ -56,14 +58,14 @@ namespace CLIPS {
       default:
         break;
     }
-    
+
     return strings;
   }
 
   void get_argument(void* env, int argposition, double& value) {
     value = EnvRtnDouble(env, argposition);
   }
-  
+
   void get_argument(void* env, int argposition, float& value) {
     value = static_cast<float>( EnvRtnDouble(env, argposition) );
   }

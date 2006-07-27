@@ -30,13 +30,13 @@ int main( int argc, char** argv )
 
   environment.load( "strips.clp" );
 
-  fact = environment.assert("(in (object R2D2) (location RoomC) )");
+  fact = environment.assert_fact("(in (object R2D2) (location RoomC) )");
   slot_names = fact->slot_names();
   for (iter = slot_names.begin(); iter != slot_names.end(); iter++)
     std::cout << "Slot name: " << *iter << std::endl;
   std::cout << std::endl;
 
-  fact = environment.assert("(numbers 1 2 3 4 5 )");
+  fact = environment.assert_fact("(numbers 1 2 3 4 5 )");
   slot_names = fact->slot_names();
   for (iter = slot_names.begin(); iter != slot_names.end(); iter++)
     std::cout << "Slot name: " << *iter << std::endl;

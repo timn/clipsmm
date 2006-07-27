@@ -46,12 +46,12 @@ class FactsTest : public  CppUnit::TestFixture {
     CLIPS::Fact::pointer template_fact, ordered_fact;
     std::vector<std::string> slot_names;
     std::vector<std::string>::iterator iter;
-    
+
   public:
     void setUp() {
       environment.load( "strips.clp" );
-      template_fact = environment.assert("(in (object R2D2) (location X-Wing) )");
-      ordered_fact = environment.assert("(numbers 1 2 3 4 5 )");
+      template_fact = environment.assert_fact("(in (object R2D2) (location X-Wing) )");
+      ordered_fact = environment.assert_fact("(numbers 1 2 3 4 5 )");
     }
 
     void tearDown() { }
@@ -92,7 +92,7 @@ class FactsTest : public  CppUnit::TestFixture {
       CPPUNIT_ASSERT( values[3] == 4 );
       CPPUNIT_ASSERT( values[4] == 5 );
     }
-    
+
     void set_template_fact_slot_values() {
       template_fact->set_slot( "object", "C3PO" );
       template_fact->set_slot( "location", "Millenium Falcon" );

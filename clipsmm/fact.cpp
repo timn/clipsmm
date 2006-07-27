@@ -19,9 +19,12 @@
 ***************************************************************************/
 #include "fact.h"
 
+extern "C" {
+  #include <clips/clips.h>
+};
+
 #include <clipsmm/utility.h>
 #include <clipsmm/environment.h>
-#include <clips/clips.h>
 
 namespace CLIPS {
 
