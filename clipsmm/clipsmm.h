@@ -20,9 +20,12 @@
 
 #include <clipsmm/activation.h>
 #include <clipsmm/defaultfacts.h>
+#include <clipsmm/enum.h>
 #include <clipsmm/environment.h>
 #include <clipsmm/fact.h>
 #include <clipsmm/factory.h>
+#include <clipsmm/function.h>
+#include <clipsmm/global.h>
 #include <clipsmm/module.h>
 #include <clipsmm/rule.h>
 #include <clipsmm/template.h>

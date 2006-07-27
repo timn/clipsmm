@@ -34,7 +34,7 @@ namespace CLIPS {
 */
 class Fact: public EnvironmentObject {
 public:
-  typedef std::tr1::shared_ptr<Fact> pointer;
+  typedef SHAREDPTRNS::shared_ptr<Fact> pointer;
 
     Fact( Environment& environment, void* cobj=NULL );
 

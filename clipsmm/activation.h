@@ -31,7 +31,7 @@ namespace CLIPS {
   */
   class Activation : public EnvironmentObject {
     public:
-      typedef std::tr1::shared_ptr<Activation> pointer;
+      typedef SHAREDPTRNS::shared_ptr<Activation> pointer;
 
       Activation( Environment& environment, void* cobj = NULL );
 
@@ -42,7 +42,7 @@ namespace CLIPS {
       std::string name();
 
       std::string formatted();
-      
+
       bool deactivate();
 
       int salience();

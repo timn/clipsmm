@@ -42,7 +42,7 @@ popdef([PKG_VERSION])
 #  ? :  ? :  0 == no new interfaces, but breaks apps
 #  ? : +1 :  ? == just some internal changes, nothing breaks but might work better
 # CURRENT : REVISION : AGE
-LIBTOOL_SO_VERSION=4:0:1
+LIBTOOL_SO_VERSION=5:0:2
 AC_SUBST(LIBTOOL_SO_VERSION)
 
 PACKAGE_SUMMARY="The clipsmm library is a C++ wrapper for the CLIPS C library"
@@ -149,18 +149,49 @@ AC_DEFUN([AC_REQUIRE_HEADERS],[AC_CHECK_HEADERS($1,,AC_MSG_ERROR(Header $1 not f
 AC_DEFUN([AC_REQUIRE_LIB],[AC_CHECK_LIB($1,$2,,AC_MSG_ERROR(Library $1 not found))])
 
 #########################################################################
-#  header checks
+#  Look for smart pointers in either tr1 or boost
 #########################################################################
-AC_REQUIRE_HEADERS(bits/concurrence.h)
-AC_REQUIRE_HEADERS(ext/mt_allocator.h)
-AC_CHECK_HEADER([tr1/boost_shared_ptr.h],[],[AC_MSG_ERROR(Header tr1/boost_shared_ptr.h not found)],
-[
-#include <typeinfo>
-#include <memory>
-#include <functional>
-#include <bits/concurrence.h>
-#include <ext/mt_allocator.h>
-])
+AC_DEFUN(
+  [CHECK_FOR_BOOST_SMART_POINTER],
+  [ AC_CHECK_HEADER( [boost/shared_ptr.hpp],
+                     [AC_DEFINE(USE_BOOST_SMART_POINTER,[],[Defined if the boost library smart pointers will be used])],
+                     [AC_MSG_ERROR(Header boost/shared_ptr.hpp not found)]
+                   )
+  ]
+)
+
+AC_DEFUN(
+  [CHECK_FOR_TR1_SMART_POINTER],
+  [ AC_CHECK_HEADER( [tr1/boost_shared_ptr.h],
+                     [ AC_DEFINE(USE_TR1_SMART_POINTER,[],[Defined TR1 smart pointers will be used])],
+                     [ AC_MSG_CHECKING([for boost library smart pointers since tr1 smart pointers were not found])
+                       CHECK_FOR_BOOST_SMART_POINTER()
+                     ],
+                     [
+                       #include <typeinfo>
+                       #include <memory>
+                       #include <functional>
+                       #include <bits/concurrence.h>
+                       #include <ext/mt_allocator.h>
+                     ]
+                   )
+  ]
+)
+
+AC_CHECK_HEADER(
+  [bits/concurrence.h],
+  [ AC_CHECK_HEADER(
+      [ext/mt_allocator.h],
+      [ CHECK_FOR_TR1_SMART_POINTER() ],
+      [ AC_MSG_CHECKING([for boost library smart pointers since tr1 smart pointers were not found])
+        CHECK_FOR_BOOST_SMART_POINTER()
+      ]
+    )
+  ],
+  [ AC_MSG_CHECKING([for boost library smart pointers since tr1 smart pointers were not found])
+    CHECK_FOR_BOOST_SMART_POINTER()
+  ]
+)
 
 #########################################################################
 #  pkgconfig package requirements
@@ -178,4 +209,7 @@ cat packaging/suse-10.1/suse_10_1.1 packaging/rpm_description packaging/suse-10.
 
 
 AC_OUTPUT(packaging/fedora-5/clipsmm.spec packaging/suse-10.1/clipsmm.spec clipsmm-1.0.pc docs/www/site.php Makefile clipsmm/Makefile examples/Makefile packaging/Makefile packaging/fedora-5/Makefile packaging/suse-10.1/Makefile examples/environment/Makefile examples/facts/Makefile unit_tests/Makefile)
+
+cp config.h clipsmm/
+
 

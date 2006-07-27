@@ -30,7 +30,7 @@ namespace CLIPS {
 class Function : public EnvironmentObject
 {
 public:
-  typedef std::tr1::shared_ptr<Function> pointer;
+  typedef SHAREDPTRNS::shared_ptr<Function> pointer;
 
   Function( Environment& environment, void* cobj = NULL );
 
@@ -41,7 +41,7 @@ public:
     std::string name();
 
     std::string formatted();
-      
+
     std::string module_name();
 
     bool is_watched();

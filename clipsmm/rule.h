@@ -29,8 +29,8 @@ namespace CLIPS {
 */
 class Rule: public EnvironmentObject {
 public:
-  typedef std::tr1::shared_ptr<Rule> pointer;
-  
+  typedef SHAREDPTRNS::shared_ptr<Rule> pointer;
+
   Rule( Environment& environment, void* cobj=NULL );
 
   static Rule::pointer create( Environment& environment, void* cobj=NULL );
@@ -66,9 +66,9 @@ public:
     bool retract();
 
     /** TODO Matches */
-  
+
   protected:
-    
+
 };
 
 }

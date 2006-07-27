@@ -29,8 +29,8 @@ namespace CLIPS {
 */
 class Module: public EnvironmentObject {
 public:
-  typedef std::tr1::shared_ptr<Module> pointer;
-  
+  typedef SHAREDPTRNS::shared_ptr<Module> pointer;
+
   Module( Environment& environment, void* cobj=NULL );
 
   static Module::pointer create( Environment& environment, void* cobj=NULL );
@@ -44,7 +44,7 @@ public:
   Module::pointer next();
 
   // TODO add accessors for getting items associated with a module
-  
+
   /** Sets the current module and returns the old module */
   Module::pointer set_current();
 

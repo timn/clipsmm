@@ -31,7 +31,7 @@ namespace CLIPS {
   */
   class DefaultFacts : public EnvironmentObject {
     public:
-      typedef std::tr1::shared_ptr<DefaultFacts> pointer;
+      typedef SHAREDPTRNS::shared_ptr<DefaultFacts> pointer;
 
       DefaultFacts( Environment& environment, void* cobj = NULL );
 

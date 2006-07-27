@@ -44,7 +44,7 @@ $releases = array (
    ${tarballversion}." (unstable)" => array (
      array(
        "type" => "Source tarball (tar.bz2)",
-       "url"  => "http://download.sourceforge.net/libbit/@PACKAGE_NAME@-".${tarballversion}.".tar.bz2",
+       "url"  => "http://prdownloads.sourceforge.net/clipsmm/@PACKAGE_NAME@-".${tarballversion}.".tar.bz2",
        "name" => "@PACKAGE_NAME@-".${tarballversion}.".tar.bz2"
      ),
      array(

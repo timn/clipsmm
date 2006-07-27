@@ -22,13 +22,21 @@
 
 #include <sigc++/sigc++.h>
 
+#include <clipsmm/config.h>
+
 // Headers for smart pointers
-#include <typeinfo>
-#include <memory>
-#include <functional>
-#include <bits/concurrence.h>
-#include <ext/mt_allocator.h>
-#include <tr1/boost_shared_ptr.h>
+#ifdef USE_BOOST_SMART_POINTER
+  #include <boost/shared_ptr.hpp>
+  #define SHAREDPTRNS boost
+#else
+  #include <typeinfo>
+  #include <memory>
+  #include <functional>
+  #include <bits/concurrence.h>
+  #include <ext/mt_allocator.h>
+  #include <tr1/boost_shared_ptr.h>
+  #define SHAREDPTRNS std::tr1
+#endif
 
 namespace CLIPS {
 
@@ -38,8 +46,8 @@ namespace CLIPS {
 class Object : public sigc::trackable
 {
 public:
-  typedef std::tr1::shared_ptr<Object> pointer;
-  
+  typedef SHAREDPTRNS::shared_ptr<Object> pointer;
+
     Object(void* cobj=NULL);
 
     ~Object();

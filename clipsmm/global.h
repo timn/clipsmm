@@ -31,7 +31,7 @@ namespace CLIPS {
 class Global : public EnvironmentObject
 {
 public:
-  typedef std::tr1::shared_ptr<Global> pointer;
+  typedef SHAREDPTRNS::shared_ptr<Global> pointer;
 
   Global( Environment& environment, void* cobj = NULL );
 
@@ -42,7 +42,7 @@ public:
     std::string name();
 
     std::string formatted();
-      
+
     std::string module_name();
 
     Values value();
@@ -52,7 +52,7 @@ public:
     void reset_value();
 
     // TODO GetDefglobalValueForm
-    
+
     bool is_watched();
 
     void set_watch( bool watch=true );

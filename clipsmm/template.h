@@ -42,7 +42,7 @@ typedef enum DefaultType {
 */
 class Template: public EnvironmentObject {
 public:
-  typedef std::tr1::shared_ptr<Template> pointer;
+  typedef SHAREDPTRNS::shared_ptr<Template> pointer;
 
   Template( Environment& environment, void* cobj=NULL );
 
@@ -84,7 +84,7 @@ public:
 
     /** Returns the slot names associated with this template */
     std::vector<std::string> slot_names();
-    
+
     /** True is this template is being watched */
     bool is_watched();
 
@@ -95,7 +95,7 @@ public:
     void set_watch( unsigned state );
 
     bool retract();
-    
+
   protected:
 
 };
