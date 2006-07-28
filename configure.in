@@ -142,6 +142,14 @@ test -f $top_builddir/configure && break
 done
 AC_PROG_LIBTOOL
 
+AC_ARG_ENABLE(
+  [unit-tests],
+  AS_HELP_STRING([--enable-unit-tests], [Build unit tests (requires cppunit)]),
+  [unit_tests=false],
+  [unit_tests=true]
+)
+AM_CONDITIONAL([BUILD_UNIT_TESTS], [test "x$unit_tests" = xfalse])
+
 #########################################################################
 #  header check utility macros
 #########################################################################

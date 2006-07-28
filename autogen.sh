@@ -1,7 +1,7 @@
 #! /bin/sh
 set -e
 
-# $Id: autogen.sh,v 1.2 2006-07-10 04:03:19 rvinyard Exp $
+# $Id: autogen.sh,v 1.3 2006-07-28 03:34:43 rvinyard Exp $
 #
 # Copyright (c) 2002  Daniel Elstner  <daniel.elstner@gmx.net>
 #
@@ -50,4 +50,4 @@ do_cmd $LIBTOOLIZE -c --force
 do_cmd $AUTOHEADER
 do_cmd $AUTOCONF
 do_cmd $AUTOMAKE -c --add-missing
-do_cmd ./configure --enable-doxygen-doc "$@"
+do_cmd ./configure --enable-doxygen-doc --enable-unit-tests "$@"
