@@ -1,0 +1,8 @@
+Configuring:
+  Configuring:
+  Autoconf should take care of everything and puts the generated
+  config.h into the clipsmm source directory where it is needed. 
+  If you don't run autoconf, the source distribution contains a default 
+  config.h that you can modify to suit your needs.
+
+

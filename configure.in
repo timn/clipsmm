@@ -142,6 +142,10 @@ test -f $top_builddir/configure && break
 done
 AC_PROG_LIBTOOL
 
+
+#########################################################################
+#  Option to build (or not) unit tests
+#########################################################################
 AC_ARG_ENABLE(
   [unit-tests],
   AS_HELP_STRING([--disable-unit-tests], [Disable build of unit tests (requires cppunit to build)]),
