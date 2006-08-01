@@ -29,7 +29,7 @@ namespace CLIPS {
 */
 class Rule: public EnvironmentObject {
 public:
-  typedef SHAREDPTRNS::shared_ptr<Rule> pointer;
+  typedef CLIPSSmartPointer<Rule> pointer;
 
   Rule( Environment& environment, void* cobj=NULL );
 

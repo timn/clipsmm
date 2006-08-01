@@ -56,7 +56,7 @@ namespace CLIPS {
    */
   class Environment: public Object {
     public:
-      typedef SHAREDPTRNS::shared_ptr<Environment> pointer;
+      typedef CLIPSSmartPointer<Environment> pointer;
 
       Environment();
 
@@ -940,7 +940,7 @@ template < typename T_return >
     char retcode = get_return_code<T_return>( );
     char argstring[ 10 ] = { '0', '0', 'u', 0x00 };
     sigc::slot0<T_return>* scb = new sigc::slot0<T_return>(slot);
-    any holder = SHAREDPTRNS::shared_ptr<sigc::slot0<T_return> >(scb);
+    any holder = CLIPSSmartPointer<sigc::slot0<T_return> >(scb);
     m_slots[name] = holder;
     return ( EnvDefineFunction2WithContext( m_cobj,
                                  const_cast<char*>( name.c_str() ),
@@ -958,7 +958,7 @@ template < typename T_return >
     char argstring[ 10 ] = { '1', '1', 'u', 0x00 };
     argstring[ 3 ] = get_argument_code<T_arg1>( );
     sigc::slot1<T_return, T_arg1>* scb = new sigc::slot1<T_return, T_arg1>(slot);
-    any holder = SHAREDPTRNS::shared_ptr<sigc::slot1<T_return, T_arg1> >(scb);
+    any holder = CLIPSSmartPointer<sigc::slot1<T_return, T_arg1> >(scb);
     m_slots[name] = holder;
     return ( EnvDefineFunction2WithContext( m_cobj,
                                  const_cast<char*>( name.c_str() ),
@@ -977,7 +977,7 @@ template < typename T_return >
     argstring[ 3 ] = get_argument_code<T_arg1>( );
     argstring[ 4 ] = get_argument_code<T_arg2>( );
     sigc::slot2<T_return, T_arg1, T_arg2>* scb = new sigc::slot2<T_return, T_arg1, T_arg2>(slot);
-    any holder = SHAREDPTRNS::shared_ptr<sigc::slot2<T_return, T_arg1, T_arg2> >(scb);
+    any holder = CLIPSSmartPointer<sigc::slot2<T_return, T_arg1, T_arg2> >(scb);
     m_slots[name] = holder;
     return ( EnvDefineFunction2WithContext( m_cobj,
                                  const_cast<char*>( name.c_str() ),
@@ -998,7 +998,7 @@ template < typename T_return >
     argstring[ 5 ] = get_argument_code<T_arg3>( );
     sigc::slot3<T_return,T_arg1,T_arg2,T_arg3>* scb =
         new sigc::slot3<T_return,T_arg1,T_arg2,T_arg3>(slot);
-    any holder = SHAREDPTRNS::shared_ptr<sigc::slot3<T_return,T_arg1,T_arg2,T_arg3> >(scb);
+    any holder = CLIPSSmartPointer<sigc::slot3<T_return,T_arg1,T_arg2,T_arg3> >(scb);
     m_slots[name] = holder;
     return ( EnvDefineFunction2WithContext( m_cobj,
                                  const_cast<char*>( name.c_str() ),
@@ -1021,7 +1021,7 @@ template < typename T_return >
     argstring[ 6 ] = get_argument_code<T_arg4>( );
     sigc::slot4<T_return,T_arg1,T_arg2,T_arg3,T_arg4>* scb =
         new sigc::slot4<T_return,T_arg1,T_arg2,T_arg3,T_arg4>(slot);
-    any holder = SHAREDPTRNS::shared_ptr<sigc::slot4<T_return,T_arg1,T_arg2,T_arg3,T_arg4> >(scb);
+    any holder = CLIPSSmartPointer<sigc::slot4<T_return,T_arg1,T_arg2,T_arg3,T_arg4> >(scb);
     m_slots[name] = holder;
     return ( EnvDefineFunction2WithContext( m_cobj,
                                  const_cast<char*>( name.c_str() ),
@@ -1046,7 +1046,7 @@ template < typename T_return >
     argstring[ 7 ] = get_argument_code<T_arg5>( );
     sigc::slot5<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5>* scb =
         new sigc::slot5<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5>(slot);
-    any holder = SHAREDPTRNS::shared_ptr<sigc::slot5<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5> >(scb);
+    any holder = CLIPSSmartPointer<sigc::slot5<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5> >(scb);
     m_slots[name] = holder;
     return ( EnvDefineFunction2WithContext( m_cobj,
                                  const_cast<char*>( name.c_str() ),
@@ -1072,7 +1072,7 @@ template < typename T_return >
     argstring[ 8 ] = get_argument_code<T_arg6>( );
     sigc::slot6<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6>* scb =
         new sigc::slot6<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6>(slot);
-    any holder = SHAREDPTRNS::shared_ptr<sigc::slot6<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6> >(scb);
+    any holder = CLIPSSmartPointer<sigc::slot6<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6> >(scb);
     m_slots[name] = holder;
     return ( EnvDefineFunction2WithContext( m_cobj,
                                  const_cast<char*>( name.c_str() ),
@@ -1099,7 +1099,7 @@ template < typename T_return >
     argstring[ 9 ] = get_argument_code<T_arg7>( );
     sigc::slot7<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>* scb =
         new sigc::slot7<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>(slot);
-    any holder = SHAREDPTRNS::shared_ptr<sigc::slot7<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7> >(scb);
+    any holder = CLIPSSmartPointer<sigc::slot7<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7> >(scb);
     m_slots[name] = holder;
     return ( EnvDefineFunction2WithContext( m_cobj,
                                  const_cast<char*>( name.c_str() ),

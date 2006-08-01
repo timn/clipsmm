@@ -18,6 +18,7 @@
  *   51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA              *
  ***************************************************************************/
 
+#include <clipsmm/clipsmm-config.h>
 #include <clipsmm/activation.h>
 #include <clipsmm/defaultfacts.h>
 #include <clipsmm/enum.h>
@@ -28,6 +29,7 @@
 #include <clipsmm/global.h>
 #include <clipsmm/module.h>
 #include <clipsmm/rule.h>
+#include <clipsmm/smart_pointer.h>
 #include <clipsmm/template.h>
 #include <clipsmm/utility.h>
 #include <clipsmm/value.h>

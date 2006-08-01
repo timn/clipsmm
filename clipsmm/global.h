@@ -31,7 +31,7 @@ namespace CLIPS {
 class Global : public EnvironmentObject
 {
 public:
-  typedef SHAREDPTRNS::shared_ptr<Global> pointer;
+  typedef CLIPSSmartPointer<Global> pointer;
 
   Global( Environment& environment, void* cobj = NULL );
 

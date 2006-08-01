@@ -29,7 +29,7 @@ namespace CLIPS {
 */
 class Module: public EnvironmentObject {
 public:
-  typedef SHAREDPTRNS::shared_ptr<Module> pointer;
+  typedef CLIPSSmartPointer<Module> pointer;
 
   Module( Environment& environment, void* cobj=NULL );
 

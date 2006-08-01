@@ -34,7 +34,7 @@ namespace CLIPS {
 */
 class Fact: public EnvironmentObject {
 public:
-  typedef SHAREDPTRNS::shared_ptr<Fact> pointer;
+  typedef CLIPSSmartPointer<Fact> pointer;
 
     Fact( Environment& environment, void* cobj=NULL );
 

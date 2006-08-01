@@ -30,7 +30,7 @@ namespace CLIPS {
 class Function : public EnvironmentObject
 {
 public:
-  typedef SHAREDPTRNS::shared_ptr<Function> pointer;
+  typedef CLIPSSmartPointer<Function> pointer;
 
   Function( Environment& environment, void* cobj = NULL );
 

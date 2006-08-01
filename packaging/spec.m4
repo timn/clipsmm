@@ -1,4 +1,3 @@
-# Target: fedora-5
 
 Summary:          @PACKAGE_SUMMARY@
 Name:             @PACKAGE_NAME@
@@ -6,19 +5,19 @@ Version:          @PACKAGE_VERSION@
 Release:          @RPM_RELEASE@%{?dist}
 License:          @PACKAGE_LICENSE@
 URL:              @PACKAGE_URL@
-Group:            @FEDORA_5_LIB_GROUP@
+Group:            @DISTRO_LIB_GROUP@
 Source:           @PACKAGE_DOWNLOAD@@PACKAGE_NAME@-@PACKAGE_VERSION@.tar.bz2
 BuildRoot:        %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:    @FEDORA_5_BUILD_REQUIRES@
+BuildRequires:    @DISTRO_BUILD_REQUIRES@
 
 %description
 The clipsmm library provides a C++ interface to the CLIPS C library.
 
 %package          devel
 Summary:          Headers for developing programs that will use @PACKAGE_NAME@ 
-Group:            @FEDORA_5_DEVEL_GROUP@
+Group:            @DISTRO_DEVEL_GROUP@
 Requires:         @PACKAGE_NAME@ = %{version}-%{release}
-Requires:         @FEDORA_5_DEVEL_REQUIRES@
+Requires:         @DISTRO_DEVEL_REQUIRES@
 
 %description    devel
 This package contains the libraries and header files needed for
@@ -29,8 +28,8 @@ developing @PACKAGE_NAME@ applications.
 
 %build
 %configure --enable-static=no
-%{__make} %{?_smp_mflags}
-
+ifelse(DISTRO,FEDORA,`%{__make} %{?_smp_mflags}')
+ifelse(DISTRO,SUSE,`%{__make} %{?jobs:-j%{jobs}}')
 
 %install
 %{__rm} -rf %{buildroot}

@@ -31,7 +31,7 @@ namespace CLIPS {
   */
   class Activation : public EnvironmentObject {
     public:
-      typedef SHAREDPTRNS::shared_ptr<Activation> pointer;
+      typedef CLIPSSmartPointer<Activation> pointer;
 
       Activation( Environment& environment, void* cobj = NULL );
 

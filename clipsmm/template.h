@@ -42,7 +42,7 @@ typedef enum DefaultType {
 */
 class Template: public EnvironmentObject {
 public:
-  typedef SHAREDPTRNS::shared_ptr<Template> pointer;
+  typedef CLIPSSmartPointer<Template> pointer;
 
   Template( Environment& environment, void* cobj=NULL );
 
