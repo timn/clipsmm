@@ -254,6 +254,7 @@ namespace CLIPS {
           case TYPE_INSTANCE_ADDRESS:
             return sizeof(int*);
         }
+        return 0;
       }
       
       Value& Value::operator=( float x ) {
@@ -315,6 +316,7 @@ namespace CLIPS {
             *static_cast<int**>(m_value) = *static_cast<int**>(x.m_value);
             break;
         }
+        return *this;
       }
 
       bool Value::operator==( float x ) const {
@@ -423,6 +425,7 @@ namespace CLIPS {
             m_value = new int*;
             break;
         }        
+        return m_clips_type;
       }
 
       sigc::signal<void> Value::signal_changed() {

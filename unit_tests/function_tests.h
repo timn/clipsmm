@@ -40,17 +40,15 @@ double function2(int i, double d) { return i+d; }
 
 std::string function3(std::string s1, std::string s2) { return s1+s2; }
 
-std::string function4(int i, double d, std::string s1, float f) {
-  std::ostringstream sout;
-  sout << i << " " << d << s1 << f;
-  return sout.str();
+double function4(int i1, int i2, float f, double d) {
+  return i1+i2+f+d;
 }
 
 int function5(int i, double d, std::string s2, long l, float f) {
   int t;
   std::istringstream sin(s2.substr(1,std::string::npos));
   sin >> t;
-  return i+d+t+l+f;
+  return (int)(i+d+t+l+f);
 }
 
 long function6(int i1, long l1, double d, float f, int i2, long l2) {
@@ -176,7 +174,7 @@ class FunctionTest : public  CppUnit::TestFixture {
     int t;
     std::istringstream sin(s2.substr(1,std::string::npos));
     sin >> t;
-    return i+d+t+l+f;
+    return (int)(i+d+t+l+f);
   }
 
   void class_method_test_5() {
@@ -245,11 +243,10 @@ class FunctionTest : public  CppUnit::TestFixture {
   }
 
   void function_test_4() {
-    environment.add_function( "function4", sigc::slot<std::string, int,double,std::string,float>(sigc::ptr_fun( &function4 )) );
-    std::cout << "Got here" << std::endl;
-    Values values = environment.function( "function4", "3 3.8 c4 1.3" );
+    environment.add_function( "function4", sigc::slot<double,int,int,float,double>(sigc::ptr_fun( &function4 )) );
+    Values values = environment.function( "function4", "1 2 3.0 4.0" );
     CPPUNIT_ASSERT( values.size() == 1 );
-    CPPUNIT_ASSERT( values[0] == "3 3.8c41.3" );
+    CPPUNIT_ASSERT( values[0] == 10.0 );
   }
 
   void function_test_5() {

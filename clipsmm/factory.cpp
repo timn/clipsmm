@@ -151,7 +151,7 @@ namespace CLIPS {
     dataObject* clipsdo = new dataObject;
 
     p = EnvCreateMultifield( env.cobj(), values.size() );
-    for (int iter = 0; iter < values.size(); iter++) {
+    for (unsigned int iter = 0; iter < values.size(); iter++) {
       SetMFType(p, iter, values[iter].type());
       switch ( values[iter].type() ) {
         case SYMBOL:
