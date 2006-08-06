@@ -31,7 +31,8 @@ namespace CLIPS {
 
 std::map<void*, Environment*> Environment::m_environment_map;
 
-Environment::Environment()
+Environment::Environment():
+  m_run_thread(NULL)
 {
   m_cobj = CreateEnvironment();
 
@@ -123,7 +124,87 @@ bool Environment::unwatch( const std::string& item )
 
 long int Environment::run( long int runlimit )
 {
-  return EnvRun( m_cobj, runlimit );
+  long int executed;
+  m_mutex_run.lock(); // Grab the lock before running
+  executed = EnvRun( m_cobj, runlimit ); // Run CLIPS
+  m_mutex_run_signal.lock(); // Lock the emit signal to guarantee that another run doesn't emit first
+  m_mutex_run.unlock(); // Unlock the run, because we have the signal lock
+  m_signal_run.emit(executed); // Emit the signal for this run
+  m_mutex_run_signal.unlock(); // Unlock the signal
+  return executed;
+}
+
+void Environment::run_threaded( long int runlimit, int priority ) {
+  // No matter what, let's start by grabbing the run queue lock
+  // If we have it here, we can safely test for the run lock next because we would
+  // stall the thread before it does it's while() check
+  m_mutex_run_queue.lock();
+  if ( m_mutex_threaded_run.trylock() ) {
+    m_run_queue.push( Job( priority, runlimit ) );
+    m_mutex_run.lock();
+    // Will enter thread with run queue, threaded run, and run locks
+    m_run_thread = Glib::Thread::create( sigc::mem_fun(*this, &Environment::threaded_run), true );
+    // But, this function is done and will return, with the locks safely in the hands of the thread
+    return;
+  } else {
+    // If we got here, then a thread is already running, we have the queue
+    // so, push on the new job
+    m_run_queue.push( Job( priority, runlimit ) );
+    m_mutex_run_queue.unlock();
+    return;
+  }
+}
+
+void Environment::join_run_thread() {
+  m_mutex_run_queue.lock();
+  if ( m_mutex_threaded_run.trylock() ) {
+    // If we got here, we have the queue and the threaded run locked
+    // That means there wasn't a thread already running, so we need to
+    // release both locks and return since there isn't anything to join.
+    m_mutex_threaded_run.unlock();
+    m_mutex_run_queue.unlock();
+    return;
+  }
+  else {
+    // If we got here, we got the run queue lock, but couldn't get the threaded run
+    // lock. That means the thread is running, but we have the lock. We need to
+    // release the queue lock and call join, then return.
+    m_mutex_run_queue.unlock();
+    m_run_thread->join();
+    return;
+  }
+}
+
+sigc::signal<void,long int> Environment::signal_run() {
+  return m_signal_run;
+}
+
+void Environment::threaded_run() {
+  long int executed;
+  long int current_runlimit;
+
+  // We have the run queue, threaded run, and run locks here
+  while ( m_run_queue.size() > 0 ) {
+    current_runlimit = m_run_queue.top().runlimit;
+    m_run_queue.pop();
+
+    // We have the top job, let's release the queue until we need it again
+    m_mutex_run_queue.unlock();
+
+    executed = EnvRun( m_cobj, current_runlimit ); // Run CLIPS
+
+    m_mutex_run_signal.lock(); // Grab the signal lock, signal and release it
+    m_signal_run.emit(executed);
+    m_mutex_run_signal.unlock();
+
+    // Make sure the queue is locked again while we check the size
+    m_mutex_run_queue.lock();
+  }
+
+  // Here, we still have the queue lock, so we can start releasing the other locks
+  m_mutex_threaded_run.unlock();
+  m_mutex_run.unlock();
+  m_mutex_run_queue.unlock();
 }
 
 void Environment::set_as_current( )

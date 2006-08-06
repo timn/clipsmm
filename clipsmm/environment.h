@@ -25,10 +25,12 @@
 #include <typeinfo>
 #include <stdexcept>
 #include <map>
+#include <queue>
 
 #include <iostream>
 
 #include <sigc++/sigc++.h>
+#include <glibmm.h>
 
 #include <clipsmm/enum.h>
 #include <clipsmm/object.h>
@@ -354,10 +356,34 @@ namespace CLIPS {
       /**
        * Allows rules to execute
        * @return The number of rules that fired
-       * @param runlimit How many rules should file
-       * If runlimit is negative, rules will fire until the agenda is empty
+       * @param runlimit How many rules should fire
+       * If runlimit is negative, rules will fire until the agenda is empty.
+       *
+       * If a threaded execution is active, this call will block until the
+       * threaded execution queue is empty.
        */
       long int run( long int runlimit = -1 );
+
+      /**
+       * Executes rules in a separate thread.
+       *
+       * If an execution thread is already running, the job will be added to
+       * the run queue at the priority level specified. The higher the
+       * priority, the higher in the queue. After each execution, the run
+       * queue is checked and the next highest priority job is executed.
+       *
+       * If the normal run() method is executing, the execution thread will be
+       * created, but will block until the previously executing call to run()
+       * is completed. After run() completes, the execution thread will unblock
+       * and start execution.
+       */
+      void run_threaded( long int runlimit = -1, int priority = 0 );
+
+      /** Waits until the execution thread is finished */
+      void join_run_thread();
+
+      /** Signal emitted when the rules are executed. The signal emits the number of rules executed. */
+      sigc::signal<void, long int> signal_run();
 
       /** Gets the salience evaluation mode */
       SalienceEvaluation get_salience_evaluation();
@@ -470,7 +496,37 @@ namespace CLIPS {
       sigc::signal<void> m_signal_agenda_changed;
       sigc::signal<void> m_signal_globals_changed;
 
+      /** Encapsulates the concept of a CLIPS job. Has a priority for comparison and a runlimit */
+      typedef struct Job {
+        /** Constructor that takes a priority and a CLIPS runlimit */
+        Job( int p, long int rl ) : priority(p), runlimit(rl) { }
+
+        /** Comparison operator that compares the priority member */
+        bool operator<( const Job& other ) const { return priority < other.priority; }
+
+        /** The priority of this job. The higher the priority, the higher in the queue. */
+        int priority;
+
+        /**
+         * How many rules should fire.
+         * If runlimit is negative, rules will fire until the agenda is empty
+         */
+        long int runlimit;
+      } Job;
+
+      Glib::Thread* m_run_thread; /**< A pointer to the currently running thread */
+      std::priority_queue<Job> m_run_queue; /**< A priority queue of jobs to run */
+      Glib::Mutex m_mutex_run_queue; /**< Mutex that protects access to the run queue */
+      Glib::Mutex m_mutex_run; /**< Mutex that protects against multiple executions */
+      Glib::Mutex m_mutex_threaded_run; /**< Mutex that locks when a threaded run is executing */
+      Glib::Mutex m_mutex_run_signal; /**< Mutex that protects against multiple signal emits */
+      sigc::signal<void, long int> m_signal_run; /**< Signal emitted when a job is run */
+
+      /** Protected method that does the actual work */
+      void threaded_run();
+
       static std::map<void*, Environment*> m_environment_map;
+
 
       static void clear_callback( void* env );
       static void periodic_callback( void* env );
@@ -590,6 +646,8 @@ namespace CLIPS {
       static int get_arg_count( void* env );
       static void* get_function_context( void* env );
       static void* add_symbol( const char* s );
+
+
   };
 
   template < typename T_return>
