@@ -30,6 +30,9 @@ extern "C" {
 
 namespace CLIPS {
 
+  /** The init method should be called before any other clipsmm functions. */
+  void init( );
+
   std::vector<std::string> data_object_to_strings(dataObject* clipsdo);
   std::vector<std::string> data_object_to_strings(dataObject& clipsdo);
 

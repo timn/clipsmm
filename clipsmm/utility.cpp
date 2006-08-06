@@ -19,12 +19,18 @@
  ***************************************************************************/
 #include "utility.h"
 
+#include <glibmm/thread.h>
+
 extern "C" {
   #include <clips/clips.h>
 };
 
 namespace CLIPS {
 
+  void init() {
+    if(!Glib::thread_supported()) Glib::thread_init();
+  }
+  
   std::vector<std::string> data_object_to_strings( dataObject* clipsdo ) {
     return data_object_to_strings( *clipsdo );
   }
