@@ -23,6 +23,8 @@
 
 int main( int argc, char** argv )
 {
+  CLIPS::init();
+
   CLIPS::Environment environment;
   CLIPS::Fact::pointer fact;
   std::vector<std::string> slot_names;

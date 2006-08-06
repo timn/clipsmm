@@ -36,6 +36,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( FactsTest );
 CPPUNIT_TEST_SUITE_REGISTRATION( FunctionTest );
 
 int main() {
+  CLIPS::init();
+
   // Create the event manager and test controller
   CppUnit::TestResult controller;
 

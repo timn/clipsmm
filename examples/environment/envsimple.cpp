@@ -21,6 +21,11 @@
 
 int main( int argc, char** argv )
 {
+  // Before any clipsmm objects are instantiated or any other
+  // calls are made, call CLIPS::init() to initialize the clipsmm
+  // environment, which includes the threading system.
+  CLIPS::init();
+
   CLIPS::Environment env1;
   CLIPS::Environment env2;
 
@@ -29,7 +34,7 @@ int main( int argc, char** argv )
 
   env1.watch( "all" );
   env2.watch( "all" );
-  
+
   env1.reset();
   env2.reset();
 
