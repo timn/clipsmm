@@ -31,7 +31,7 @@ namespace CLIPS {
 class Global : public EnvironmentObject
 {
 public:
-  typedef CLIPSSmartPointer<Global> pointer;
+  typedef CLIPSPointer<Global> pointer;
 
   Global( Environment& environment, void* cobj = NULL );
 

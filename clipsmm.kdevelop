@@ -20,7 +20,7 @@
   <kdevautoproject>
     <general>
       <useconfiguration>default</useconfiguration>
-      <activetarget>unit_tests/clipsmm_unit_tests</activetarget>
+      <activetarget>examples/environment/envthreaded</activetarget>
     </general>
     <run>
       <mainprogram/>
@@ -30,6 +30,7 @@
         <envsimple/>
         <facts_simple/>
         <clipsmm_unit_tests/>
+        <envthreaded/>
       </runarguments>
       <customdirectory>/</customdirectory>
       <programargs/>
@@ -81,12 +82,12 @@
     </configurations>
     <make>
       <envvars/>
-      <abortonerror>false</abortonerror>
+      <abortonerror>true</abortonerror>
       <numberofjobs>3</numberofjobs>
       <dontact>false</dontact>
       <makebin/>
       <prio>0</prio>
-      <runmultiplejobs>true</runmultiplejobs>
+      <runmultiplejobs>false</runmultiplejobs>
     </make>
   </kdevautoproject>
   <kdevdoctreeview>

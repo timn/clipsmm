@@ -31,7 +31,7 @@ namespace CLIPS {
   */
   class DefaultFacts : public EnvironmentObject {
     public:
-      typedef CLIPSSmartPointer<DefaultFacts> pointer;
+      typedef CLIPSPointer<DefaultFacts> pointer;
 
       DefaultFacts( Environment& environment, void* cobj = NULL );
 

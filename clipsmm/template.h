@@ -42,7 +42,7 @@ typedef enum DefaultType {
 */
 class Template: public EnvironmentObject {
 public:
-  typedef CLIPSSmartPointer<Template> pointer;
+  typedef CLIPSPointer<Template> pointer;
 
   Template( Environment& environment, void* cobj=NULL );
 

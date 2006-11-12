@@ -29,7 +29,7 @@ namespace CLIPS {
 */
 class Module: public EnvironmentObject {
 public:
-  typedef CLIPSSmartPointer<Module> pointer;
+  typedef CLIPSPointer<Module> pointer;
 
   Module( Environment& environment, void* cobj=NULL );
 

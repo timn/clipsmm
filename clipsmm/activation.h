@@ -31,7 +31,7 @@ namespace CLIPS {
   */
   class Activation : public EnvironmentObject {
     public:
-      typedef CLIPSSmartPointer<Activation> pointer;
+      typedef CLIPSPointer<Activation> pointer;
 
       Activation( Environment& environment, void* cobj = NULL );
 

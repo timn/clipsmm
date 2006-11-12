@@ -34,7 +34,7 @@ namespace CLIPS {
 */
 class Fact: public EnvironmentObject {
 public:
-  typedef CLIPSSmartPointer<Fact> pointer;
+  typedef CLIPSPointer<Fact> pointer;
 
     Fact( Environment& environment, void* cobj=NULL );
 

@@ -22,17 +22,17 @@
 
 #include <sigc++/sigc++.h>
 
-#include <clipsmm/smart_pointer.h>
+#include <clipsmm/pointer.h>
 
 namespace CLIPS {
 
 /**
-	@author Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
-*/
+ * @author Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+ */
 class Object : public sigc::trackable
 {
 public:
-  typedef CLIPSSmartPointer<Object> pointer;
+  typedef CLIPSPointer<Object> pointer;
 
     Object(void* cobj=NULL);
 

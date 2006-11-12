@@ -17,20 +17,21 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA              *
  ***************************************************************************/
-
 #include <clipsmm/clipsmm-config.h>
-#include <clipsmm/activation.h>
-#include <clipsmm/defaultfacts.h>
-#include <clipsmm/enum.h>
-#include <clipsmm/environment.h>
-#include <clipsmm/fact.h>
-#include <clipsmm/factory.h>
-#include <clipsmm/function.h>
-#include <clipsmm/global.h>
-#include <clipsmm/module.h>
-#include <clipsmm/rule.h>
-#include <clipsmm/pointer.h>
-#include <clipsmm/template.h>
-#include <clipsmm/utility.h>
-#include <clipsmm/value.h>
 
+#ifndef CLIPSPOINTER
+#define CLIPSPOINTER
+  // Headers for smart pointers
+  #ifdef CLIPSMM_USE_BOOST_SMART_POINTER
+    #include <boost/shared_ptr.hpp>
+    #define CLIPSPointer boost::shared_ptr
+  #else
+    #include <typeinfo>
+    #include <memory>
+    #include <functional>
+    #include <bits/concurrence.h>
+    #include <ext/mt_allocator.h>
+    #include <tr1/boost_shared_ptr.h>
+    #define CLIPSPointer std::tr1::shared_ptr
+  #endif
+#endif

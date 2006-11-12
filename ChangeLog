@@ -1,3 +1,21 @@
+2006-11-12 Rick L Vinyard Jr <rvinyard@cs.nmsu.edu>
+  ===== 0.0.7 =====
+
+  Changed smart pointer typedef to CLIPSPointer
+
+2006-08-06 Rick L Vinyard Jr <rvinyard@cs.nmsu.edu>
+  ===== 0.0.6 =====
+
+  Added example envthreaded demonstrating four parallel environment executions.
+
+  Updated examples to call CLIPS::init()
+
+  Added the CLIPS::init() method to initialize threading support.
+
+  Environment: Added run_threaded() method, and support methods such as
+  join_run_thread(). This initiates execution of the environment in a separate
+  thread.
+
 2006-07-31 Rick L Vinyard Jr <rvinyard@cs.nmsu.edu>
   ===== 0.0.5 =====
   Changed handling of config.h and smart pointer defines
@@ -8,9 +26,9 @@
   ===== 0.0.4 =====
 
 2006-07-26 Rick L Vinyard Jr <rvinyard@cs.nmsu.edu>
-  Environment: Changed assert to assert_fact 
+  Environment: Changed assert to assert_fact
 
-  Added checks to locate boost shared pointer if tr1 shared pointer isn't 
+  Added checks to locate boost shared pointer if tr1 shared pointer isn't
   found. Added support to use whichever form is found.
 
 2006-07-21 Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>

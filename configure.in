@@ -22,7 +22,7 @@
 #########################################################################
 pushdef([PACKAGE_MAJOR_VERSION], [0])
 pushdef([PACKAGE_MINOR_VERSION], [0])
-pushdef([PACKAGE_MICRO_VERSION], [5])
+pushdef([PACKAGE_MICRO_VERSION], [7])
 pushdef([PKG_VERSION], PACKAGE_MAJOR_VERSION.PACKAGE_MINOR_VERSION.PACKAGE_MICRO_VERSION)
 
 AC_INIT([clipsmm], PKG_VERSION, [rvinyard@cs.nmsu.edu])
@@ -42,30 +42,30 @@ popdef([PKG_VERSION])
 #  ? :  ? :  0 == no new interfaces, but breaks apps
 #  ? : +1 :  ? == just some internal changes, nothing breaks but might work better
 # CURRENT : REVISION : AGE
-LIBTOOL_SO_VERSION=5:0:0
+LIBTOOL_SO_VERSION=0:0:0
 AC_SUBST(LIBTOOL_SO_VERSION)
 
-PACKAGE_SUMMARY="The clipsmm library is a C++ wrapper for the CLIPS C library"
+PACKAGE_SUMMARY="Clipsmm is a C++ wrapper for the CLIPS C library"
 PACKAGE_LICENSE="GPL"
 PACKAGE_URL="http://clipsmm.sourceforge.net"
 PACKAGE_DOWNLOAD="http://download.sourceforge.net/clipsmm/"
 PACKAGE_WWWHOST="shell.sourceforge.net:/home/groups/c/cl/clipsmm/htdocs/"
 PACKAGE_RELEASEHOST="ftp://upload.sourceforge.net/incoming/"
 
-PKGCONFIG_REQUIRES="clips-6 >= 6.24.0 sigc++-2.0 >= 2.0.17"
+PKGCONFIG_REQUIRES="clips-6 >= 6.24.0 glibmm-2.4 >= 2.6.0 gthread-2.0 >= 2.6.0"
 PKGCONFIG_VERSION="1.0"
 
 RPM_RELEASE="1"
 
+FEDORA_6_LIB_GROUP="System Environment/Libraries"
+FEDORA_6_DEVEL_GROUP="Development/Libraries"
+FEDORA_6_BUILD_REQUIRES="clips-devel >= 6.24 glibmm24-devel >= 2.6.0 cppunit-devel >= 1.11 pkgconfig m4"
+FEDORA_6_DEVEL_REQUIRES="clips-devel >= 6.24 glibmm24-devel >= 2.6.0 pkgconfig"
+
 FEDORA_5_LIB_GROUP="System Environment/Libraries"
 FEDORA_5_DEVEL_GROUP="Development/Libraries"
-FEDORA_5_BUILD_REQUIRES="clips-devel >= 6.24 libsigc++20-devel cppunit-devel >= 1.11"
-FEDORA_5_DEVEL_REQUIRES="clips-devel >= 6.24 libsigc++20-devel pkgconfig"
-
-SUSE_10_1_LIB_GROUP="Development/Libraries"
-SUSE_10_1_DEVEL_GROUP="Development/Libraries"
-SUSE_10_1_BUILD_REQUIRES=$FEDORA_5_BUILD_REQUIRES
-SUSE_10_1_DEVEL_REQUIRES=$FEDORA_5_DEVEL_REQUIRES
+FEDORA_5_BUILD_REQUIRES="clips-devel >= 6.24 glibmm24-devel >= 2.6.0 cppunit-devel >= 1.11 pkgconfig m4"
+FEDORA_5_DEVEL_REQUIRES="clips-devel >= 6.24 glibmm24-devel >= 2.6.0 pkgconfig"
 
 DOXYGEN_INPUT="clipsmm"
 DOXYGEN_EXAMPLE_PATH="examples"
@@ -116,15 +116,15 @@ AC_SUBST(PKGCONFIG_REQUIRES)
 
 AC_SUBST(RPM_RELEASE)
 
+AC_SUBST(FEDORA_6_LIB_GROUP)
+AC_SUBST(FEDORA_6_DEVEL_GROUP)
+AC_SUBST(FEDORA_6_BUILD_REQUIRES)
+AC_SUBST(FEDORA_6_DEVEL_REQUIRES)
+
 AC_SUBST(FEDORA_5_LIB_GROUP)
 AC_SUBST(FEDORA_5_DEVEL_GROUP)
 AC_SUBST(FEDORA_5_BUILD_REQUIRES)
 AC_SUBST(FEDORA_5_DEVEL_REQUIRES)
-
-AC_SUBST(SUSE_10_1_LIB_GROUP)
-AC_SUBST(SUSE_10_1_DEVEL_GROUP)
-AC_SUBST(SUSE_10_1_BUILD_REQUIRES)
-AC_SUBST(SUSE_10_1_DEVEL_REQUIRES)
 
 AC_SUBST(DOXYGEN_INPUT)
 AC_SUBST(DOXYGEN_EXAMPLE_PATH)
@@ -134,7 +134,7 @@ AC_SUBST(DOXYGEN_HTML_HEADER)
 AC_SUBST(DOXYGEN_HTML_FOOTER)
 AC_SUBST(DOXYGEN_HTML_STYLESHEET)
 
-AM_INIT_AUTOMAKE([1.9 tar-ustar dist-bzip2])
+AM_INIT_AUTOMAKE([1.9 tar-ustar dist-bzip2 dist-zip])
 AM_CONFIG_HEADER([config.h])
 AX_PREFIX_CONFIG_H([$PACKAGE/$PACKAGE-config.h],[CLIPSMM],[config.h])
 
@@ -222,17 +222,16 @@ AC_SUBST(PROJECT_CFLAGS)
 #########################################################################
 #  build spec.in files
 #########################################################################
-for distro in "fedora-5 FEDORA 5" "suse-10.1 SUSE 10_1"; do
+for distro in "fedora-6 FEDORA 6" "fedora-5 FEDORA 5"; do
   original_params=("$@")
   set -- $distro
-  echo "# Target: ${1}" >packaging/${1}/${PACKAGE_NAME}.spec.in
   m4 -D DISTRO=${2} \
      -D DISTRO_LIB_GROUP="${2}_${3}_LIB_GROUP" \
      -D DISTRO_BUILD_REQUIRES="${2}_${3}_BUILD_REQUIRES" \
      -D DISTRO_DEVEL_GROUP="${2}_${3}_DEVEL_GROUP" \
      -D DISTRO_DEVEL_REQUIRES="${2}_${3}_DEVEL_REQUIRES" \
-     packaging/spec.m4 >>packaging/${1}/${PACKAGE_NAME}.spec.in
+     spec.m4 >${1}/${PACKAGE_NAME}.spec.in
   set -- $original_params
 done
 
-AC_OUTPUT(packaging/fedora-5/clipsmm.spec packaging/suse-10.1/clipsmm.spec clipsmm-1.0.pc docs/www/site.php Makefile clipsmm/Makefile examples/Makefile packaging/Makefile packaging/fedora-5/Makefile packaging/suse-10.1/Makefile examples/environment/Makefile examples/facts/Makefile unit_tests/Makefile)
+AC_OUTPUT(fedora-6/clipsmm.spec fedora-5/clipsmm.spec clipsmm-1.0.pc docs/www/site.php Makefile clipsmm/Makefile examples/Makefile examples/environment/Makefile examples/facts/Makefile unit_tests/Makefile)

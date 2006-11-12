@@ -30,7 +30,7 @@ namespace CLIPS {
 class Function : public EnvironmentObject
 {
 public:
-  typedef CLIPSSmartPointer<Function> pointer;
+  typedef CLIPSPointer<Function> pointer;
 
   Function( Environment& environment, void* cobj = NULL );
 

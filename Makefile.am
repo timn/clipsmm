@@ -48,13 +48,16 @@ endif
 
 EXTRA_DIST = \
 	$(PACKAGE).kdevelop \
-	packaging/fedora-5/$(PACKAGE).spec \
-	packaging/suse-10.1/$(PACKAGE).spec \
+	spec.m4 \
+	fedora-5/$(PACKAGE).spec.in \
+	fedora-5/$(PACKAGE).spec \
+	fedora-6/$(PACKAGE).spec.in \
+	fedora-6/$(PACKAGE).spec \
 	$(DX_CONFIG) \
 	$(html_DATA) \
 	docs/www/site.php.in
 
-SUBDIRS = clipsmm examples packaging unit_tests
+SUBDIRS = clipsmm examples unit_tests
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = @PACKAGE_NAME@-@PKGCONFIG_VERSION@.pc
@@ -76,20 +79,15 @@ upload-www:
 upload-release:
 	make doxygen-clean
 	make doxygen-doc
-	make dist-bzip2
+	make dist
 	curl -T $(PACKAGE)-$(VERSION).tar.bz2 $(PACKAGE_RELEASEHOST)
+	curl -T $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE_RELEASEHOST)
+	curl -T $(PACKAGE)-$(VERSION).zip $(PACKAGE_RELEASEHOST)
 
 fedora-rpms:
 	make doxygen-clean
 	make doxygen-doc
 	make dist-bzip2
 	cp $(PACKAGE)-$(VERSION).tar.bz2 /usr/src/redhat/SOURCES/
-	rpmbuild -ba --sign packaging/fedora-5/$(PACKAGE_NAME).spec
-
-suse-rpms:
-	make doxygen-clean
-	make doxygen-doc
-	make dist-bzip2
-	cp $(PACKAGE)-$(VERSION).tar.bz2 /usr/src/packages/SOURCES/
-	rpmbuild -ba --sign packaging/suse-10.1/$(PACKAGE_NAME).spec
+	rpmbuild -ba --sign fedora-6/$(PACKAGE_NAME).spec
 
