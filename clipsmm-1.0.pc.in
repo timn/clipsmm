@@ -2,29 +2,29 @@
 ##   Copyright (C) 2001 by Rick L. Vinyard, Jr.                            ##
 ##   rvinyard@cs.nmsu.edu                                                  ##
 ##                                                                         ##
-##   This program is free software; you can redistribute it and/or modify  ##
-##   it under the terms of the GNU General Public License as               ##
-##   published by the Free Software Foundation version 2.                  ##
+##   This file is part of the clipsmm library.                             ##
 ##                                                                         ##
-##   This program is distributed in the hope that it will be useful,       ##
-##   but WITHOUT ANY WARRANTY; without even the implied warranty of        ##
-##   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         ##
-##   GNU General Public License for more details.                          ##
+##   The clipsmm library is free software; you can redistribute it and/or  ##
+##   modify it under the terms of the GNU General Public License           ##
+##   version 3 as published by the Free Software Foundation.               ##
 ##                                                                         ##
-##   You should have received a copy of the GNU General Public             ##
-##   License along with this library; if not, write to the                 ##
-##   Free Software Foundation, Inc.,                                       ##
-##   51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA              ##
+##   The clipsmm library is distributed in the hope that it will be        ##
+##   useful, but WITHOUT ANY WARRANTY; without even the implied warranty   ##
+##   of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU   ##
+##   General Public License for more details.                              ##
+##                                                                         ##
+##   You should have received a copy of the GNU General Public License     ##
+##   along with this software. If not see                                  ##
+##   <http://www.gnu.org/licenses/>.                                       ##
 #############################################################################
-
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 
-Name: @PACKAGE_NAME@
-Description: @PACKAGE_SUMMARY@
+Name: clipsmm
+Description: Clipsmm is a C++ wrapper for the CLIPS C library
 Requires: @PKGCONFIG_REQUIRES@
 Version: @PACKAGE_VERSION@
-Libs: -l@PACKAGE_NAME@
-Cflags: -I${includedir}/@PACKAGE_NAME@-@PACKAGE_RELEASE@
+Libs: -L${libdir} -lclipsmm
+Cflags: @CPP0XFLAGS@ -I${includedir}/clipsmm-@PACKAGE_RELEASE@
