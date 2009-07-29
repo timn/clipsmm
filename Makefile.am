@@ -1,93 +1,96 @@
 #############################################################################
-##   Copyright (C) 2001 by Rick L. Vinyard, Jr.                            ##
+##   Copyright (C) 2006 by Rick L. Vinyard, Jr.                            ##
 ##   rvinyard@cs.nmsu.edu                                                  ##
 ##                                                                         ##
-##   This program is free software; you can redistribute it and/or modify  ##
-##   it under the terms of the GNU General Public License as               ##
-##   published by the Free Software Foundation version 2.                  ##
+##   This file is part of the clipsmm library.                             ##
 ##                                                                         ##
-##   This program is distributed in the hope that it will be useful,       ##
-##   but WITHOUT ANY WARRANTY; without even the implied warranty of        ##
-##   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         ##
-##   GNU General Public License for more details.                          ##
+##   The clipsmm library is free software; you can redistribute it and/or  ##
+##   modify it under the terms of the GNU General Public License           ##
+##   version 3 as published by the Free Software Foundation.               ##
 ##                                                                         ##
-##   You should have received a copy of the GNU General Public             ##
-##   License along with this library; if not, write to the                 ##
-##   Free Software Foundation, Inc.,                                       ##
-##   51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA              ##
+##   The clipsmm library is distributed in the hope that it will be        ##
+##   useful, but WITHOUT ANY WARRANTY; without even the implied warranty   ##
+##   of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU   ##
+##   General Public License for more details.                              ##
+##                                                                         ##
+##   You should have received a copy of the GNU General Public License     ##
+##   along with this software. If not see <http://www.gnu.org/licenses/>.  ##
 #############################################################################
 
-include aminclude.am
 
-if DX_COND_man
-
-dist_man3_MANS = @DX_DOCDIR@/man/man3/*
-
-$(dist_man3_MANS): doxygen-doc
-
-#dist-hook:
-#	rm ${distdir}/@DX_DOCDIR@/man/man3/_*.3 || test true
-
-endif
-
-if DX_COND_html
-
-htmldir = $(datadir)/doc/$(PACKAGE)-devel-$(VERSION)/html
-html_DATA = docs/www/reference/html/*
-$(html_DATA): doxygen-doc
-
-dist-hook:
-	rm -rf `find $(distdir)/docs -name CVS`
-	rm -rf `find $(distdir)/docs/www/reference/html -name *.md5`
-	rm -rf `find $(distdir)/docs/www/reference/html -name *.map`
-	rm -rf `find $(distdir)/docs/www/reference/html -name *.dot`
-	mkdir -p $(distdir)/docs/reference
-	mv $(distdir)/docs/www/reference/html $(distdir)/docs/reference/html
-
-endif
+ACLOCAL_AMFLAGS = -I m4
 
 EXTRA_DIST = \
-	$(PACKAGE).kdevelop \
-	spec.m4 \
-	fedora-5/$(PACKAGE).spec.in \
-	fedora-5/$(PACKAGE).spec \
-	fedora-6/$(PACKAGE).spec.in \
-	fedora-6/$(PACKAGE).spec \
-	$(DX_CONFIG) \
-	$(html_DATA) \
-	docs/www/site.php.in
+	clipsmm.kdevelop \
+	autogen.sh \
+	clipsmm.spec \
+	clipsmm.spec.m4
 
-SUBDIRS = clipsmm examples unit_tests
+SUBDIRS = clipsmm examples unit_tests doc
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = @PACKAGE_NAME@-@PKGCONFIG_VERSION@.pc
+pkgconfig_DATA = clipsmm-$(PKGCONFIG_VERSION).pc
 
-INCLUDES = -I$(top_srcdir)/. $(PROJECT_CFLAGS)
+INCLUDES = -I$(top_srcdir)/. $(CLIPSMM_CFLAGS)
 
-CLEANFILES = $(DX_CLEANFILES)
+top_includedir = $(includedir)/clipsmm-$(PACKAGE_RELEASE)
+top_include_HEADERS = clipsmm.h
 
-MOSTLYCLEANFILES = $(DX_CLEANFILES)
+PACKAGE_RELEASEHOST="${USER},clipsmm@frs.sourceforge.net:/home/frs/project/c/cl/clipsmm/$(VERSION)"
 
-doxygen-clean:
-	rm -rf $(DX_CLEANFILES)
+docs:
+	cd doc && make docs
 
-upload-www:
-	make doxygen-clean
-	make doxygen-doc
-	rsync -azvcu --delete --cvs-exclude docs/www/* $(PACKAGE_WWWHOST)
+upload-docs:
+	cd doc && make upload-docs
 
-upload-release:
-	make doxygen-clean
-	make doxygen-doc
-	make dist
-	curl -T $(PACKAGE)-$(VERSION).tar.bz2 $(PACKAGE_RELEASEHOST)
-	curl -T $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE_RELEASEHOST)
-	curl -T $(PACKAGE)-$(VERSION).zip $(PACKAGE_RELEASEHOST)
+upload-docs-only:
+	cd doc && make upload-docs-only
 
-fedora-rpms:
-	make doxygen-clean
-	make doxygen-doc
-	make dist-bzip2
-	cp $(PACKAGE)-$(VERSION).tar.bz2 /usr/src/redhat/SOURCES/
-	rpmbuild -ba --sign fedora-6/$(PACKAGE_NAME).spec
+TO_UPLOAD = $(PACKAGE)-$(VERSION).tar.bz2 $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE)-$(VERSION).zip $(PACKAGE)-$(VERSION)-doc.tar.bz2 $(PACKAGE)-$(VERSION)-doc.tar.gz $(PACKAGE)-$(VERSION)-doc.zip
+RELEASE_NOTES = $(PACKAGE)-$(VERSION)-release-notes.txt
+TO_UPLOAD_RN = $(TO_UPLOAD) $(RELEASE_NOTES)
+
+release-notes:
+	gedit $(RELEASE_NOTES) ChangeLog
+
+upload-release-only:
+	if test -e $(RELEASE_NOTES); \
+          then \
+            scp $(TO_UPLOAD_RN) $(PACKAGE_RELEASEHOST); \
+          else \
+            scp $(TO_UPLOAD) $(PACKAGE_RELEASEHOST); \
+        fi
+
+upload-release: changelog release-notes dist upload-release-only
+
+spec:
+	m4 -D PACKAGE_VERSION=$(PACKAGE_VERSION) \
+		-D PACKAGE_RELEASE=$(PACKAGE_RELEASE) \
+		-D PKGCONFIG_VERSION=$(PKGCONFIG_VERSION) \
+		-D API_VERSION=$(PACKAGE_RELEASE) \
+		clipsmm.spec.m4 >clipsmm.spec
+
+changelog:
+	svn2cl --authors=svn2cl.authors -r HEAD:1 --group-by-day -a
+	cat ChangeLog.old >> ChangeLog
+
+rpm: spec dist-bzip2
+	cp $(PACKAGE)-$(VERSION).tar.bz2 ~/rpmbuild/SOURCES/
+	cp $(PACKAGE_NAME).spec ~/rpmbuild/SPECS/
+	rpmbuild -ba $(PACKAGE_NAME).spec
+
+srpm: spec dist-bzip2
+	cp $(PACKAGE)-$(VERSION).tar.bz2 ~/rpmbuild/SOURCES/
+	cp $(PACKAGE_NAME).spec ~/rpmbuild/SPECS/
+	rpmbuild -bs $(PACKAGE_NAME).spec
+
+mockbuild: srpm
+	mock --rebuild ~/rpmbuild/SRPMS/$(PACKAGE)-$(VERSION)*.src.rpm
+
+dist-hook:
+	cd doc && make docsdist
+	mv doc/$(PACKAGE)-$(VERSION)-doc.tar.gz .
+	mv doc/$(PACKAGE)-$(VERSION)-doc.tar.bz2 .
+	mv doc/$(PACKAGE)-$(VERSION)-doc.zip .
 
