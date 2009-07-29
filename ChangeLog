@@ -1,0 +1,262 @@
+2009-07-28  Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+
+	* m4:
+
+2009-07-27  Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+
+	* templates/cpp, templates/h:
+	* m4, m4/ac_cxx_compile_stdcxx_0x.m4, m4/ax_prefix_config_h.m4:
+	* packaging[DEL]:
+	* packaging/suse-10.1[DEL]:
+	* packaging/fedora-5[DEL]:
+	* packaging/Makefile.am[DEL], packaging/spec.m4[DEL],
+	  packaging/suse-10.1/Makefile.am[DEL],
+	  packaging/suse-10.1/clipsmm.spec.in[DEL]:
+	* packaging/fedora-5/Makefile.am[DEL],
+	  packaging/fedora-5/clipsmm.spec.in[DEL]:
+	* clipsmm-1.0.pc.in, configure.ac[CPY], configure.in[DEL],
+	  doc[CPY], docs[DEL]:
+
+2006-11-12  Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+
+	* ChangeLog, Makefile.am, autogen.sh, clipsmm.kdevelop,
+	  clipsmm/Makefile.am, clipsmm/activation.h, clipsmm/clipsmm.h,
+	  clipsmm/defaultfacts.h, clipsmm/environment.h, clipsmm/fact.h,
+	  clipsmm/function.h, clipsmm/global.h, clipsmm/module.h,
+	  clipsmm/object.h, clipsmm/pointer.h, clipsmm/rule.h,
+	  clipsmm/template.h, configure.in,
+	  examples/environment/Makefile.am: *** empty log message ***
+
+2006-08-06  Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+
+	* examples/environment/envthreaded.cpp: Added example envthreaded
+	  demonstrating four parallel environment executions.
+	* examples/environment/envsimple.cpp,
+	  examples/facts/facts_simple.cpp,
+	  unit_tests/clipsmm_unit_tests.cpp: Updated examples to call
+	  CLIPS::init()
+	* clipsmm/utility.cpp, clipsmm/utility.h: Added the CLIPS::init()
+	  method to initialize threading support.
+	* clipsmm/environment.cpp, clipsmm/environment.h: Environment:
+	  Added run_threaded() method, and support methods such as
+	  join_run_thread(). This initiates execution of the environment in
+	  a separate thread.
+
+2006-08-02  Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+
+	* ChangeLog, clipsmm/factory.cpp, clipsmm/value.cpp,
+	  unit_tests/function_tests.h: *** empty log message ***
+
+2006-08-01  Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+
+	* ChangeLog, acinclude.m4, clipsmm.kdevelop, clipsmm/Makefile.am,
+	  clipsmm/activation.h, clipsmm/clipsmm.h, clipsmm/defaultfacts.h,
+	  clipsmm/environment.h, clipsmm/fact.h, clipsmm/function.h,
+	  clipsmm/global.h, clipsmm/module.h, clipsmm/object.h,
+	  clipsmm/rule.h, clipsmm/template.h, configure.in,
+	  packaging/Makefile.am, packaging/fedora-5/Makefile.am,
+	  packaging/fedora-5/clipsmm.spec.in,
+	  packaging/fedora-5/fedora_5.1[DEL],
+	  packaging/fedora-5/fedora_5.2[DEL], packaging/rpm_changelog[DEL],
+	  packaging/rpm_description[DEL], packaging/spec.m4,
+	  packaging/suse-10.1/Makefile.am,
+	  packaging/suse-10.1/clipsmm.spec.in,
+	  packaging/suse-10.1/suse_10_1.1[DEL],
+	  packaging/suse-10.1/suse_10_1.2[DEL]: Improved syntax and
+	  handling of smart pointers and autoconf config files
+
+2006-07-29  Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+
+	* ChangeLog, packaging/fedora-5/clipsmm.spec.in,
+	  packaging/rpm_changelog, packaging/suse-10.1/clipsmm.spec.in: ***
+	  empty log message ***
+	* README, configure.in: *** empty log message ***
+
+2006-07-28  Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+
+	* autogen.sh, clipsmm/Makefile.am, configure.in: *** empty log
+	  message ***
+	* autogen.sh, configure.in, unit_tests/Makefile.am: Added support
+	  for finding boost smart pointer in lieu of tr1 and optionally
+	  building unit tests with cppunit.
+
+2006-07-27  Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+
+	* ChangeLog, clipsmm/activation.cpp, clipsmm/defaultfacts.cpp,
+	  clipsmm/environment.cpp, clipsmm/environment.h, clipsmm/fact.cpp,
+	  clipsmm/factory.cpp, clipsmm/function.cpp, clipsmm/global.cpp,
+	  clipsmm/module.cpp, clipsmm/rule.cpp, clipsmm/template.cpp,
+	  clipsmm/utility.cpp, examples/facts/facts_simple.cpp,
+	  unit_tests/fact_tests.h: Environment: Changed assert to
+	  assert_fact
+	* clipsmm/activation.h, clipsmm/clipsmm.h, clipsmm/defaultfacts.h,
+	  clipsmm/environment.h, clipsmm/fact.h, clipsmm/function.h,
+	  clipsmm/global.h, clipsmm/module.h, clipsmm/object.h,
+	  clipsmm/rule.h, clipsmm/template.h, configure.in,
+	  docs/www/site.php.in: Added checks to locate boost shared pointer
+	  if tr1 shared pointer isn't found. Added support to use whichever
+	  form is found.
+
+2006-07-22  Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+
+	* configure.in: *** empty log message ***
+	* ChangeLog, clipsmm/Makefile.am, clipsmm/global.cpp,
+	  clipsmm/global.h, configure.in: *** empty log message ***
+	* clipsmm/function.cpp, clipsmm/function.h: Added Function class
+	  for handling deffunctions
+	* clipsmm/environment.cpp, clipsmm/environment.h: Environment:
+	  Added method for getting list head of globals
+
+2006-07-20  Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+
+	* ChangeLog, Makefile.am, clipsmm.kdevelop, clipsmm/Makefile.am,
+	  clipsmm/defaultfacts.cpp, clipsmm/defaultfacts.h,
+	  clipsmm/module.h, clipsmm/rule.cpp, clipsmm/rule.h,
+	  clipsmm/template.cpp, clipsmm/template.h, configure.in,
+	  docs/www/index.php, docs/www/site.php.in,
+	  unit_tests/function_tests.h: *** empty log message ***
+	* clipsmm/environment.cpp, clipsmm/environment.h,
+	  clipsmm/global.cpp, clipsmm/global.h: Added Global class to
+	  support CLIPS globals
+
+2006-07-10  Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+
+	* autogen.sh, clipsmm.kdevelop, clipsmm/any.h, clipsmm/enum.h,
+	  clipsmm/environment.cpp, clipsmm/environment.h,
+	  clipsmm/factory.cpp, clipsmm/utility.cpp, clipsmm/utility.h,
+	  configure.in, unit_tests/Makefile.am,
+	  unit_tests/clipsmm_unit_tests.cpp, unit_tests/function_tests.h:
+	  *** empty log message ***
+
+2006-07-04  Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+
+	* clipsmm/Makefile.am, clipsmm/activation.cpp,
+	  clipsmm/activation.h, clipsmm/clipsmm.h,
+	  clipsmm/defaultfacts.cpp, clipsmm/defaultfacts.h,
+	  clipsmm/environment.cpp, clipsmm/environment.h,
+	  clipsmm/module.cpp, clipsmm/module.h, clipsmm/rule.cpp,
+	  clipsmm/rule.h, clipsmm/template.cpp, clipsmm/template.h: ***
+	  empty log message ***
+	* clipsmm.kdevelop, clipsmm/Makefile.am, clipsmm/clipsmm.h,
+	  clipsmm/defaultfacts.cpp, clipsmm/defaultfacts.h,
+	  clipsmm/environment.cpp, clipsmm/environment.h,
+	  clipsmm/module.cpp, clipsmm/rule.cpp, clipsmm/rule.h,
+	  clipsmm/template.cpp: *** empty log message ***
+	* clipsmm/Makefile.am, clipsmm/environment.cpp,
+	  clipsmm/environment.h, clipsmm/fact.cpp, clipsmm/fact.h,
+	  clipsmm/factory.h, clipsmm/module.cpp, clipsmm/module.h,
+	  clipsmm/template.cpp, clipsmm/template.h: *** empty log message
+	  ***
+
+2006-07-03  Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+
+	* Makefile.am, Makefile.cvs[DEL], clipsmm.kdevelop,
+	  clipsmm/Makefile.am, clipsmm/enum.cpp, clipsmm/enum.h,
+	  clipsmm/environment.cpp, clipsmm/environment.h,
+	  clipsmm/environmentobject.cpp, clipsmm/environmentobject.h,
+	  clipsmm/fact.cpp, clipsmm/fact.h, clipsmm/factory.cpp,
+	  clipsmm/factory.h, clipsmm/object.cpp, clipsmm/object.h,
+	  clipsmm/rule.cpp, clipsmm/rule.h, clipsmm/template.cpp,
+	  clipsmm/template.h, clipsmm/utility.cpp, clipsmm/utility.h,
+	  clipsmm/value.cpp, clipsmm/value.h, clipsmm/valuebase.h[DEL],
+	  configure.in, docs/clipsmm_doxygen_header.html, docs/doxygen.css,
+	  docs/www/index.php, docs/www/license.php, docs/www/site.php.in,
+	  examples/facts/Makefile.am, examples/facts/facts_simple.cpp,
+	  unit_tests, unit_tests/Makefile.am,
+	  unit_tests/clipsmm_unit_tests.cpp, unit_tests/fact_tests.h,
+	  unit_tests/strips.clp, unit_tests/value_tests.h: *** empty log
+	  message ***
+
+2006-07-01  Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+
+	* clipsmm/Makefile.am, clipsmm/environment.cpp,
+	  clipsmm/environment.h, clipsmm/fact.cpp, clipsmm/fact.h,
+	  clipsmm/factory.cpp, clipsmm/factory.h, clipsmm/value.h,
+	  clipsmm/valuebase.h: *** empty log message ***
+	* autogen.sh: *** empty log message ***
+	* .directory, .folder.png, AUTHORS, COPYING, ChangeLog, Doxyfile,
+	  INSTALL, Makefile.am, Makefile.cvs, NEWS, README, TODO,
+	  acinclude.m4, aminclude.am, clipsmm, clipsmm-1.0.pc.in,
+	  clipsmm.desktop, clipsmm.kdevelop, clipsmm/Makefile.am,
+	  clipsmm/clipsmm.h, clipsmm/environment.cpp,
+	  clipsmm/environment.h, clipsmm/fact.cpp, clipsmm/fact.h,
+	  clipsmm/factory.cpp, clipsmm/factory.h, clipsmm/template.cpp,
+	  clipsmm/template.h, clipsmm/value.h, clipsmm/valuebase.h,
+	  configure.in, docs, docs/COPYING,
+	  docs/clipsmm_doxygen_footer.html,
+	  docs/clipsmm_doxygen_header.html, docs/doxygen.css, docs/www,
+	  docs/www/favicon.ico, docs/www/footer.php, docs/www/images,
+	  docs/www/images/clipsmm3232.png, docs/www/index.php,
+	  docs/www/license.php, docs/www/site.php.in, docs/www/style.php,
+	  docs/www/utility.php, examples, examples/.deps,
+	  examples/.deps/test.Po, examples/Makefile.am,
+	  examples/environment, examples/environment/Makefile.am,
+	  examples/environment/envsimple.cpp,
+	  examples/environment/strips.clp, examples/facts,
+	  examples/facts/Makefile.am, examples/facts/facts_simple.cpp,
+	  examples/facts/strips.clp, packaging, packaging/Makefile.am,
+	  packaging/fedora-5, packaging/fedora-5/Makefile.am,
+	  packaging/fedora-5/clipsmm.spec.in,
+	  packaging/fedora-5/fedora_5.1, packaging/fedora-5/fedora_5.2,
+	  packaging/rpm_changelog, packaging/rpm_description,
+	  packaging/suse-10.1, packaging/suse-10.1/Makefile.am,
+	  packaging/suse-10.1/clipsmm.spec.in,
+	  packaging/suse-10.1/suse_10_1.1, packaging/suse-10.1/suse_10_1.2,
+	  templates, templates/cpp, templates/h:
+
+2006-07-01  
+
+	* .: Standard project directories initialized by cvs2svn.
+
+2006-11-12 Rick L Vinyard Jr <rvinyard@cs.nmsu.edu>
+  ===== 0.0.7 =====
+
+  Changed smart pointer typedef to CLIPSPointer
+
+2006-08-06 Rick L Vinyard Jr <rvinyard@cs.nmsu.edu>
+  ===== 0.0.6 =====
+
+  Added example envthreaded demonstrating four parallel environment executions.
+
+  Updated examples to call CLIPS::init()
+
+  Added the CLIPS::init() method to initialize threading support.
+
+  Environment: Added run_threaded() method, and support methods such as
+  join_run_thread(). This initiates execution of the environment in a separate
+  thread.
+
+2006-07-31 Rick L Vinyard Jr <rvinyard@cs.nmsu.edu>
+  ===== 0.0.5 =====
+  Changed handling of config.h and smart pointer defines
+  Fixed some signed unsigned compiler warnings
+  Fixed some missing returns in several Value methods
+
+2006-07-29 Rick L Vinyard Jr <rvinyard@cs.nmsu.edu>
+  ===== 0.0.4 =====
+
+2006-07-26 Rick L Vinyard Jr <rvinyard@cs.nmsu.edu>
+  Environment: Changed assert to assert_fact
+
+  Added checks to locate boost shared pointer if tr1 shared pointer isn't
+  found. Added support to use whichever form is found.
+
+2006-07-21 Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+  ===== 0.0.3 =====
+
+  Added Function class for handling deffunctions
+
+  Environment: Added method for getting list head of globals
+
+2006-07-20 Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+  ===== 0.0.2 =====
+
+  Added Global class to support CLIPS globals
+
+2006-07-18 Rick L Vinyard Jr <rvinyard@cs.nmsu.edu>
+  Renamed module() methods module_name() when returning a string name
+
+2006-07-16 Rick L Vinyard Jr <rvinyard@cs.nmsu.edu>
+  ===== 0.0.1 =====
+  Initial release
+
