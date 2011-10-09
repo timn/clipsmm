@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Rick L. Vinyard, Jr.                            *
- *   rvinyard@cs.nmsu.edu                                                  *
+ *   Copyright (C) 2006 by Rick L. Vinyard, Jr.  <rvinyard@cs.nmsu.edu>    *
+ *   Copyright (C) 2011 by Tim Niemueller [http://www.niemueller.de]       *
  *                                                                         *
  *   This file is part of the clipsmm library.                             *
  *                                                                         *
@@ -420,6 +420,26 @@ Fact::pointer Environment::assert_fact( const std::string& factstring )
     return Fact::create( *this, clips_fact );
   else
     return Fact::pointer();
+}
+
+Fact::pointer Environment::assert_fact_f(const char *format, ...)
+{
+  va_list args;
+  va_start(args, format);
+  char *factstring;
+  int vasprintf_rv = vasprintf(&factstring, format, args);
+  va_end(args);
+
+  if (vasprintf_rv != -1) {
+    void* clips_fact = EnvAssertString( m_cobj, factstring);
+    free(factstring);
+    if ( clips_fact )
+      return Fact::create( *this, clips_fact );
+    else
+      return Fact::pointer();
+  } else {
+    return Fact::pointer();
+  }
 }
 
 bool Environment::incremental_reset_enabled( )

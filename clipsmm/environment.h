@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Rick L. Vinyard, Jr.                            *
- *   rvinyard@cs.nmsu.edu                                                  *
+ *   Copyright (C) 2006 by Rick L. Vinyard, Jr.  <rvinyard@cs.nmsu.edu>    *
+ *   Copyright (C) 2011 by Tim Niemueller [http://www.niemueller.de]       *
  *                                                                         *
  *   This file is part of the clipsmm library.                             *
  *                                                                         *
@@ -256,6 +256,7 @@ namespace CLIPS {
       void set_as_current();
 
       Fact::pointer assert_fact( const std::string& factstring );
+      Fact::pointer assert_fact_f( const char *format, ... );
 
       void clear_focus_stack();
 
