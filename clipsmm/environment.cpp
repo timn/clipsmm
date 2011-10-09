@@ -768,9 +768,50 @@ void* Environment::get_function_context( void* env ) {
   return GetEnvironmentFunctionContext( env );
 }
 
+void Environment::set_return_values( void *env, void *rv, const Values &v ) {
+  void *mfptr = CreateMultifield(v.size());
+  for (unsigned int i = 0; i < v.size(); ++i) {
+    unsigned int mfi = i + 1; // mfptr indices start at 1
+    switch (v[i].type()) {
+    case TYPE_FLOAT:
+      SetMFType(mfptr, mfi, FLOAT);
+      SetMFValue(mfptr, mfi, EnvAddDouble(env, v[i].as_float()));
+      break;
+    case TYPE_INTEGER:
+      SetMFType(mfptr, mfi, INTEGER);
+      SetMFValue(mfptr, mfi, EnvAddLong(env, v[i].as_integer()));
+      break;
+    case TYPE_SYMBOL:
+      SetMFType(mfptr, mfi, SYMBOL);
+      SetMFValue(mfptr, mfi,
+                 EnvAddSymbol(env, const_cast<char*>(v[i].as_string().c_str())));
+      break;
+    case TYPE_STRING:
+      SetMFType(mfptr, mfi, STRING);
+      SetMFValue(mfptr, mfi,
+                 EnvAddSymbol(env, const_cast<char*>(v[i].as_string().c_str())));
+      break;
+    default:
+      throw std::logic_error("clipsmm: value type not supported for multifield return value");
+    }
+  }
+
+  DATA_OBJECT_PTR rvptr = static_cast<DATA_OBJECT_PTR>(rv);
+
+  SetpType(rvptr, MULTIFIELD);
+  SetpValue(rvptr, mfptr);
+
+  SetpDOBegin(rvptr, 1);
+  SetpDOEnd(rvptr, v.size());
+}
+
 void* Environment::add_symbol( const char* s ) {
   return AddSymbol( const_cast<char*>(s) );
 }
+
+template <>
+int (*Environment::get_callback<Values>( const sigc::slot0<Values>& slot ))(void*)
+{ return ( int ( * ) ( void* ) ) ( void ( * ) ( void* ) ) callback_multifield; }
 
 }
 

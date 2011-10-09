@@ -585,6 +585,8 @@ namespace CLIPS {
       template < typename T_return, typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5, typename T_arg6, typename T_arg7 >
       static T_return callback( void* theEnv );
 
+      static void callback_multifield( void* theEnv, void *rv);
+
       int ( *get_callback( const sigc::slot0<std::string>& slot ))( void* )
         { return ( int ( * ) ( void* ) ) ( std::string ( * ) ( void* ) ) callback<std::string>; }
 
@@ -650,10 +652,14 @@ namespace CLIPS {
 
       static int get_arg_count( void* env );
       static void* get_function_context( void* env );
+      static void  set_return_values( void *env, void *rv, const Values &v);
       static void* add_symbol( const char* s );
 
 
   };
+
+  template <>
+  int (*Environment::get_callback<Values>(const sigc::slot0<Values>& slot))(void*);
 
   template < typename T_return>
   inline
@@ -822,6 +828,23 @@ namespace CLIPS {
     }
     throw;
   }
+
+  inline
+  void Environment::callback_multifield( void* theEnv, void *rv) {
+    sigc::slot0<Values>* cb;
+    void * cbptr = get_function_context( theEnv );
+    if ( cbptr ) {
+      if ( get_arg_count( theEnv ) != 0 )
+        throw std::logic_error( "clipsmm: wrong # args on slot callback; expected 0" );
+      cb = static_cast<sigc::slot0<Values>*>( cbptr );
+      Values v = ( *cb ) ();
+      set_return_values(theEnv, rv, v);
+      return;
+    }
+    throw;
+  }
+
+
 
   inline
   void* Environment::strcallback( void* theEnv ) {
@@ -1174,6 +1197,27 @@ template < typename T_return >
            );
   }
 
+
+/** Add function that returns multifield value.
+ */
+template <>
+  inline
+  bool Environment::add_function( std::string name,
+                                  const sigc::slot0<Values>& slot)
+  {
+    char retcode = get_return_code<Values>( );
+    char argstring[ 10 ] = { '0', '0', 'u', 0x00 };
+    sigc::slot0<Values>* scb = new sigc::slot0<Values>(slot);
+    any holder = CLIPSPointer<sigc::slot0<Values> >(scb);
+    m_slots[name] = holder;
+    return ( EnvDefineFunction2WithContext( m_cobj,
+                                 const_cast<char*>( name.c_str() ),
+                                 retcode,
+                                 get_callback(slot),
+                                 const_cast<char*>( name.c_str() ),
+                                 argstring,
+                                 ( void* ) scb ) );
+  }
 
 }
 

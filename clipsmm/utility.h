@@ -23,6 +23,8 @@
 #include <string>
 #include <stdexcept>
 
+#include <clipsmm/value.h>
+
 extern "C" {
   struct dataObject;
 }
@@ -55,6 +57,7 @@ namespace CLIPS {
   template <> inline char get_return_code<long>()        { return 'l'; }
   template <> inline char get_return_code<std::string>() { return 's'; }
   template <> inline char get_return_code<void>()        { return 'v'; }
+  template <> inline char get_return_code<Values>()      { return 'm'; }
 
   template <typename T_return> inline char get_argument_code() {
     throw std::logic_error("clipsmm: Adding function with invalid argument type");
