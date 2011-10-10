@@ -22,7 +22,7 @@
 #  package specific values
 #########################################################################
 pushdef([PACKAGE_MAJOR_VERSION], [0])
-pushdef([PACKAGE_MINOR_VERSION], [1])
+pushdef([PACKAGE_MINOR_VERSION], [2])
 pushdef([PACKAGE_MICRO_VERSION], [0])
 pushdef([PKG_VERSION], PACKAGE_MAJOR_VERSION.PACKAGE_MINOR_VERSION.PACKAGE_MICRO_VERSION)
 
@@ -43,12 +43,12 @@ popdef([PKG_VERSION])
 #  ? :  ? :  0 == no new interfaces, but breaks apps
 #  ? : +1 :  ? == just some internal changes, nothing breaks but might work better
 # CURRENT : REVISION : AGE
-LIBTOOL_SO_VERSION=0:0:0
+LIBTOOL_SO_VERSION=1:0:0
 LIBTOOL_SO_VERSION_MAJOR=0
 AC_SUBST(LIBTOOL_SO_VERSION)
 AC_SUBST(LIBTOOL_SO_VERSION_MAJOR)
 
-PKGCONFIG_REQUIRES="clips-6 >= 6.24 glibmm-2.4 >= 2.6.0 gthread-2.0 >= 2.6.0"
+PKGCONFIG_REQUIRES="clips-6 >= 6.30 glibmm-2.4 >= 2.6.0 gthread-2.0 >= 2.6.0"
 PKGCONFIG_VERSION="1.0"
 
 #########################################################################
