@@ -809,9 +809,5 @@ void* Environment::add_symbol( const char* s ) {
   return AddSymbol( const_cast<char*>(s) );
 }
 
-template <>
-int (*Environment::get_callback<Values>( const sigc::slot0<Values>& slot ))(void*)
-{ return ( int ( * ) ( void* ) ) ( void ( * ) ( void* ) ) callback_multifield; }
-
 }
 

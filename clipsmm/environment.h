@@ -584,6 +584,30 @@ namespace CLIPS {
 
       static void callback_multifield( void* theEnv, void *rv);
 
+      template <typename T_arg1>
+      static void callback_multifield( void* theEnv, void *rv );
+
+      template <typename T_arg1, typename T_arg2>
+      static void callback_multifield( void* theEnv, void *rv );
+
+      template <typename T_arg1, typename T_arg2, typename T_arg3>
+      static void callback_multifield( void* theEnv, void *rv );
+
+      template <typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4>
+      static void callback_multifield( void* theEnv, void *rv );
+
+      template <typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4,
+        typename T_arg5>
+      static void callback_multifield( void* theEnv, void *rv );
+
+      template <typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4,
+        typename T_arg5, typename T_arg6>
+      static void callback_multifield( void* theEnv, void *rv );
+
+      template <typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4,
+        typename T_arg5, typename T_arg6, typename T_arg7>
+      static void callback_multifield( void* theEnv, void *rv );
+
       int ( *get_callback( const sigc::slot0<std::string>& slot ))( void* )
         { return ( int ( * ) ( void* ) ) ( void* ( * ) ( void* ) ) strcallback; }
 
@@ -614,6 +638,38 @@ namespace CLIPS {
       template < typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5, typename T_arg6, typename T_arg7 >
       int ( *get_callback( const sigc::slot7<std::string,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>& slot ))( void* )
         { return (int(*)(void*)) (void* (*)(void*)) strcallback<T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>; }
+
+      int ( *get_callback( const sigc::slot0<Values>& slot ))( void* )
+      { return  (int (*) (void*)) (void (*) (void*, void*)) callback_multifield; }
+
+      template <typename T_arg1>
+      int ( *get_callback( const sigc::slot1<Values,T_arg1>& slot ))( void* )
+      { return (int (*) (void*)) ( void ( * ) ( void*, void* ) ) callback_multifield<T_arg1>; }
+
+      template <typename T_arg1, typename T_arg2>
+      int ( *get_callback( const sigc::slot2<Values,T_arg1,T_arg2>& slot ))( void* )
+      { return (int (*) (void*)) ( void ( * ) ( void*, void* ) ) callback_multifield<T_arg1,T_arg2>; }
+
+      template <typename T_arg1, typename T_arg2, typename T_arg3>
+        int ( *get_callback( const sigc::slot3<Values,T_arg1,T_arg2,T_arg3>& slot ))( void* )
+      { return (int (*) (void*)) ( void ( * ) ( void*, void* ) ) callback_multifield<T_arg1,T_arg2,T_arg3>; }
+
+      template <typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4>
+        int ( *get_callback( const sigc::slot4<Values,T_arg1,T_arg2,T_arg3,T_arg4>& slot ))( void* )
+      { return (int (*) (void*)) ( void ( * ) ( void*, void* ) ) callback_multifield<T_arg1,T_arg2,T_arg3,T_arg4>; }
+
+      template <typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5>
+        int ( *get_callback( const sigc::slot5<Values,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5>& slot ))( void* )
+      { return (int (*) (void*)) ( void ( * ) ( void*, void* ) ) callback_multifield<T_arg1,T_arg2,T_arg3,T_arg4,T_arg5>; }
+
+      template <typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5, typename T_arg6>
+        int ( *get_callback( const sigc::slot6<Values,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6>& slot ))( void* )
+      { return (int (*) (void*)) ( void ( * ) ( void*, void* ) ) callback_multifield<T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6>; }
+
+      template <typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5, typename T_arg6, typename T_arg7>
+        int ( *get_callback( const sigc::slot7<Values,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>& slot ))( void* )
+      { return (int (*) (void*)) ( void ( * ) ( void*, void* ) ) callback_multifield<T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>; }
+
 
       template < typename T_return >
       int ( *get_callback( const sigc::slot0<T_return>& slot ))( void* )
@@ -655,8 +711,6 @@ namespace CLIPS {
 
   };
 
-  template <>
-  int (*Environment::get_callback<Values>(const sigc::slot0<Values>& slot))(void*);
 
   template < typename T_return>
   inline
@@ -832,7 +886,7 @@ namespace CLIPS {
     void * cbptr = get_function_context( theEnv );
     if ( cbptr ) {
       if ( get_arg_count( theEnv ) != 0 )
-        throw std::logic_error( "clipsmm: wrong # args on slot callback; expected 0" );
+        throw std::logic_error( "clipsmm/mf: wrong # args on slot callback; expected 0" );
       cb = static_cast<sigc::slot0<Values>*>( cbptr );
       Values v = ( *cb ) ();
       set_return_values(theEnv, rv, v);
@@ -841,6 +895,181 @@ namespace CLIPS {
     throw;
   }
 
+  template <typename T_arg1>
+  inline
+  void Environment::callback_multifield( void* theEnv, void *rv) {
+    sigc::slot1<Values, T_arg1>* cb;
+    void * cbptr = get_function_context( theEnv );
+    T_arg1 arg1;
+    if ( cbptr ) {
+      if ( get_arg_count( theEnv ) != 1 )
+        throw std::logic_error( "clipsmm/mf: wrong # args on slot callback; expected 1" );
+      cb = static_cast<sigc::slot1<Values, T_arg1>*>( cbptr );
+      get_argument(theEnv, 1, arg1);
+      Values v = ( *cb ) (arg1);
+      set_return_values(theEnv, rv, v);
+      return;
+    }
+    throw;
+  }
+
+  template <typename T_arg1, typename T_arg2>
+  inline
+  void Environment::callback_multifield( void* theEnv, void *rv) {
+    sigc::slot2<Values, T_arg1, T_arg2>* cb;
+    void * cbptr = get_function_context( theEnv );
+    T_arg1 arg1;
+    T_arg2 arg2;
+    if ( cbptr ) {
+      if ( get_arg_count( theEnv ) != 2 )
+        throw std::logic_error( "clipsmm/mf: wrong # args on slot callback; expected 2" );
+      cb = static_cast<sigc::slot2<Values, T_arg1, T_arg2>*>( cbptr );
+      get_argument(theEnv, 1, arg1);
+      get_argument(theEnv, 2, arg2);
+      Values v = ( *cb ) (arg1, arg2);
+      set_return_values(theEnv, rv, v);
+      return;
+    }
+    throw;
+  }
+
+
+  template <typename T_arg1, typename T_arg2, typename T_arg3>
+  inline
+  void Environment::callback_multifield( void* theEnv, void *rv) {
+    sigc::slot3<Values, T_arg1, T_arg2, T_arg3>* cb;
+    void * cbptr = get_function_context( theEnv );
+    T_arg1 arg1;
+    T_arg2 arg2;
+    T_arg3 arg3;
+    if ( cbptr ) {
+      if ( get_arg_count( theEnv ) != 3 )
+        throw std::logic_error( "clipsmm/mf: wrong # args on slot callback; expected 3" );
+      cb = static_cast<sigc::slot3<Values, T_arg1, T_arg2, T_arg3>*>( cbptr );
+      get_argument(theEnv, 1, arg1);
+      get_argument(theEnv, 2, arg2);
+      get_argument(theEnv, 3, arg3);
+      Values v = ( *cb ) (arg1, arg2, arg3);
+      set_return_values(theEnv, rv, v);
+      return;
+    }
+    throw;
+  }
+
+  template <typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4>
+  inline
+  void Environment::callback_multifield( void* theEnv, void *rv) {
+    sigc::slot4<Values, T_arg1, T_arg2, T_arg3, T_arg4>* cb;
+    void * cbptr = get_function_context( theEnv );
+    T_arg1 arg1;
+    T_arg2 arg2;
+    T_arg3 arg3;
+    T_arg4 arg4;
+    if ( cbptr ) {
+      if ( get_arg_count( theEnv ) != 4 )
+        throw std::logic_error( "clipsmm/mf: wrong # args on slot callback; expected 4" );
+      cb = static_cast<sigc::slot4<Values, T_arg1, T_arg2, T_arg3, T_arg4>*>(cbptr);
+      get_argument(theEnv, 1, arg1);
+      get_argument(theEnv, 2, arg2);
+      get_argument(theEnv, 3, arg3);
+      get_argument(theEnv, 4, arg4);
+      Values v = ( *cb ) (arg1, arg2, arg3, arg4);
+      set_return_values(theEnv, rv, v);
+      return;
+    }
+    throw;
+  }
+
+  template <typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4,
+    typename T_arg5>
+  inline
+  void Environment::callback_multifield( void* theEnv, void *rv) {
+      sigc::slot5<Values, T_arg1, T_arg2, T_arg3, T_arg4, T_arg5>* cb;
+    void * cbptr = get_function_context( theEnv );
+    T_arg1 arg1;
+    T_arg2 arg2;
+    T_arg3 arg3;
+    T_arg4 arg4;
+    T_arg5 arg5;
+    if ( cbptr ) {
+      if ( get_arg_count( theEnv ) != 5 )
+        throw std::logic_error( "clipsmm/mf: wrong # args on slot callback; expected 5" );
+      cb = static_cast<sigc::slot5<Values, T_arg1, T_arg2, T_arg3,
+        T_arg4, T_arg5>*>(cbptr);
+      get_argument(theEnv, 1, arg1);
+      get_argument(theEnv, 2, arg2);
+      get_argument(theEnv, 3, arg3);
+      get_argument(theEnv, 4, arg4);
+      get_argument(theEnv, 5, arg5);
+      Values v = ( *cb ) (arg1, arg2, arg3, arg4, arg5);
+      set_return_values(theEnv, rv, v);
+      return;
+    }
+    throw;
+  }
+
+
+  template <typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4,
+    typename T_arg5, typename T_arg6>
+  inline
+  void Environment::callback_multifield( void* theEnv, void *rv) {
+    sigc::slot6<Values, T_arg1, T_arg2, T_arg3, T_arg4, T_arg5, T_arg6>* cb;
+    void * cbptr = get_function_context( theEnv );
+    T_arg1 arg1;
+    T_arg2 arg2;
+    T_arg3 arg3;
+    T_arg4 arg4;
+    T_arg5 arg5;
+    T_arg6 arg6;
+    if ( cbptr ) {
+      if ( get_arg_count( theEnv ) != 6 )
+        throw std::logic_error( "clipsmm/mf: wrong # args on slot callback; expected 6" );
+      cb = static_cast<sigc::slot6<Values, T_arg1, T_arg2, T_arg3,
+        T_arg4, T_arg5, T_arg6>*>(cbptr);
+      get_argument(theEnv, 1, arg1);
+      get_argument(theEnv, 2, arg2);
+      get_argument(theEnv, 3, arg3);
+      get_argument(theEnv, 4, arg4);
+      get_argument(theEnv, 5, arg5);
+      get_argument(theEnv, 6, arg6);
+      Values v = ( *cb ) (arg1, arg2, arg3, arg4, arg5, arg6);
+      set_return_values(theEnv, rv, v);
+      return;
+    }
+    throw;
+  }
+
+  template <typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4,
+    typename T_arg5, typename T_arg6, typename T_arg7>
+  inline
+  void Environment::callback_multifield( void* theEnv, void *rv) {
+    sigc::slot7<Values, T_arg1, T_arg2, T_arg3, T_arg4, T_arg5, T_arg6, T_arg7>* cb;
+    void * cbptr = get_function_context( theEnv );
+    T_arg1 arg1;
+    T_arg2 arg2;
+    T_arg3 arg3;
+    T_arg4 arg4;
+    T_arg5 arg5;
+    T_arg6 arg6;
+    T_arg7 arg7;
+    if ( cbptr ) {
+      if ( get_arg_count( theEnv ) != 7 )
+        throw std::logic_error( "clipsmm/mf: wrong # args on slot callback; expected 7" );
+      cb = static_cast<sigc::slot7<Values, T_arg1, T_arg2, T_arg3,
+        T_arg4, T_arg5, T_arg6, T_arg7>*>(cbptr);
+      get_argument(theEnv, 1, arg1);
+      get_argument(theEnv, 2, arg2);
+      get_argument(theEnv, 3, arg3);
+      get_argument(theEnv, 4, arg4);
+      get_argument(theEnv, 5, arg5);
+      get_argument(theEnv, 6, arg6);
+      get_argument(theEnv, 7, arg7);
+      Values v = ( *cb ) (arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+      set_return_values(theEnv, rv, v);
+      return;
+    }
+    throw;
+  }
 
 
   inline
