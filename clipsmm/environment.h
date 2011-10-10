@@ -585,11 +585,11 @@ namespace CLIPS {
       static void callback_multifield( void* theEnv, void *rv);
 
       int ( *get_callback( const sigc::slot0<std::string>& slot ))( void* )
-        { return ( int ( * ) ( void* ) ) ( std::string ( * ) ( void* ) ) callback<std::string>; }
+        { return ( int ( * ) ( void* ) ) ( void* ( * ) ( void* ) ) strcallback; }
 
       template < typename T_arg1 >
       int ( *get_callback( const sigc::slot1<std::string,T_arg1>& slot ))( void* )
-        { return ( int ( * ) ( void* ) ) ( std::string ( * ) ( void* ) ) callback<std::string,T_arg1>; }
+        { return ( int ( * ) ( void* ) ) ( void* ( * ) ( void* ) ) strcallback<T_arg1>; }
 
       template < typename T_arg1, typename T_arg2 >
       int ( *get_callback( const sigc::slot2<std::string,T_arg1,T_arg2>& slot ))( void* )
@@ -597,27 +597,27 @@ namespace CLIPS {
 
       template < typename T_arg1, typename T_arg2, typename T_arg3 >
       int ( *get_callback( const sigc::slot3<std::string,T_arg1,T_arg2,T_arg3>& slot ))( void* )
-        { return (int(*)(void*)) (std::string(*)(void*)) callback<std::string,T_arg1,T_arg2,T_arg3>; }
+        { return (int(*)(void*)) (void* (*)(void*)) strcallback<T_arg1,T_arg2,T_arg3>; }
 
       template < typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4 >
       int ( *get_callback( const sigc::slot4<std::string,T_arg1,T_arg2,T_arg3,T_arg4>& slot ))( void* )
-        { return (int(*)(void*)) (std::string(*)(void*)) callback<std::string,T_arg1,T_arg2,T_arg3,T_arg4>; }
+        { return (int(*)(void*)) (void* (*)(void*)) strcallback<T_arg1,T_arg2,T_arg3,T_arg4>; }
 
       template < typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5 >
       int ( *get_callback( const sigc::slot5<std::string,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5>& slot ))( void* )
-        { return (int(*)(void*)) (std::string(*)(void*)) callback<std::string,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5>; }
+        { return (int(*)(void*)) (void* (*)(void*)) strcallback<T_arg1,T_arg2,T_arg3,T_arg4,T_arg5>; }
 
       template < typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5, typename T_arg6 >
       int ( *get_callback( const sigc::slot6<std::string,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6>& slot ))( void* )
-        { return (int(*)(void*)) (std::string(*)(void*)) callback<std::string,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6>; }
+        { return (int(*)(void*)) (void* (*)(void*)) strcallback<T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6>; }
 
       template < typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5, typename T_arg6, typename T_arg7 >
       int ( *get_callback( const sigc::slot7<std::string,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>& slot ))( void* )
-        { return (int(*)(void*)) (std::string(*)(void*)) callback<std::string,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>; }
+        { return (int(*)(void*)) (void* (*)(void*)) strcallback<T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>; }
 
       template < typename T_return >
       int ( *get_callback( const sigc::slot0<T_return>& slot ))( void* )
-        { return ( int ( * ) ( void* ) ) ( T_return ( * ) ( void* ) ) callback<T_return>; }
+        { return (int (*) (void*)) ( T_return ( * ) ( void* ) ) callback<T_return>; }
 
       template < typename T_return, typename T_arg1 >
       int ( *get_callback( const sigc::slot1<T_return,T_arg1>& slot ))( void* )
@@ -849,7 +849,7 @@ namespace CLIPS {
     void * cbptr = get_function_context( theEnv );
     if ( cbptr ) {
       if ( get_arg_count( theEnv ) != 0 )
-        throw std::logic_error( "clipsmm: wrong # args on slot callback; expected 0" );
+        throw std::logic_error( "clipsmm/string: wrong # args on slot callback; expected 0" );
       cb = static_cast<sigc::slot0<std::string>*>( cbptr );
       return add_symbol( ( ( *cb ) ( )).c_str() );
     }
@@ -924,16 +924,11 @@ namespace CLIPS {
       if ( get_arg_count( theEnv ) != 4 )
         throw std::logic_error( "clipsmm: wrong # args on slot callback; expected 4" );
       get_argument( theEnv, 1, arg1 );
-    std::cout << "Arg1: " << arg1 << std::endl;
       get_argument( theEnv, 2, arg2 );
-    std::cout << "Arg2: " << arg2 << std::endl;
       get_argument( theEnv, 3, arg3 );
-    std::cout << "Arg3: " << arg3 << std::endl;
       get_argument( theEnv, 4, arg4 );
-    std::cout << "Arg4: " << arg4 << std::endl;
       cb = static_cast<sigc::slot4<std::string, T_arg1, T_arg2,T_arg3,T_arg4>*>( cbptr );
       s = ( *cb ) ( arg1, arg2, arg3, arg4 );
-    std::cout << "Adding: " << s << std::endl;
       return add_symbol( s.c_str() );
     }
     throw;

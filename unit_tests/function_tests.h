@@ -78,9 +78,17 @@ class FunctionTest : public  CppUnit::TestFixture {
     CPPUNIT_TEST( class_method_test_1 );
   CPPUNIT_TEST( class_method_test_2 );
   CPPUNIT_TEST( class_method_test_3 );
+  CPPUNIT_TEST( class_method_test_4 );
   CPPUNIT_TEST( class_method_test_5 );
   CPPUNIT_TEST( class_method_test_6 );
   CPPUNIT_TEST( class_method_test_7 );
+  CPPUNIT_TEST( class_method_test_s0 );
+  CPPUNIT_TEST( class_method_test_s1 );
+  CPPUNIT_TEST( class_method_test_s3 );
+  CPPUNIT_TEST( class_method_test_s4 );
+  CPPUNIT_TEST( class_method_test_s5 );
+  CPPUNIT_TEST( class_method_test_s6 );
+  CPPUNIT_TEST( class_method_test_s7 );
   CPPUNIT_TEST( function_test_0 );
   CPPUNIT_TEST( function_test_1 );
   CPPUNIT_TEST( function_test_2 );
@@ -169,6 +177,13 @@ class FunctionTest : public  CppUnit::TestFixture {
     return sout.str();
   }
 
+  void class_method_test_4() {
+    environment.add_function( "class_method4", sigc::slot<std::string, int,double,std::string,float>(sigc::mem_fun( *this, &FunctionTest::class_method4 )) );
+    Values values = environment.function( "class_method4", "3 3.8 c4 1.3" );
+    CPPUNIT_ASSERT( values.size() == 1 );
+    CPPUNIT_ASSERT( values[0] == "3 3.8c41.3");
+  }
+
   int class_method5(int i, double d, std::string s2, long l, float f) {
     int t;
     std::istringstream sin(s2.substr(1,std::string::npos));
@@ -210,6 +225,84 @@ class FunctionTest : public  CppUnit::TestFixture {
     Values values = environment.function( "class_method7", "3 56 3.8 1.3 42 192 28.444" );
     CPPUNIT_ASSERT( values.size() == 1 );
     CPPUNIT_ASSERT( values[0] == (float)(3+56l+3.8+1.3f+42+192l+28.444) );
+  }
+
+  std::string class_method_s0() { return "foo bar"; }
+
+  void class_method_test_s0() {
+    environment.add_function( "class_method_s0", sigc::slot<std::string>(sigc::mem_fun( *this, &FunctionTest::class_method_s0 )) );
+    Values values = environment.function( "class_method_s0" );
+    CPPUNIT_ASSERT( values.size() == 1 );
+    CPPUNIT_ASSERT( values[0] == std::string("foo bar") );
+  }
+
+  std::string class_method_s1(std::string s) { return s + " bar"; }
+
+  void class_method_test_s1() {
+    environment.add_function( "class_method_s1", sigc::slot<std::string, std::string>(sigc::mem_fun( *this, &FunctionTest::class_method_s1 )) );
+    Values values = environment.function( "class_method_s1", "foo" );
+    CPPUNIT_ASSERT( values.size() == 1 );
+    CPPUNIT_ASSERT( values[0] == std::string("foo bar") );
+  }
+
+  std::string class_method_s3(std::string s1, std::string s2, std::string s3) {
+    return s1 + s2 + s3;
+  }
+
+  void class_method_test_s3() {
+    environment.add_function( "class_method_s3", sigc::slot<std::string, std::string, std::string, std::string>(sigc::mem_fun( *this, &FunctionTest::class_method_s3 )) );
+    Values values = environment.function( "class_method_s3", "foo bar wtf" );
+    CPPUNIT_ASSERT( values.size() == 1 );
+    CPPUNIT_ASSERT( values[0] == std::string("foobarwtf") );
+  }
+
+  std::string class_method_s4(std::string s1, std::string s2, std::string s3,
+                              std::string s4) {
+    return s1 + s2 + s3 + s4;
+  }
+
+  void class_method_test_s4() {
+    environment.add_function( "class_method_s4", sigc::slot<std::string, std::string, std::string, std::string, std::string>(sigc::mem_fun( *this, &FunctionTest::class_method_s4 )) );
+    Values values = environment.function( "class_method_s4", "a b c d" );
+    CPPUNIT_ASSERT( values.size() == 1 );
+    CPPUNIT_ASSERT( values[0] == std::string("abcd") );
+  }
+
+  std::string class_method_s5(std::string s1, std::string s2, std::string s3,
+                              std::string s4, std::string s5) {
+    return s1 + s2 + s3 + s4 + s5;
+  }
+
+  void class_method_test_s5() {
+    environment.add_function( "class_method_s5", sigc::slot<std::string, std::string, std::string, std::string, std::string, std::string>(sigc::mem_fun( *this, &FunctionTest::class_method_s5 )) );
+    Values values = environment.function( "class_method_s5", "a b c d e" );
+    CPPUNIT_ASSERT( values.size() == 1 );
+    CPPUNIT_ASSERT( values[0] == std::string("abcde") );
+  }
+
+  std::string class_method_s6(std::string s1, std::string s2, std::string s3,
+                              std::string s4, std::string s5, std::string s6) {
+    return s1 + s2 + s3 + s4 + s5 + s6;
+  }
+
+  void class_method_test_s6() {
+    environment.add_function( "class_method_s6", sigc::slot<std::string, std::string, std::string, std::string, std::string, std::string, std::string>(sigc::mem_fun( *this, &FunctionTest::class_method_s6 )) );
+    Values values = environment.function( "class_method_s6", "a b c d e f" );
+    CPPUNIT_ASSERT( values.size() == 1 );
+    CPPUNIT_ASSERT( values[0] == std::string("abcdef") );
+  }
+
+  std::string class_method_s7(std::string s1, std::string s2, std::string s3,
+                              std::string s4, std::string s5, std::string s6,
+                              std::string s7) {
+    return s1 + s2 + s3 + s4 + s5 + s6 + s7;
+  }
+
+  void class_method_test_s7() {
+    environment.add_function( "class_method_s7", sigc::slot<std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string>(sigc::mem_fun( *this, &FunctionTest::class_method_s7 )) );
+    Values values = environment.function( "class_method_s7", "a b c d e f g" );
+    CPPUNIT_ASSERT( values.size() == 1 );
+    CPPUNIT_ASSERT( values[0] == std::string("abcdefg") );
   }
 
   void function_test_0() {
