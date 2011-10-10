@@ -89,6 +89,14 @@ class FunctionTest : public  CppUnit::TestFixture {
   CPPUNIT_TEST( class_method_test_s5 );
   CPPUNIT_TEST( class_method_test_s6 );
   CPPUNIT_TEST( class_method_test_s7 );
+  CPPUNIT_TEST( class_method_test_mf0 );
+  CPPUNIT_TEST( class_method_test_mf1 );
+  CPPUNIT_TEST( class_method_test_mf2 );
+  CPPUNIT_TEST( class_method_test_mf3 );
+  CPPUNIT_TEST( class_method_test_mf4 );
+  //CPPUNIT_TEST( class_method_test_mf5 );
+  //CPPUNIT_TEST( class_method_test_mf6 );
+  //CPPUNIT_TEST( class_method_test_mf7 );
   CPPUNIT_TEST( function_test_0 );
   CPPUNIT_TEST( function_test_1 );
   CPPUNIT_TEST( function_test_2 );
@@ -104,7 +112,18 @@ class FunctionTest : public  CppUnit::TestFixture {
     int temp_class_int;
 
   public:
+    FunctionTest() {
+      if (! environment.add_function( "class_method_mf1", sigc::slot<Values, Values>(sigc::mem_fun( *this, &FunctionTest::class_method_mf1 )) ) ) {
+        printf("Failed to add class_method_mf1 function\n");
+      }
+      if (! environment.add_function( "class_method_mf4", sigc::slot<Values, std::string, int, Values, int>(sigc::mem_fun( *this, &FunctionTest::class_method_mf4 )) )) {
+        printf("Failed to add class_method_mf4 function\n");
+      }
+    }
+
     void setUp() {
+      environment.clear();
+      environment.load( "function_tests.clp" );
       temp_class_int = 0;
     }
 
@@ -303,6 +322,88 @@ class FunctionTest : public  CppUnit::TestFixture {
     Values values = environment.function( "class_method_s7", "a b c d e f g" );
     CPPUNIT_ASSERT( values.size() == 1 );
     CPPUNIT_ASSERT( values[0] == std::string("abcdefg") );
+  }
+
+  Values class_method_mf0() {
+    Values v; v.push_back("a"); v.push_back("b"); return v; }
+
+  void class_method_test_mf0() {
+    environment.add_function( "class_method_mf0", sigc::slot<Values>(sigc::mem_fun( *this, &FunctionTest::class_method_mf0 )) );
+    Values values = environment.function( "class_method_mf0" );
+    CPPUNIT_ASSERT( values.size() == 2 );
+    CPPUNIT_ASSERT( values[0] == std::string("a") );
+    CPPUNIT_ASSERT( values[1] == std::string("b") );
+  }
+
+  Values class_method_mf1(Values v) {
+    std::reverse(v.begin(), v.end());
+    return v;
+  }
+
+  void class_method_test_mf1() {
+    Values values = environment.function("call-class_method_mf1");
+    CPPUNIT_ASSERT( values.size() == 3 );
+    CPPUNIT_ASSERT( values[0] == std::string("c") );
+    CPPUNIT_ASSERT( values[1] == std::string("b") );
+    CPPUNIT_ASSERT( values[2] == std::string("a") );
+  }
+
+  Values class_method_mf2(std::string s, int num) {
+    Values v;
+    if (num < 0)  num = 1;
+    for (int i = 0; i < num; ++i) {
+      v.push_back(s);
+    }
+    return v;
+  }
+
+  void class_method_test_mf2() {
+    environment.add_function( "class_method_mf2", sigc::slot<Values, std::string, int>(sigc::mem_fun( *this, &FunctionTest::class_method_mf2 )) );
+    Values values = environment.function("class_method_mf2", "foo 5");
+    CPPUNIT_ASSERT( values.size() == 5 );
+    for (int i = 0; i < 5; ++i) {
+      CPPUNIT_ASSERT( values[i] == std::string("foo") );
+    }
+  }
+
+  Values class_method_mf3(std::string s, int num, double d) {
+    Values v;
+    if (num < 0)  num = 1;
+    for (int i = 0; i < num; ++i) {
+      v.push_back(s.length() * d);
+    }
+    return v;
+  }
+
+  void class_method_test_mf3() {
+    environment.add_function( "class_method_mf3", sigc::slot<Values, std::string, int, double>(sigc::mem_fun( *this, &FunctionTest::class_method_mf3 )) );
+    Values values = environment.function("class_method_mf3", "foo 5 2.0");
+    CPPUNIT_ASSERT( values.size() == 5 );
+    for (int i = 0; i < 5; ++i) {
+      CPPUNIT_ASSERT( values[i] == std::string("foo").length() * 2.0 );
+    }
+  }
+
+  Values class_method_mf4(std::string s, int num, Values in, int to_ind) {
+    Values v;
+    if (to_ind > in.size())  to_ind = in.size();
+    for (int i = 0; i < to_ind; ++i) {
+      v.push_back(in[i]);
+    }
+    if (num < 0)  num = 1;
+    for (int i = 0; i < num; ++i) {
+      v.push_back(s);
+    }
+    return v;
+  }
+
+  void class_method_test_mf4() {
+    Values values = environment.function("call-class_method_mf4");
+    CPPUNIT_ASSERT( values.size() == 6 );
+    CPPUNIT_ASSERT( values[0] == "a");
+    for (int i = 1; i < 6; ++i) {
+      CPPUNIT_ASSERT( values[i] == std::string("foo"));
+    }
   }
 
   void function_test_0() {
