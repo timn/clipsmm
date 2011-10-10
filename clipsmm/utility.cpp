@@ -99,4 +99,33 @@ namespace CLIPS {
     value = EnvRtnLexeme(env, argposition);
   }
 
+  void get_argument(void* env, int argposition, Values& values) {
+    DATA_OBJECT arg;
+    if (EnvArgTypeCheck(env, (char *)"clipsmm get_argument",
+                        argposition, MULTIFIELD, &arg) == 0)   return;
+
+    values.clear();
+
+    int end = EnvGetDOEnd(env, arg);
+    void *mfp = EnvGetValue(env, arg);
+    for (int i = EnvGetDOBegin(env, arg); i <= end; ++i) {
+      switch (GetMFType(mfp, i)) {
+      case SYMBOL:
+      case STRING:
+      case INSTANCE_NAME:
+        values.push_back(Value(ValueToString(GetMFValue(mfp, i))));
+        break;
+      case FLOAT:
+        values.push_back(Value(ValueToDouble(GetMFValue(mfp, i))));
+        break;
+      case INTEGER:
+        values.push_back(Value(ValueToInteger(GetMFValue(mfp, i))));
+        break;
+      default:
+        continue;
+        break;
+      }
+    }
+  }
+
 }

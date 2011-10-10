@@ -45,6 +45,7 @@ namespace CLIPS {
   void get_argument(void* env, int argposition, unsigned& value);
   void get_argument(void* env, int argposition, long& value);
   void get_argument(void* env, int argposition, std::string& value);
+  void get_argument(void* env, int argposition, Values& values);
 
   template <typename T_return> inline char get_return_code() {
     throw std::logic_error("clipsmm: Adding function with invalid return type");
@@ -67,7 +68,7 @@ namespace CLIPS {
   template <> inline char get_argument_code<int>()         { return 'i'; }
   template <> inline char get_argument_code<long>()        { return 'l'; }
   template <> inline char get_argument_code<std::string>() { return 's'; }
-
+  template <> inline char get_argument_code<Values>()      { return 'm'; }
 
 }
 
