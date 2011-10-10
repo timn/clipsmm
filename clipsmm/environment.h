@@ -21,12 +21,9 @@
 
 #include <string>
 #include <map>
-#include <typeinfo>
 #include <stdexcept>
 #include <map>
 #include <queue>
-
-#include <iostream>
 
 #include <sigc++/sigc++.h>
 #include <glibmm.h>
