@@ -97,6 +97,7 @@ class FunctionTest : public  CppUnit::TestFixture {
   //CPPUNIT_TEST( class_method_test_mf5 );
   //CPPUNIT_TEST( class_method_test_mf6 );
   //CPPUNIT_TEST( class_method_test_mf7 );
+  CPPUNIT_TEST( class_method_test_d1 );
   CPPUNIT_TEST( function_test_0 );
   CPPUNIT_TEST( function_test_1 );
   CPPUNIT_TEST( function_test_2 );
@@ -404,6 +405,23 @@ class FunctionTest : public  CppUnit::TestFixture {
     for (int i = 1; i < 6; ++i) {
       CPPUNIT_ASSERT( values[i] == std::string("foo"));
     }
+  }
+
+
+  CLIPS::Values class_method_d1a() { Values v; v.push_back("a"); v.push_back("b"); return v; }
+  std::string class_method_d1b(std::string s) { return s + "!"; }
+
+  void class_method_test_d1() {
+    CPPUNIT_ASSERT( temp_class_int == 0 );
+    environment.add_function( "class_method_d1a", sigc::slot<CLIPS::Values>(sigc::mem_fun( *this, &FunctionTest::class_method_d1a )) );
+    environment.add_function( "class_method_d1b", sigc::slot<std::string, std::string>(sigc::mem_fun( *this, &FunctionTest::class_method_d1b )) );
+    Values v1 = environment.function( "class_method_d1a" );
+    Values v2 = environment.function( "class_method_d1b", "foo" );
+    CPPUNIT_ASSERT( v1.size() == 2 );
+    CPPUNIT_ASSERT( v2.size() == 1 );
+    CPPUNIT_ASSERT( v1[0] == "a" );
+    CPPUNIT_ASSERT( v1[1] == "b" );
+    CPPUNIT_ASSERT( v2[0] == "foo!" );
   }
 
   void function_test_0() {
