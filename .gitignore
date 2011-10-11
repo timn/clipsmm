@@ -38,7 +38,7 @@ aclocal.m4
 /examples/facts/facts_simple
 /unit_tests/clipsmm_unit_tests
 # Documentation bits
-/doc/clipsmm-0.1.devhelp
+/doc/*.devhelp
 /doc/clipsmm_doxygen_tags
 /doc/doxygen-output.txt
 /doc/doxygen-warnings.txt
