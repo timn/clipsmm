@@ -25,6 +25,8 @@
 #include <map>
 #include <queue>
 
+#include <cstdio>
+
 #include <sigc++/sigc++.h>
 #include <glibmm.h>
 
@@ -524,6 +526,17 @@ namespace CLIPS {
       Glib::Mutex m_mutex_run_signal; /**< Mutex that protects against multiple signal emits */
       sigc::signal<void, long int> m_signal_run; /**< Signal emitted when a job is run */
 
+      /** Map from function name to restrictions.
+
+       * This is required for some versions of GCC (at least on
+       * 4.4.3), where the argstring in add_function() would point to
+       * the very same memory on consecutive calls for the same
+       * overloaded version, which would lead to the signature of a
+       * function in CLIPS being wrong if functions with the same
+       * number of arguments but different types would be added.
+       */
+      std::map<std::string, char *> m_func_restr;
+
       /** Protected method that does the actual work */
       void threaded_run();
 
@@ -703,6 +716,30 @@ namespace CLIPS {
       int ( *get_callback( const sigc::slot7<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>& slot ))( void* )
         { return (int(*)(void*)) (T_return(*)(void*)) callback<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>; }
 
+      char * get_function_restriction(std::string &name);
+
+      template <typename T_arg1>
+        char * get_function_restriction(std::string &name);
+
+      template <typename T_arg1, typename T_arg2>
+        char * get_function_restriction(std::string &name);
+
+      template <typename T_arg1, typename T_arg2, typename T_arg3>
+        char * get_function_restriction(std::string &name);
+
+      template <typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4>
+        char * get_function_restriction(std::string &name);
+
+      template <typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5>
+        char * get_function_restriction(std::string &name);
+
+      template <typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5, typename T_arg6>
+        char * get_function_restriction(std::string &name);
+
+      template <typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4, typename T_arg5, typename T_arg6, typename T_arg7>
+        char * get_function_restriction(std::string &name);
+
+
       static int get_arg_count( void* env );
       static void* get_function_context( void* env );
       static void  set_return_values( void *env, void *rv, const Values &v);
@@ -710,6 +747,88 @@ namespace CLIPS {
 
 
   };
+
+
+  inline char *
+  Environment::get_function_restriction(std::string &name) {
+    if (m_func_restr.find(name) != m_func_restr.end())  free(m_func_restr[name]);
+    char *restr = (char *)malloc(4); m_func_restr[name] = restr;
+    snprintf(restr, 4, "00u");
+    return restr;
+  }
+
+  template <typename T_arg1>
+  inline char *
+  Environment::get_function_restriction(std::string &name) {
+    if (m_func_restr.find(name) != m_func_restr.end())  free(m_func_restr[name]);
+    char *restr = (char *)malloc(5); m_func_restr[name] = restr;
+    snprintf(restr, 5, "11u%c", get_argument_code<T_arg1>());
+    return restr;
+  }
+
+  template <typename T_arg1, typename T_arg2>
+  inline char *
+  Environment::get_function_restriction(std::string &name) {
+    if (m_func_restr.find(name) != m_func_restr.end())  free(m_func_restr[name]);
+    char *restr = (char *)malloc(6); m_func_restr[name] = restr;
+    snprintf(restr, 6, "22u%c%c", get_argument_code<T_arg1>(), get_argument_code<T_arg2>());
+    return restr;
+  }
+
+  template <typename T_arg1, typename T_arg2, typename T_arg3>
+  inline char *
+  Environment::get_function_restriction(std::string &name) {
+    if (m_func_restr.find(name) != m_func_restr.end())  free(m_func_restr[name]);
+    char *restr = (char *)malloc(7); m_func_restr[name] = restr;
+    snprintf(restr, 7, "33u%c%c%c", get_argument_code<T_arg1>(), get_argument_code<T_arg2>(),
+             get_argument_code<T_arg3>());
+    return restr;
+  }
+
+  template <typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4>
+  inline char *
+  Environment::get_function_restriction(std::string &name) {
+    if (m_func_restr.find(name) != m_func_restr.end())  free(m_func_restr[name]);
+    char *restr = (char *)malloc(8); m_func_restr[name] = restr;
+    snprintf(restr, 8, "44u%c%c%c%c", get_argument_code<T_arg1>(), get_argument_code<T_arg2>(),
+             get_argument_code<T_arg3>(), get_argument_code<T_arg4>());
+    return restr;
+  }
+
+  template <typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4,
+    typename T_arg5>
+  inline char *
+  Environment::get_function_restriction(std::string &name) {
+    if (m_func_restr.find(name) != m_func_restr.end())  free(m_func_restr[name]);
+    char *restr = (char *)malloc(9); m_func_restr[name] = restr;
+    snprintf(restr, 9, "55u%c%c%c%c%c", get_argument_code<T_arg1>(), get_argument_code<T_arg2>(),
+             get_argument_code<T_arg3>(), get_argument_code<T_arg4>(), get_argument_code<T_arg5>());
+    return restr;
+  }
+
+  template <typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4,
+    typename T_arg5, typename T_arg6>
+  inline char *
+  Environment::get_function_restriction(std::string &name) {
+    if (m_func_restr.find(name) != m_func_restr.end())  free(m_func_restr[name]);
+    char *restr = (char *)malloc(10); m_func_restr[name] = restr;
+    snprintf(restr, 10, "66u%c%c%c%c%c%c", get_argument_code<T_arg1>(), get_argument_code<T_arg2>(),
+             get_argument_code<T_arg3>(), get_argument_code<T_arg4>(), get_argument_code<T_arg5>(),
+             get_argument_code<T_arg6>());
+    return restr;
+  }
+
+  template <typename T_arg1, typename T_arg2, typename T_arg3, typename T_arg4,
+    typename T_arg5, typename T_arg6, typename T_arg7>
+  inline char *
+  Environment::get_function_restriction(std::string &name) {
+    if (m_func_restr.find(name) != m_func_restr.end())  free(m_func_restr[name]);
+    char *restr = (char *)malloc(11); m_func_restr[name] = restr;
+    snprintf(restr, 11, "77u%c%c%c%c%c%c%c", get_argument_code<T_arg1>(), get_argument_code<T_arg2>(),
+             get_argument_code<T_arg3>(), get_argument_code<T_arg4>(), get_argument_code<T_arg5>(),
+             get_argument_code<T_arg6>(), get_argument_code<T_arg7>());
+    return restr;
+  }
 
 
   template < typename T_return>
@@ -1245,7 +1364,7 @@ template < typename T_return >
   inline
   bool Environment::add_function( std::string name, const sigc::slot0<T_return>& slot) {
     char retcode = get_return_code<T_return>( );
-    char argstring[ 10 ] = { '0', '0', 'u', 0x00 };
+    char *argstring = get_function_restriction(name);
     sigc::slot0<T_return>* scb = new sigc::slot0<T_return>(slot);
     any holder = CLIPSPointer<sigc::slot0<T_return> >(scb);
     m_slots[name] = holder;
@@ -1262,8 +1381,7 @@ template < typename T_return >
   inline
   bool Environment::add_function( std::string name, const sigc::slot1<T_return, T_arg1>& slot) {
     char retcode = get_return_code<T_return>( );
-    char argstring[ 10 ] = { '1', '1', 'u', 0x00 };
-    argstring[ 3 ] = get_argument_code<T_arg1>( );
+    char *argstring = get_function_restriction<T_arg1>(name);
     sigc::slot1<T_return, T_arg1>* scb = new sigc::slot1<T_return, T_arg1>(slot);
     any holder = CLIPSPointer<sigc::slot1<T_return, T_arg1> >(scb);
     m_slots[name] = holder;
@@ -1280,9 +1398,7 @@ template < typename T_return >
   inline
   bool Environment::add_function( std::string name, const sigc::slot2<T_return, T_arg1, T_arg2>& slot) {
     char retcode = get_return_code<T_return>( );
-    char argstring[ 10 ] = { '2', '2', 'u', 0x00 };
-    argstring[ 3 ] = get_argument_code<T_arg1>( );
-    argstring[ 4 ] = get_argument_code<T_arg2>( );
+    char *argstring = get_function_restriction<T_arg1,T_arg2>(name);
     sigc::slot2<T_return, T_arg1, T_arg2>* scb = new sigc::slot2<T_return, T_arg1, T_arg2>(slot);
     any holder = CLIPSPointer<sigc::slot2<T_return, T_arg1, T_arg2> >(scb);
     m_slots[name] = holder;
@@ -1299,10 +1415,7 @@ template < typename T_return >
   inline
   bool Environment::add_function( std::string name, const sigc::slot3<T_return,T_arg1,T_arg2,T_arg3>& slot) {
     char retcode = get_return_code<T_return>( );
-    char argstring[ 10 ] = { '3', '3', 'u', 0x00 };
-    argstring[ 3 ] = get_argument_code<T_arg1>( );
-    argstring[ 4 ] = get_argument_code<T_arg2>( );
-    argstring[ 5 ] = get_argument_code<T_arg3>( );
+    char *argstring = get_function_restriction<T_arg1,T_arg2,T_arg3>(name);
     sigc::slot3<T_return,T_arg1,T_arg2,T_arg3>* scb =
         new sigc::slot3<T_return,T_arg1,T_arg2,T_arg3>(slot);
     any holder = CLIPSPointer<sigc::slot3<T_return,T_arg1,T_arg2,T_arg3> >(scb);
@@ -1321,11 +1434,7 @@ template < typename T_return >
   inline
   bool Environment::add_function( std::string name, const sigc::slot4<T_return,T_arg1,T_arg2,T_arg3,T_arg4>& slot) {
     char retcode = get_return_code<T_return>( );
-    char argstring[ 10 ] = { '4', '4', 'u', 0x00 };
-    argstring[ 3 ] = get_argument_code<T_arg1>( );
-    argstring[ 4 ] = get_argument_code<T_arg2>( );
-    argstring[ 5 ] = get_argument_code<T_arg3>( );
-    argstring[ 6 ] = get_argument_code<T_arg4>( );
+    char *argstring = get_function_restriction<T_arg1,T_arg2,T_arg3,T_arg4>(name);
     sigc::slot4<T_return,T_arg1,T_arg2,T_arg3,T_arg4>* scb =
         new sigc::slot4<T_return,T_arg1,T_arg2,T_arg3,T_arg4>(slot);
     any holder = CLIPSPointer<sigc::slot4<T_return,T_arg1,T_arg2,T_arg3,T_arg4> >(scb);
@@ -1345,12 +1454,7 @@ template < typename T_return >
   bool Environment::add_function( std::string name,
                               const sigc::slot5<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5>& slot) {
     char retcode = get_return_code<T_return>( );
-    char argstring[ 10 ] = { '5', '5', 'u', 0x00 };
-    argstring[ 3 ] = get_argument_code<T_arg1>( );
-    argstring[ 4 ] = get_argument_code<T_arg2>( );
-    argstring[ 5 ] = get_argument_code<T_arg3>( );
-    argstring[ 6 ] = get_argument_code<T_arg4>( );
-    argstring[ 7 ] = get_argument_code<T_arg5>( );
+    char *argstring = get_function_restriction<T_arg1,T_arg2,T_arg3,T_arg4,T_arg5>(name);
     sigc::slot5<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5>* scb =
         new sigc::slot5<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5>(slot);
     any holder = CLIPSPointer<sigc::slot5<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5> >(scb);
@@ -1370,13 +1474,7 @@ template < typename T_return >
   bool Environment::add_function( std::string name,
                               const sigc::slot6<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6>& slot) {
     char retcode = get_return_code<T_return>( );
-    char argstring[ 10 ] = { '6', '6', 'u', 0x00 };
-    argstring[ 3 ] = get_argument_code<T_arg1>( );
-    argstring[ 4 ] = get_argument_code<T_arg2>( );
-    argstring[ 5 ] = get_argument_code<T_arg3>( );
-    argstring[ 6 ] = get_argument_code<T_arg4>( );
-    argstring[ 7 ] = get_argument_code<T_arg5>( );
-    argstring[ 8 ] = get_argument_code<T_arg6>( );
+    char *argstring = get_function_restriction<T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6>(name);
     sigc::slot6<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6>* scb =
         new sigc::slot6<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6>(slot);
     any holder = CLIPSPointer<sigc::slot6<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6> >(scb);
@@ -1396,14 +1494,7 @@ template < typename T_return >
   bool Environment::add_function( std::string name,
                                   const sigc::slot7<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>& slot) {
     char retcode = get_return_code<T_return>( );
-    char argstring[ 10 ] = { '7', '7', 'u', 0x00 };
-    argstring[ 3 ] = get_argument_code<T_arg1>( );
-    argstring[ 4 ] = get_argument_code<T_arg2>( );
-    argstring[ 5 ] = get_argument_code<T_arg3>( );
-    argstring[ 6 ] = get_argument_code<T_arg4>( );
-    argstring[ 7 ] = get_argument_code<T_arg5>( );
-    argstring[ 8 ] = get_argument_code<T_arg6>( );
-    argstring[ 9 ] = get_argument_code<T_arg7>( );
+    char *argstring = get_function_restriction<T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>(name);
     sigc::slot7<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>* scb =
         new sigc::slot7<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>(slot);
     any holder = CLIPSPointer<sigc::slot7<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7> >(scb);
