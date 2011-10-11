@@ -1509,28 +1509,6 @@ template < typename T_return >
            );
   }
 
-
-/** Add function that returns multifield value.
- */
-template <>
-  inline
-  bool Environment::add_function( std::string name,
-                                  const sigc::slot0<Values>& slot)
-  {
-    char retcode = get_return_code<Values>( );
-    char argstring[ 10 ] = { '0', '0', 'u', 0x00 };
-    sigc::slot0<Values>* scb = new sigc::slot0<Values>(slot);
-    any holder = CLIPSPointer<sigc::slot0<Values> >(scb);
-    m_slots[name] = holder;
-    return ( EnvDefineFunction2WithContext( m_cobj,
-                                 const_cast<char*>( name.c_str() ),
-                                 retcode,
-                                 get_callback(slot),
-                                 const_cast<char*>( name.c_str() ),
-                                 argstring,
-                                 ( void* ) scb ) );
-  }
-
 }
 
 
