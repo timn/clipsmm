@@ -102,7 +102,7 @@ namespace CLIPS {
         }
         return values;
       default:
-        std::cout << std::endl << "Type: " << GetType(clipsdo) << std::endl;
+        //std::cout << std::endl << "Type: " << GetType(clipsdo) << std::endl;
         throw std::logic_error( "clipsmm::data_object_to_values: Unhandled data object type" );
     }
   }
