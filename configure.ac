@@ -133,10 +133,10 @@ AC_DEFUN(
 )
 
 AC_MSG_CHECKING([for c++0x smart pointers])
-AS_IF([test "$ac_cv_cxx_compile_cxx0x_native" = yes ||
-       test "$ac_cv_cxx_compile_cxx0x_cxx" = yes],
+AS_IF([test "$ax_cv_cxx_compile_cxx0x_native" = yes ||
+       test "$ax_cv_cxx_compile_cxx0x_cxx" = yes],
       [
-        AS_IF([test "$ac_cv_cxx_compile_cxx0x_cxx" = yes],
+        AS_IF([test "$ax_cv_cxx_compile_cxx0x_cxx" = yes],
               [ CXXFLAGS="$CXXFLAGS -std=c++0x"
                 AC_SUBST(CXXFLAGS)
                 CPP0XFLAGS="-std=c++0x"
