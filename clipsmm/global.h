@@ -47,6 +47,7 @@ public:
     Values value();
 
     void set_value( const Values& values );
+    void set_value( const Value& values );
 
     void reset_value();
 
