@@ -114,19 +114,19 @@ namespace CLIPS {
 
     SetpType(clipsdo, value.type() );
     switch ( value.type() ) {
-      case SYMBOL:
-      case STRING:
-      case INSTANCE_NAME:
+      case TYPE_SYMBOL:
+      case TYPE_STRING:
+      case TYPE_INSTANCE_NAME:
         p = EnvAddSymbol( env.cobj(),
                           const_cast<char*>( value.as_string().c_str())
                         );
         SetpValue(clipsdo, p);
         return clipsdo;
-      case INTEGER:
+      case TYPE_INTEGER:
         p = EnvAddLong( env.cobj(), value.as_integer() );
         SetpValue(clipsdo, p);
         return clipsdo;
-      case FLOAT:
+      case TYPE_FLOAT:
         p = EnvAddDouble( env.cobj(), value.as_float() );
         SetpValue(clipsdo, p);
         return clipsdo;
@@ -153,19 +153,19 @@ namespace CLIPS {
     for (unsigned int iter = 0; iter < values.size(); iter++) {
       SetMFType(p, iter, values[iter].type());
       switch ( values[iter].type() ) {
-        case SYMBOL:
-        case STRING:
-        case INSTANCE_NAME:
+        case TYPE_SYMBOL:
+        case TYPE_STRING:
+        case TYPE_INSTANCE_NAME:
           p2 = EnvAddSymbol( env.cobj(),
                              const_cast<char*>(values[iter].as_string().c_str())
                            );
           SetMFValue(p, iter, p2);
           break;
-        case INTEGER:
+        case TYPE_INTEGER:
           p2 = EnvAddLong( env.cobj(), values[iter].as_integer() );
           SetMFValue(p, iter, p2);
           break;
-        case FLOAT:
+        case TYPE_FLOAT:
           p2 = EnvAddDouble( env.cobj(), values[iter].as_float() );
           SetMFValue(p, iter, p2);
           break;
