@@ -57,6 +57,12 @@ Environment::~Environment()
   m_environment_map.erase(m_cobj);
 
   DestroyEnvironment( m_cobj );
+
+  std::map<std::string, char *>::iterator r;
+  for (r = m_func_restr.begin(); r != m_func_restr.end(); ++r) {
+    free(r->second);
+  }
+  m_func_restr.clear();
 }
 
 bool Environment::batch_evaluate( const std::string& filename ) {
@@ -593,6 +599,10 @@ bool Environment::remove_function( std::string name )
 {
   bool result = UndefineFunction( m_cobj, const_cast<char*>(name.c_str()) );
   m_slots.erase(name);
+  if (m_func_restr.find(name) != m_func_restr.end()) {
+    free(m_func_restr[name]);
+    m_func_restr.erase(name);
+  }
   return result;
 }
 
