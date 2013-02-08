@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Rick L. Vinyard, Jr.                            *
- *   rvinyard@cs.nmsu.edu                                                  *
+ *   Copyright (C) 2006 by Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>     *
+ *   Copyright (C) 2013 by Tim Niemueller <tim@niemueller.de>              *
  *                                                                         *
  *   This file is part of the clipsmm library.                             *
  *                                                                         *
@@ -27,19 +27,25 @@ extern "C" {
 
 namespace CLIPS {
 
-  Fact::Fact( Environment& environment, void* cobj ) :
-      EnvironmentObject(environment, cobj)
-      {
-        if (m_cobj)
-    EnvIncrementFactCount( m_environment.cobj(), m_cobj );
+  Fact::Fact( Environment& environment, void* cobj )
+    : EnvironmentObject(environment, cobj)
+  {
+    if (m_cobj)
+      EnvIncrementFactCount( m_environment.cobj(), m_cobj );
   }
 
   Fact::pointer Fact::create( Environment& environment, void* cobj ) {
     return Fact::pointer( new Fact( environment, cobj ) );
   }
 
+  Fact::pointer Fact::create( Environment& environment, Template::pointer temp ) {
+    struct fact * f = EnvCreateFact(environment.cobj(), temp->cobj());
+    return Fact::pointer( new Fact( environment, f ) );
+  }
+
   Fact::~Fact() {
-    EnvDecrementFactCount( m_environment.cobj(), m_cobj );
+    if (m_cobj)
+      EnvDecrementFactCount( m_environment.cobj(), m_cobj );
   }
 
   bool Fact::assign_slot_defaults() {
@@ -60,13 +66,13 @@ namespace CLIPS {
       return Template::pointer();
   }
 
-  bool Fact::exists() {
+  bool Fact::exists() const {
     if ( m_cobj )
       return EnvFactExistp( m_environment.cobj(), m_cobj );
     return false;
   }
 
-  long int Fact::index() {
+  long int Fact::index() const {
     if ( m_cobj )
       return EnvFactIndex( m_environment.cobj(), m_cobj );
     return -1;
@@ -123,9 +129,9 @@ Fact::pointer Fact::next( )
 
 bool Fact::retract( )
 {
-	if ( !m_cobj )
-		return false;
-	return EnvRetract( m_environment.cobj(), m_cobj );
+  if ( !m_cobj )
+    return false;
+  return EnvRetract( m_environment.cobj(), m_cobj );
 }
 
 bool Fact::set_slot( const std::string & slot_name, const Value & value )

@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Rick L. Vinyard, Jr.                            *
- *   rvinyard@cs.nmsu.edu                                                  *
+ *   Copyright (C) 2006 by Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>     *
+ *   Copyright (C) 2013 by Tim Niemueller <tim@niemueller.de>              *
  *                                                                         *
  *   This file is part of the clipsmm library.                             *
  *                                                                         *
@@ -38,6 +38,7 @@ public:
     Fact( Environment& environment, void* cobj=NULL );
 
     static Fact::pointer create( Environment& environment, void* cobj=NULL );
+    static Fact::pointer create( Environment& environment, Template::pointer temp );
 
     ~Fact();
 
@@ -54,22 +55,22 @@ public:
      * Indicates whether a fact is still in the fact list or has been retracted
      * @return true if the fact is still in the fact list, false otherwise
      */
-    bool exists();
+    bool exists() const;
 
     /**
      * Returns the fact index of a fact
      * @return the index of the fact or -1 if this fact object is uninitialized
      */
-    long int index();
+    long int index() const;
 
     /** Returns the slot names associated with this fact */
     std::vector<std::string> slot_names();
 
-		/** Return the values contained within a slot */
+    /** Return the values contained within a slot */
     Values slot_value(const std::string& slot_name);
 
-		/** Returns the next fact in the fact list */
-		Fact::pointer next();
+    /** Returns the next fact in the fact list */
+    Fact::pointer next();
 
     /** Sets the named slot to a specific value or values */
     bool set_slot(const std::string& slot_name, const Values& values);
@@ -78,7 +79,7 @@ public:
     bool set_slot(const std::string& slot_name, const Value& value);
 
     /** Retracts a fact from the fact list */
-		bool retract();
+    bool retract();
 
   protected:
 
