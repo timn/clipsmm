@@ -50,6 +50,7 @@ namespace CLIPS {
   template <typename T_return> inline char get_return_code() {
     throw std::logic_error("clipsmm: Adding function with invalid return type");
   }
+  template <> inline char get_return_code<void *>()      { return 'a'; }
   template <> inline char get_return_code<bool>()        { return 'b'; }
   template <> inline char get_return_code<char>()        { return 'c'; }
   template <> inline char get_return_code<double>()      { return 'd'; }
@@ -63,6 +64,7 @@ namespace CLIPS {
   template <typename T_return> inline char get_argument_code() {
     throw std::logic_error("clipsmm: Adding function with invalid argument type");
   }
+  template <> inline char get_argument_code<void *>()      { return 'a'; }
   template <> inline char get_argument_code<double>()      { return 'd'; }
   template <> inline char get_argument_code<float>()       { return 'f'; }
   template <> inline char get_argument_code<int>()         { return 'i'; }

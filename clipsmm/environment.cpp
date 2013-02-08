@@ -824,6 +824,16 @@ void Environment::set_return_values( void *env, void *rv, const Values &v ) {
       SetMFValue(mfptr, mfi,
                  EnvAddSymbol(env, const_cast<char*>(v[i].as_string().c_str())));
       break;
+    case TYPE_INSTANCE_NAME:
+      SetMFType(mfptr, mfi, INSTANCE_NAME);
+      SetMFValue(mfptr, mfi,
+                 EnvAddSymbol(env, const_cast<char*>(v[i].as_string().c_str())));
+      break;
+    case TYPE_EXTERNAL_ADDRESS:
+      SetMFType(mfptr, mfi, EXTERNAL_ADDRESS);
+      SetMFValue(mfptr, mfi,
+		 EnvAddExternalAddress(env, (char*)v[i].as_string().c_str(), EXTERNAL_ADDRESS));
+      break;
     default:
       throw std::logic_error("clipsmm: value type not supported for multifield return value");
     }

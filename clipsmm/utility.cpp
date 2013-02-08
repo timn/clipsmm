@@ -67,6 +67,14 @@ namespace CLIPS {
     return strings;
   }
 
+  void get_argument(void* env, int argposition, void *& value) {
+    struct dataObject obj;
+    EnvRtnUnknown(env, argposition, &obj);
+    if (obj.type == EXTERNAL_ADDRESS) {
+      value = obj.value;
+    }
+  }
+
   void get_argument(void* env, int argposition, double& value) {
     value = EnvRtnDouble(env, argposition);
   }
