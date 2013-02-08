@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Rick L. Vinyard, Jr.                            *
- *   rvinyard@cs.nmsu.edu                                                  *
+ *   Copyright (C) 2006 by Rick L. Vinyard, Jr.  <rvinyard@cs.nmsu.edu>    *
+ *   Copyright (C) 2013 by Tim Niemueller [http://www.niemueller.de]       *
  *                                                                         *
  *   This file is part of the clipsmm library.                             *
  *                                                                         *
@@ -188,6 +188,8 @@ namespace CLIPS {
     }
     SetpType(clipsdo, MULTIFIELD);
     SetpValue(clipsdo, p);
+    SetpDOBegin(clipsdo, 1);
+    SetpDOEnd(clipsdo, values.size());
     return clipsdo;
   }
 
