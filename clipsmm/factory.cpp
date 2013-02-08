@@ -72,7 +72,7 @@ namespace CLIPS {
         values.push_back( Value( p, TYPE_INSTANCE_ADDRESS ) );
         return values;
       case EXTERNAL_ADDRESS:
-        p = DOToPointer( clipsdo );
+        p = (((struct externalAddressHashNode *) (clipsdo.value))->externalAddress);
         values.push_back( Value( p, TYPE_EXTERNAL_ADDRESS ) );
         return values;
       case MULTIFIELD:
@@ -96,6 +96,10 @@ namespace CLIPS {
               i = ValueToLong( GetMFValue( mfptr, iter ) );
               values.push_back( Value( i ) );
               break;
+	  case EXTERNAL_ADDRESS:
+	    p = ValueToExternalAddress( GetMFValue( mfptr, iter ) );
+	    values.push_back( Value( p, TYPE_EXTERNAL_ADDRESS ) );
+	    break;
             default:
               throw std::logic_error( "clipsmm::data_object_to_values: Unhandled multifield type" );
           }
@@ -128,6 +132,10 @@ namespace CLIPS {
         return clipsdo;
       case TYPE_FLOAT:
         p = EnvAddDouble( env.cobj(), value.as_float() );
+        SetpValue(clipsdo, p);
+        return clipsdo;
+      case TYPE_EXTERNAL_ADDRESS:
+        p = EnvAddExternalAddress( env.cobj(), value.as_address(), EXTERNAL_ADDRESS );
         SetpValue(clipsdo, p);
         return clipsdo;
       default:
@@ -169,6 +177,10 @@ namespace CLIPS {
           p2 = EnvAddDouble( env.cobj(), values[iter].as_float() );
           SetMFValue(p, iter, p2);
           break;
+      case TYPE_EXTERNAL_ADDRESS:
+        p2 = EnvAddExternalAddress( env.cobj(), values[iter].as_address(), EXTERNAL_ADDRESS );
+	SetMFValue(p, mfi, p2);
+	break;
         default:
           throw std::logic_error( "clipsmm::value_to_data_object: Unhandled data object type" );
       }
