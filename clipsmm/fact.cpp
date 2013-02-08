@@ -137,27 +137,31 @@ bool Fact::retract( )
 bool Fact::set_slot( const std::string & slot_name, const Value & value )
 {
   DATA_OBJECT* clipsdo = value_to_data_object( m_environment, value );
-  if ( !clipsdo || !m_cobj )
+  if ( !clipsdo || !m_cobj ) {
+    delete clipsdo;
     return false;
-  return EnvPutFactSlot( m_environment.cobj(),
-                         m_cobj,
-                         const_cast<char*>(slot_name.c_str()),
-                         clipsdo
-                       );
+  }
+  bool rv = EnvPutFactSlot( m_environment.cobj(),
+			    m_cobj,
+			    const_cast<char*>(slot_name.c_str()),
+			    clipsdo);
   delete clipsdo;
+  return rv;
 }
 
 bool Fact::set_slot( const std::string & slot_name, const Values & values )
 {
   DATA_OBJECT* clipsdo = value_to_data_object( m_environment, values );
-  if ( !clipsdo || !m_cobj )
+  if ( !clipsdo || !m_cobj ) {
+    delete clipsdo;
     return false;
-  return EnvPutFactSlot( m_environment.cobj(),
-                         m_cobj,
-                         const_cast<char*>(slot_name.c_str()),
-                         clipsdo
-                       );
+  }
+  bool rv = EnvPutFactSlot( m_environment.cobj(),
+			    m_cobj,
+			    const_cast<char*>(slot_name.c_str()),
+			    clipsdo);
   delete clipsdo;
+  return rv;
 }
 
 }
