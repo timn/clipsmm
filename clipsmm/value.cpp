@@ -120,6 +120,7 @@ namespace CLIPS {
       void* Value::as_address() const {
         switch ( m_clips_type ) {
           case TYPE_EXTERNAL_ADDRESS:
+            return m_value;
           case TYPE_INSTANCE_ADDRESS:
             return *static_cast<int**>(m_value);
           default:
@@ -194,7 +195,11 @@ namespace CLIPS {
         if ( ! ( m_clips_type == TYPE_EXTERNAL_ADDRESS ||
                  m_clips_type == TYPE_INSTANCE_ADDRESS ) )
           throw std::logic_error("Invalid set( void* x ) on non-address value");
-        *static_cast<int**>(m_value) = static_cast<int*>(x);
+	if (m_clips_type == TYPE_EXTERNAL_ADDRESS) {
+	  m_value = x;
+	} else {
+          *static_cast<int**>(m_value) = static_cast<int*>(x);
+	}
         m_signal_changed.emit();
         return *this;
       }
@@ -250,6 +255,8 @@ namespace CLIPS {
           case TYPE_INSTANCE_NAME:
             return sizeof( *static_cast<std::string*>(m_value) );
           case TYPE_EXTERNAL_ADDRESS:
+            return sizeof(void*);
+
           case TYPE_INSTANCE_ADDRESS:
             return sizeof(int*);
         }
@@ -311,6 +318,8 @@ namespace CLIPS {
             *static_cast<std::string*>(m_value) = *static_cast<std::string*>(x.m_value);
             break;
           case TYPE_EXTERNAL_ADDRESS:
+	    m_value = x.m_value;
+
           case TYPE_INSTANCE_ADDRESS:
             *static_cast<int**>(m_value) = *static_cast<int**>(x.m_value);
             break;
@@ -420,6 +429,8 @@ namespace CLIPS {
             m_value = new std::string;
             break;
           case TYPE_EXTERNAL_ADDRESS:
+	    m_value = NULL;
+	    break;
           case TYPE_INSTANCE_ADDRESS:
             m_value = new int*;
             break;
@@ -447,6 +458,9 @@ namespace CLIPS {
             delete static_cast<std::string*>(m_value);
             break;
           case TYPE_EXTERNAL_ADDRESS:
+	    m_value = NULL;
+	    break;
+
           case TYPE_INSTANCE_ADDRESS:
             delete static_cast<int**>(m_value);
             break;
