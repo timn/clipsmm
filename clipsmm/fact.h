@@ -81,6 +81,11 @@ public:
     /** Retracts a fact from the fact list */
     bool retract();
 
+    bool operator==(const Fact &other) const;
+    bool operator==(const Fact::pointer &other) const; 
+
+    unsigned int refcount() const;
+
   protected:
 
 };

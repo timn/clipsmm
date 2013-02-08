@@ -164,4 +164,24 @@ bool Fact::set_slot( const std::string & slot_name, const Values & values )
   return rv;
 }
 
+
+bool Fact::operator==(const Fact &other) const
+{
+  return (index() == other.index());
+}
+
+bool Fact::operator==(const Fact::pointer &other) const
+{
+  return (index() == other->index());
+}
+
+unsigned int
+Fact::refcount() const
+{
+  if (!m_cobj)  return 0;
+
+  struct fact *f = (struct fact *)m_cobj;
+  return f->factHeader.busyCount;
+}
+
 }
