@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2006 by Rick L. Vinyard, Jr.  <rvinyard@cs.nmsu.edu>    *
- *   Copyright (C) 2011 by Tim Niemueller [http://www.niemueller.de]       *
+ *   Copyright (C) 2011-2013 by Tim Niemueller [http://www.niemueller.de]  *
  *                                                                         *
  *   This file is part of the clipsmm library.                             *
  *                                                                         *
@@ -268,6 +268,18 @@ bool Environment::global_reset_enable() {
 
 bool Environment::use_global_reset( bool use ) {
   return EnvSetResetGlobals( m_cobj, use );
+}
+
+
+Fact::pointer
+Environment::get_facts()
+{
+  void *f = EnvGetNextFact(m_cobj, NULL);
+  if (f) {
+    return Fact::create(*this, f);
+  } else {
+    return Fact::pointer();
+  }
 }
 
 DefaultFacts::pointer Environment::get_default_facts( const std::string & default_facts_name )

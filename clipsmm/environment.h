@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2006 by Rick L. Vinyard, Jr.  <rvinyard@cs.nmsu.edu>    *
- *   Copyright (C) 2011 by Tim Niemueller [http://www.niemueller.de]       *
+ *   Copyright (C) 2011-2013 by Tim Niemueller [http://www.niemueller.de]  *
  *                                                                         *
  *   This file is part of the clipsmm library.                             *
  *                                                                         *
@@ -260,6 +260,13 @@ namespace CLIPS {
       void clear_focus_stack();
 
       /** TODO Facts */
+
+      /** Get facts.
+       * @return pointer to the first fact in the environment, use Fact::next() to
+       * iterate over all facts. Returns an invalid pointer if no facts have been
+       * asserted, yet.
+       */
+      Fact::pointer get_facts();
 
       DefaultFacts::pointer get_default_facts( const std::string& default_facts_name );
 
