@@ -159,7 +159,8 @@ namespace CLIPS {
 
     p = EnvCreateMultifield( env.cobj(), values.size() );
     for (unsigned int iter = 0; iter < values.size(); iter++) {
-      SetMFType(p, iter, values[iter].type());
+      unsigned int mfi = iter + 1; // mfptr indices start at 1
+      SetMFType(p, mfi, values[iter].type());
       switch ( values[iter].type() ) {
         case TYPE_SYMBOL:
         case TYPE_STRING:
@@ -167,15 +168,15 @@ namespace CLIPS {
           p2 = EnvAddSymbol( env.cobj(),
                              const_cast<char*>(values[iter].as_string().c_str())
                            );
-          SetMFValue(p, iter, p2);
+          SetMFValue(p, mfi, p2);
           break;
         case TYPE_INTEGER:
           p2 = EnvAddLong( env.cobj(), values[iter].as_integer() );
-          SetMFValue(p, iter, p2);
+          SetMFValue(p, mfi, p2);
           break;
         case TYPE_FLOAT:
           p2 = EnvAddDouble( env.cobj(), values[iter].as_float() );
-          SetMFValue(p, iter, p2);
+          SetMFValue(p, mfi, p2);
           break;
       case TYPE_EXTERNAL_ADDRESS:
         p2 = EnvAddExternalAddress( env.cobj(), values[iter].as_address(), EXTERNAL_ADDRESS );
