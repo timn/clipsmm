@@ -440,6 +440,17 @@ Fact::pointer Environment::assert_fact( const std::string& factstring )
     return Fact::pointer();
 }
 
+
+Fact::pointer Environment::assert_fact( Fact::pointer fact )
+{
+  void* clips_fact = EnvAssert( m_cobj, fact->cobj() );
+  if ( clips_fact )
+    return Fact::create( *this, clips_fact );
+  else
+    return Fact::pointer();
+}
+
+
 Fact::pointer Environment::assert_fact_f(const char *format, ...)
 {
   va_list args;
