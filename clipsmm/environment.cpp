@@ -37,22 +37,22 @@ Environment::Environment():
 
   m_environment_map[m_cobj] = this;
 
-  if ( EnvAddClearFunction( m_cobj, "clipsmm_clear_callback", Environment::clear_callback, 2001 ) == 0 )
+  if ( EnvAddClearFunction( m_cobj, (char *)"clipsmm_clear_callback", Environment::clear_callback, 2001 ) == 0 )
     throw std::logic_error("clipsmm: Error adding clear callback to clips environment");
-  if ( EnvAddPeriodicFunction( m_cobj, "clipsmm_periodic_callback", Environment::periodic_callback, 2001 ) == 0 )
+  if ( EnvAddPeriodicFunction( m_cobj, (char *)"clipsmm_periodic_callback", Environment::periodic_callback, 2001 ) == 0 )
     throw std::logic_error("clipsmm: Error adding periodic callback to clips environment");
-  if ( EnvAddResetFunction( m_cobj, "clipsmm_reset_callback", Environment::reset_callback, 2001 ) == 0 )
+  if ( EnvAddResetFunction( m_cobj, (char *)"clipsmm_reset_callback", Environment::reset_callback, 2001 ) == 0 )
     throw std::logic_error("clipsmm: Error adding reset callback to clips environment");
-  if ( EnvAddRunFunction( m_cobj, "clipsmm_rule_firing_callback", Environment::rule_firing_callback, 2001 ) == 0 )
+  if ( EnvAddRunFunction( m_cobj, (char *)"clipsmm_rule_firing_callback", Environment::rule_firing_callback, 2001 ) == 0 )
     throw std::logic_error("clipsmm: Error adding rule firing callback to clips environment");
 }
 
 Environment::~Environment()
 {
-  EnvRemoveClearFunction( m_cobj, "clipsmm_clear_callback" );
-  EnvRemovePeriodicFunction( m_cobj, "clipsmm_periodic_callback" );
-  EnvRemoveResetFunction( m_cobj, "clipsmm_reset_callback" );
-  EnvRemoveRunFunction( m_cobj, "clipsmm_rule_firing_callback" );
+  EnvRemoveClearFunction( m_cobj, (char *)"clipsmm_clear_callback" );
+  EnvRemovePeriodicFunction( m_cobj, (char *)"clipsmm_periodic_callback" );
+  EnvRemoveResetFunction( m_cobj, (char *)"clipsmm_reset_callback" );
+  EnvRemoveRunFunction( m_cobj, (char *)"clipsmm_rule_firing_callback" );
 
   m_environment_map.erase(m_cobj);
 
