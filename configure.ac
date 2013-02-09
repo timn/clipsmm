@@ -23,7 +23,7 @@
 #########################################################################
 pushdef([PACKAGE_MAJOR_VERSION], [0])
 pushdef([PACKAGE_MINOR_VERSION], [3])
-pushdef([PACKAGE_MICRO_VERSION], [0])
+pushdef([PACKAGE_MICRO_VERSION], [1])
 pushdef([PKG_VERSION], PACKAGE_MAJOR_VERSION.PACKAGE_MINOR_VERSION.PACKAGE_MICRO_VERSION)
 
 AC_INIT([clipsmm], PKG_VERSION, [rvinyard@cs.nmsu.edu])
@@ -43,7 +43,7 @@ popdef([PKG_VERSION])
 #  ? :  ? :  0 == no new interfaces, but breaks apps
 #  ? : +1 :  ? == just some internal changes, nothing breaks but might work better
 # CURRENT : REVISION : AGE
-LIBTOOL_SO_VERSION=2:0:1
+LIBTOOL_SO_VERSION=2:0:2
 LIBTOOL_SO_VERSION_MAJOR=0
 AC_SUBST(LIBTOOL_SO_VERSION)
 AC_SUBST(LIBTOOL_SO_VERSION_MAJOR)
