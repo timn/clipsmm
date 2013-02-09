@@ -848,6 +848,11 @@ void Environment::set_return_values( void *env, void *rv, const Values &v ) {
   SetpDOEnd(rvptr, v.size());
 }
 
+void Environment::set_return_value( void *env, void *rv, const Value &v)
+{
+  value_to_data_object_rawenv(env, v, (struct dataObject *)rv);
+}
+
 void* Environment::add_symbol( const char* s ) {
   return AddSymbol( const_cast<char*>(s) );
 }
