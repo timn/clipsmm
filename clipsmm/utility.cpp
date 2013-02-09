@@ -71,7 +71,7 @@ namespace CLIPS {
     struct dataObject obj;
     EnvRtnUnknown(env, argposition, &obj);
     if (obj.type == EXTERNAL_ADDRESS) {
-      value = obj.value;
+      value = (((struct externalAddressHashNode *) (obj.value))->externalAddress);
     }
   }
 
