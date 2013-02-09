@@ -17,6 +17,7 @@
  *   along with this software. If not see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 #include "utility.h"
+#include "factory.h"
 
 #include <glibmm/thread.h>
 
@@ -133,6 +134,15 @@ namespace CLIPS {
         continue;
         break;
       }
+    }
+  }
+
+  void get_argument(void* env, int argposition, Value& value) {
+    struct dataObject obj;
+    EnvRtnUnknown(env, argposition, &obj);
+    Values values = data_object_to_values(obj);
+    if (values.size() > 0) {
+      value = values[0];
     }
   }
 
