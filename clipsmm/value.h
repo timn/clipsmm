@@ -27,6 +27,7 @@
 namespace CLIPS {
 
 typedef enum Type {
+  TYPE_UNKNOWN = -1,
   TYPE_FLOAT = 0,
   TYPE_INTEGER = 1,
   TYPE_SYMBOL = 2,
@@ -39,230 +40,233 @@ typedef enum Type {
 /**
 	@author Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
  */  
-  class Value: public sigc::trackable {
-    public:
+class Value: public sigc::trackable {
+ public:
 
-      /** Typeless constructor */
-      Value (Type type);
+  /** Typeless constructor */
+  Value ();
 
-      /** Constructor sets value and CLIPS type to FLOAT */
-      Value( float x );
+  /** Type constructor */
+  Value (Type type);
 
-      /** Constructor sets value and CLIPS type to FLOAT */
-      Value( double x );
+  /** Constructor sets value and CLIPS type to FLOAT */
+  Value( float x );
 
-      /** Constructor sets value and CLIPS type to INTEGER */
-      Value( short int x );
+  /** Constructor sets value and CLIPS type to FLOAT */
+  Value( double x );
 
-      /** Constructor sets value and CLIPS type to INTEGER */
-      Value( unsigned short int x );
+  /** Constructor sets value and CLIPS type to INTEGER */
+  Value( short int x );
 
-      /** Constructor sets value and CLIPS type to INTEGER */
-      Value( int x );
+  /** Constructor sets value and CLIPS type to INTEGER */
+  Value( unsigned short int x );
 
-      /** Constructor sets value and CLIPS type to INTEGER */
-      Value( unsigned int x );
+  /** Constructor sets value and CLIPS type to INTEGER */
+  Value( int x );
 
-      /** Constructor sets value and CLIPS type to INTEGER */
-      Value( long int x );
+  /** Constructor sets value and CLIPS type to INTEGER */
+  Value( unsigned int x );
 
-      /** Constructor sets value and CLIPS type */
-      Value( char* x, Type type=TYPE_STRING );
+  /** Constructor sets value and CLIPS type to INTEGER */
+  Value( long int x );
 
-      /** Constructor sets value and CLIPS type */
-      Value( const std::string& x, Type type=TYPE_STRING );
+  /** Constructor sets value and CLIPS type */
+  Value( char* x, Type type=TYPE_STRING );
+
+  /** Constructor sets value and CLIPS type */
+  Value( const std::string& x, Type type=TYPE_STRING );
       
-      /** Constructor sets value and CLIPS type to */
-      Value( void* x, Type type=TYPE_EXTERNAL_ADDRESS );
+  /** Constructor sets value and CLIPS type to */
+  Value( void* x, Type type=TYPE_EXTERNAL_ADDRESS );
 
-      Value( const Value& value );
+  Value( const Value& value );
 
-      /** Destructor */
-      ~Value();
+  /** Destructor */
+  ~Value();
 
-      double as_float() const;
-      long int as_integer() const;
-      std::string& as_string() const;
-      void* as_address() const;
+  double as_float() const;
+  long int as_integer() const;
+  std::string& as_string() const;
+  void* as_address() const;
 
-      Value& set( float x, bool change_type=false );
-      Value& set( double x, bool change_type=false  );
-      Value& set( short int x, bool change_type=false  );
-      Value& set( unsigned short int x, bool change_type=false  );
-      Value& set( int x, bool change_type=false  );
-      Value& set( unsigned int x, bool change_type=false  );
-      Value& set( long int x, bool change_type=false  );
-      Value& set( const std::string& x, bool change_type=false, Type type=TYPE_STRING );
-      Value& set( const char* x, bool change_type=false, Type type=TYPE_STRING );
-      Value& set( void* x, bool change_type=false, Type type=TYPE_EXTERNAL_ADDRESS  );
+  Value& set( float x, bool change_type=false );
+  Value& set( double x, bool change_type=false  );
+  Value& set( short int x, bool change_type=false  );
+  Value& set( unsigned short int x, bool change_type=false  );
+  Value& set( int x, bool change_type=false  );
+  Value& set( unsigned int x, bool change_type=false  );
+  Value& set( long int x, bool change_type=false  );
+  Value& set( const std::string& x, bool change_type=false, Type type=TYPE_STRING );
+  Value& set( const char* x, bool change_type=false, Type type=TYPE_STRING );
+  Value& set( void* x, bool change_type=false, Type type=TYPE_EXTERNAL_ADDRESS  );
       
-      operator float( ) const;
-      operator double( ) const;
-      operator short int( ) const;
-      operator unsigned short int( ) const;
-      operator int( ) const;
-      operator unsigned int( ) const;
-      operator long int( ) const;
-      operator std::string&( ) const;
-      operator const char*( ) const;
-      operator void*( ) const;
+  operator float( ) const;
+  operator double( ) const;
+  operator short int( ) const;
+  operator unsigned short int( ) const;
+  operator int( ) const;
+  operator unsigned int( ) const;
+  operator long int( ) const;
+  operator std::string&( ) const;
+  operator const char*( ) const;
+  operator void*( ) const;
 
-      /** Function call syntax to get the value with var() notation. */
-//       T& operator() () const { return this->get(); }
+  /** Function call syntax to get the value with var() notation. */
+  //       T& operator() () const { return this->get(); }
 
-      /** Function call syntax to set the value with var(value) notation. */
-//       Value<T,CLIPSType>& operator() ( const T& val ) {
-//         this->set( val );
-//         return *this;
-//       }
+  /** Function call syntax to set the value with var(value) notation. */
+  //       Value<T,CLIPSType>& operator() ( const T& val ) {
+  //         this->set( val );
+  //         return *this;
+  //       }
 
-      /** Returns the RTTI type id of the contained type */
-//       const std::type_info& type_info() const { return typeid( T ); }
+  /** Returns the RTTI type id of the contained type */
+  //       const std::type_info& type_info() const { return typeid( T ); }
 
-      /**
-       * Returns the size in bytes of the contained type,
-       * and not necessarily the size of this class.
-       */
-      size_t size() const;
+  /**
+   * Returns the size in bytes of the contained type,
+   * and not necessarily the size of this class.
+   */
+  size_t size() const;
 
-      /** Allows assignment to the property from the contained value type. */
-//       Value<T,CLIPSType>& operator= ( const T& val ) {
-//         this->set( val );
-//         return *this;
-//       }
+  /** Allows assignment to the property from the contained value type. */
+  //       Value<T,CLIPSType>& operator= ( const T& val ) {
+  //         this->set( val );
+  //         return *this;
+  //       }
 
-      Value& operator=( float x );
-      Value& operator=( double x );
-      Value& operator=( short int x );
-      Value& operator=( unsigned short int x );
-      Value& operator=( int x );
-      Value& operator=( unsigned int x );
-      Value& operator=( long int x );
-      Value& operator=( const std::string& x );
-      Value& operator=( const char* x );
-      Value& operator=( void* x );
-      Value& operator=( const Value& x );
+  Value& operator=( float x );
+  Value& operator=( double x );
+  Value& operator=( short int x );
+  Value& operator=( unsigned short int x );
+  Value& operator=( int x );
+  Value& operator=( unsigned int x );
+  Value& operator=( long int x );
+  Value& operator=( const std::string& x );
+  Value& operator=( const char* x );
+  Value& operator=( void* x );
+  Value& operator=( const Value& x );
       
-      bool operator==( float x ) const;
-      bool operator==( double x ) const;
-      bool operator==( short int x ) const;
-      bool operator==( unsigned short int x ) const;
-      bool operator==( int x ) const;
-      bool operator==( unsigned int x ) const;
-      bool operator==( long int x ) const;
-      bool operator==( const std::string& x ) const;
-      bool operator==( const char* x ) const;
-      bool operator==( void* x ) const;
+  bool operator==( float x ) const;
+  bool operator==( double x ) const;
+  bool operator==( short int x ) const;
+  bool operator==( unsigned short int x ) const;
+  bool operator==( int x ) const;
+  bool operator==( unsigned int x ) const;
+  bool operator==( long int x ) const;
+  bool operator==( const std::string& x ) const;
+  bool operator==( const char* x ) const;
+  bool operator==( void* x ) const;
 
-      bool operator!=( float x ) const;
-      bool operator!=( double x ) const;
-      bool operator!=( short int x ) const;
-      bool operator!=( unsigned short int x ) const;
-      bool operator!=( int x ) const;
-      bool operator!=( unsigned int x ) const;
-      bool operator!=( long int x ) const;
-      bool operator!=( const std::string& x ) const;
-      bool operator!=( const char* x ) const;
-      bool operator!=( void* x ) const;
+  bool operator!=( float x ) const;
+  bool operator!=( double x ) const;
+  bool operator!=( short int x ) const;
+  bool operator!=( unsigned short int x ) const;
+  bool operator!=( int x ) const;
+  bool operator!=( unsigned int x ) const;
+  bool operator!=( long int x ) const;
+  bool operator!=( const std::string& x ) const;
+  bool operator!=( const char* x ) const;
+  bool operator!=( void* x ) const;
 
-      /**
-       * Arithmetic assignment operator
-       *
-       * This method is implemented as a template for two reasons:
-       *  - So that it will work with a variety of operands
-       *  - So that a stub will not be generated if the operator is not defined for T
-       *
-       * T + X must be well defined
-       */
-//       template <typename X>
-//       Value& operator+=( X other ) {
-//         this->set( this->get() + other );
-//         return *this;
-//       }
+  /**
+   * Arithmetic assignment operator
+   *
+   * This method is implemented as a template for two reasons:
+   *  - So that it will work with a variety of operands
+   *  - So that a stub will not be generated if the operator is not defined for T
+   *
+   * T + X must be well defined
+   */
+  //       template <typename X>
+  //       Value& operator+=( X other ) {
+  //         this->set( this->get() + other );
+  //         return *this;
+  //       }
 
-      /**
-       * Arithmetic assignment operator
-       *
-       * This method is implemented as a template for two reasons:
-       *  - So that it will work with a variety of operands
-       *  - So that a stub will not be generated if the operator is not defined for T
-       *
-       * T - X must be well defined
-       */
-//       template <typename X>
-//       Value& operator-=( X other ) {
-//         this->set( this->get() - other );
-//         return *this;
-//       }
+  /**
+   * Arithmetic assignment operator
+   *
+   * This method is implemented as a template for two reasons:
+   *  - So that it will work with a variety of operands
+   *  - So that a stub will not be generated if the operator is not defined for T
+   *
+   * T - X must be well defined
+   */
+  //       template <typename X>
+  //       Value& operator-=( X other ) {
+  //         this->set( this->get() - other );
+  //         return *this;
+  //       }
 
-      /**
-       * Arithmetic assignment operator
-       *
-       * This method is implemented as a template for two reasons:
-       *  - So that it will work with a variety of operands
-       *  - So that a stub will not be generated if the operator is not defined for T
-       *
-       * T * X must be well defined
-       */
-//       template <typename X>
-//       Value& operator*=( X other ) {
-//         this->set( this->get() * other );
-//         return *this;
-//       }
+  /**
+   * Arithmetic assignment operator
+   *
+   * This method is implemented as a template for two reasons:
+   *  - So that it will work with a variety of operands
+   *  - So that a stub will not be generated if the operator is not defined for T
+   *
+   * T * X must be well defined
+   */
+  //       template <typename X>
+  //       Value& operator*=( X other ) {
+  //         this->set( this->get() * other );
+  //         return *this;
+  //       }
 
-      /**
-       * Arithmetic assignment operator
-       *
-       * This method is implemented as a template for two reasons:
-       *  - So that it will work with a variety of operands
-       *  - So that a stub will not be generated if the operator is not defined for T
-       *
-       * T / X must be well defined
-       */
-//       template <typename X>
-//       Value& operator/=( X other ) {
-//         this->set( this->get() / other );
-//         return *this;
-//       }
+  /**
+   * Arithmetic assignment operator
+   *
+   * This method is implemented as a template for two reasons:
+   *  - So that it will work with a variety of operands
+   *  - So that a stub will not be generated if the operator is not defined for T
+   *
+   * T / X must be well defined
+   */
+  //       template <typename X>
+  //       Value& operator/=( X other ) {
+  //         this->set( this->get() / other );
+  //         return *this;
+  //       }
 
-      /**
-       * Arithmetic assignment operator
-       *
-       * This method is implemented as a template for two reasons:
-       *  - So that it will work with a variety of operands
-       *  - So that a stub will not be generated if the operator is not defined for T
-       *
-       * T % X must be well defined
-       */
-//       template <typename X>
-//       Value& operator%=( X other ) {
-//         this->set( this->get() % other );
-//         return *this;
-//       }
+  /**
+   * Arithmetic assignment operator
+   *
+   * This method is implemented as a template for two reasons:
+   *  - So that it will work with a variety of operands
+   *  - So that a stub will not be generated if the operator is not defined for T
+   *
+   * T % X must be well defined
+   */
+  //       template <typename X>
+  //       Value& operator%=( X other ) {
+  //         this->set( this->get() % other );
+  //         return *this;
+  //       }
 
-      /** Returns the CLIPS library type of this value */
-      Type type() const;
+  /** Returns the CLIPS library type of this value */
+  Type type() const;
 
-      /** Sets the underlying storage type */
-      Type set_type( Type type );
+  /** Sets the underlying storage type */
+  Type set_type( Type type );
 
-      /** Signal emitted when the value is changed. */
-      sigc::signal<void> signal_changed();
+  /** Signal emitted when the value is changed. */
+  sigc::signal<void> signal_changed();
 
-    protected:
-      /** Storage for the underlying value */
-      void* m_value;
+ protected:
+  /** Storage for the underlying value */
+  void* m_value;
 
-      /** Stores the CLIPS type information */
-      Type m_clips_type;
+  /** Stores the CLIPS type information */
+  Type m_clips_type;
       
-      /** Signal emitted when underlying data is changed. */
-      sigc::signal<void> m_signal_changed;
+  /** Signal emitted when underlying data is changed. */
+  sigc::signal<void> m_signal_changed;
 
-      void deallocate_storage();
-  };
+  void deallocate_storage();
+};
 
-  typedef std::vector<Value> Values;
+ typedef std::vector<Value> Values;
 
 }
 

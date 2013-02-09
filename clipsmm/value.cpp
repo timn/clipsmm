@@ -22,6 +22,10 @@
 
 namespace CLIPS {
 
+      Value::Value(): m_value(NULL) {
+        this->set_type( TYPE_UNKNOWN );
+      }
+
       Value::Value(Type type): m_value(NULL) {
         this->set_type( type );
       }
