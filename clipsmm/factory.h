@@ -32,8 +32,15 @@ namespace CLIPS {
   Values data_object_to_values(dataObject* clipsdo);
   Values data_object_to_values(dataObject& clipsdo);
 
-	dataObject* value_to_data_object( const Environment& env, const Values& values );
-  dataObject* value_to_data_object( const Environment& env, const Value& value );
+  dataObject* value_to_data_object(const Environment& env, const Values& values,
+				   dataObject *obj = NULL);
+  dataObject* value_to_data_object(const Environment& env, const Value& value,
+				   dataObject *obj = NULL);
+
+  dataObject* value_to_data_object_rawenv(void *env, const Values& values,
+					  dataObject *obj = NULL);
+  dataObject* value_to_data_object_rawenv(void *env, const Value& value,
+					  dataObject *obj = NULL);
 
 }
 
