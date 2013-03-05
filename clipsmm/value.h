@@ -71,7 +71,7 @@ class Value: public sigc::trackable {
   Value( long int x );
 
   /** Constructor sets value and CLIPS type */
-  Value( char* x, Type type=TYPE_STRING );
+  Value( const char* x, Type type=TYPE_STRING );
 
   /** Constructor sets value and CLIPS type */
   Value( const std::string& x, Type type=TYPE_STRING );

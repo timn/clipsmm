@@ -65,7 +65,7 @@ namespace CLIPS {
         this->set(x);
       }
       
-      Value::Value( char* x, Type type ): m_value(NULL) {
+      Value::Value( const char* x, Type type ): m_value(NULL) {
         this->set_type( type );
         this->set(x);
       }
