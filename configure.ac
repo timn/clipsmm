@@ -23,7 +23,7 @@
 #########################################################################
 pushdef([PACKAGE_MAJOR_VERSION], [0])
 pushdef([PACKAGE_MINOR_VERSION], [3])
-pushdef([PACKAGE_MICRO_VERSION], [1])
+pushdef([PACKAGE_MICRO_VERSION], [2])
 pushdef([PKG_VERSION], PACKAGE_MAJOR_VERSION.PACKAGE_MINOR_VERSION.PACKAGE_MICRO_VERSION)
 
 AC_INIT([clipsmm], PKG_VERSION, [rvinyard@cs.nmsu.edu])
