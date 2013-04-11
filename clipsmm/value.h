@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Rick L. Vinyard, Jr.                            *
- *   rvinyard@cs.nmsu.edu                                                  *
+ *   Copyright (C) 2006  Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>       *
+ *   Copyright (C) 2013  Tim Niemueller [www.niemueller.de]                *
  *                                                                         *
  *   This file is part of the clipsmm library.                             *
  *                                                                         *
@@ -38,7 +38,8 @@ typedef enum Type {
 } Type;
 
 /**
-	@author Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+ * @author Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>
+ * @author Tim Niemueller <tim@niemueller.de>
  */  
 class Value: public sigc::trackable {
  public:
@@ -70,6 +71,9 @@ class Value: public sigc::trackable {
   /** Constructor sets value and CLIPS type to INTEGER */
   Value( long int x );
 
+  /** Constructor sets value and CLIPS type to INTEGER */
+  Value( long long int x );
+
   /** Constructor sets value and CLIPS type */
   Value( const char* x, Type type=TYPE_STRING );
 
@@ -85,7 +89,7 @@ class Value: public sigc::trackable {
   ~Value();
 
   double as_float() const;
-  long int as_integer() const;
+  long long int as_integer() const;
   std::string& as_string() const;
   void* as_address() const;
 
@@ -96,6 +100,7 @@ class Value: public sigc::trackable {
   Value& set( int x, bool change_type=false  );
   Value& set( unsigned int x, bool change_type=false  );
   Value& set( long int x, bool change_type=false  );
+  Value& set( long long int x, bool change_type=false  );
   Value& set( const std::string& x, bool change_type=false, Type type=TYPE_STRING );
   Value& set( const char* x, bool change_type=false, Type type=TYPE_STRING );
   Value& set( void* x, bool change_type=false, Type type=TYPE_EXTERNAL_ADDRESS  );
@@ -107,6 +112,7 @@ class Value: public sigc::trackable {
   operator int( ) const;
   operator unsigned int( ) const;
   operator long int( ) const;
+  operator long long int( ) const;
   operator std::string&( ) const;
   operator const char*( ) const;
   operator void*( ) const;
@@ -142,6 +148,7 @@ class Value: public sigc::trackable {
   Value& operator=( int x );
   Value& operator=( unsigned int x );
   Value& operator=( long int x );
+  Value& operator=( long long int x );
   Value& operator=( const std::string& x );
   Value& operator=( const char* x );
   Value& operator=( void* x );
@@ -154,6 +161,7 @@ class Value: public sigc::trackable {
   bool operator==( int x ) const;
   bool operator==( unsigned int x ) const;
   bool operator==( long int x ) const;
+  bool operator==( long long int x ) const;
   bool operator==( const std::string& x ) const;
   bool operator==( const char* x ) const;
   bool operator==( void* x ) const;
@@ -165,6 +173,7 @@ class Value: public sigc::trackable {
   bool operator!=( int x ) const;
   bool operator!=( unsigned int x ) const;
   bool operator!=( long int x ) const;
+  bool operator!=( long long int x ) const;
   bool operator!=( const std::string& x ) const;
   bool operator!=( const char* x ) const;
   bool operator!=( void* x ) const;

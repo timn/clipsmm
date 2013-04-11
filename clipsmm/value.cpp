@@ -64,6 +64,11 @@ namespace CLIPS {
         this->set_type( TYPE_INTEGER );
         this->set(x);
       }
+
+      Value::Value( long long int x ): m_value(NULL) {
+        this->set_type( TYPE_INTEGER );
+        this->set(x);
+      }
       
       Value::Value( const char* x, Type type ): m_value(NULL) {
         this->set_type( type );
@@ -93,18 +98,18 @@ namespace CLIPS {
           case TYPE_FLOAT:
             return *static_cast<double*>(m_value);
           case TYPE_INTEGER:
-            return *static_cast<long int*>(m_value);
+            return *static_cast<long long int*>(m_value);
           default:
             throw std::logic_error("Invalid get_float() of non-float value");
         }
       }
 
-      long int Value::as_integer() const {
+      long long int Value::as_integer() const {
         switch ( m_clips_type ) {
           case TYPE_FLOAT:
-            return static_cast<long int>(*static_cast<double*>(m_value));
+            return static_cast<long long int>(*static_cast<double*>(m_value));
           case TYPE_INTEGER:
-            return *static_cast<long int*>(m_value);
+            return *static_cast<long long int*>(m_value);
           default:
             throw std::logic_error("Invalid get_float() of non-float value");
         }
@@ -140,7 +145,7 @@ namespace CLIPS {
         if (change_type)
           this->set_type( TYPE_FLOAT );
         if ( m_clips_type == TYPE_INTEGER )
-          return this->set( static_cast<long int>(x) );
+          return this->set( static_cast<long long int>(x) );
         if ( m_clips_type != TYPE_FLOAT )
           throw std::logic_error("Invalid set( double x ) on non-float value");
         *static_cast<double*>(m_value) = x;
@@ -149,29 +154,33 @@ namespace CLIPS {
       }
       
       Value& Value::set( short int x, bool change_type ) {
-        return this->set( static_cast<long int>(x), change_type );
+        return this->set( static_cast<long long int>(x), change_type );
       }
       
       Value& Value::set( unsigned short int x, bool change_type ) {
-        return this->set( static_cast<long int>(x), change_type );
+        return this->set( static_cast<long long int>(x), change_type );
       }
       
       Value& Value::set( int x, bool change_type ) {
-        return this->set( static_cast<long int>(x), change_type );
+        return this->set( static_cast<long long int>(x), change_type );
       }
       
       Value& Value::set( unsigned int x, bool change_type ) {
-        return this->set( static_cast<long int>(x), change_type );
+        return this->set( static_cast<long long int>(x), change_type );
+      }
+
+      Value& Value::set( long int x, bool change_type ) {
+        return this->set( static_cast<long long int>(x), change_type );
       }
       
-      Value& Value::set( long int x, bool change_type ) {
+      Value& Value::set( long long int x, bool change_type ) {
         if (change_type)
           this->set_type( TYPE_INTEGER );
         if ( m_clips_type == TYPE_FLOAT )
           return this->set( static_cast<double>(x) );
         if ( m_clips_type != TYPE_INTEGER )
-          throw std::logic_error("Invalid set( long int x ) on non-integer value");
-        *static_cast<long int*>(m_value) = x;
+          throw std::logic_error("Invalid set(long long int x) on non-integer value");
+        *static_cast<long long int*>(m_value) = x;
         m_signal_changed.emit();
         return *this;
       }
@@ -235,6 +244,10 @@ namespace CLIPS {
       Value::operator long int( ) const {
         return this->as_integer();
       }
+
+      Value::operator long long int( ) const {
+        return this->as_integer();
+      }
       
       Value::operator std::string&( ) const {
         return this->as_string();
@@ -253,7 +266,7 @@ namespace CLIPS {
           case TYPE_FLOAT:
             return sizeof(double);
           case TYPE_INTEGER:
-            return sizeof(long int);
+            return sizeof(long long int);
           case TYPE_SYMBOL:
           case TYPE_STRING:
           case TYPE_INSTANCE_NAME:
@@ -295,6 +308,10 @@ namespace CLIPS {
         return this->set(x);
       }
       
+      Value& Value::operator=( long long int x ) {
+        return this->set(x);
+      }
+      
       Value& Value::operator=( const std::string& x ) {
         return this->set(x);
       }
@@ -314,7 +331,8 @@ namespace CLIPS {
             *static_cast<double*>(m_value) = *static_cast<double*>(x.m_value);
             break;
           case TYPE_INTEGER:
-            *static_cast<long int*>(m_value) = *static_cast<long int*>(x.m_value);
+            *static_cast<long long int*>(m_value) =
+	      *static_cast<long long int*>(x.m_value);
             break;
           case TYPE_SYMBOL:
           case TYPE_STRING:
@@ -359,6 +377,10 @@ namespace CLIPS {
         return this->as_integer() == x;
       }
 
+      bool Value::operator==( long long int x ) const {
+        return this->as_integer() == x;
+      }
+
       bool Value::operator==( const std::string& x ) const {
         return this->as_string() == x;
       }
@@ -399,6 +421,10 @@ namespace CLIPS {
         return this->as_integer() != x;
       }
       
+      bool Value::operator!=( long long int x ) const {
+        return this->as_integer() != x;
+      }
+      
       bool Value::operator!=( const std::string& x ) const {
         return this->as_string() != x;
       }
@@ -425,7 +451,7 @@ namespace CLIPS {
             m_value = new double;
             break;
           case TYPE_INTEGER:
-            m_value = new long int;
+            m_value = new long long int;
             break;
           case TYPE_SYMBOL:
           case TYPE_STRING:
@@ -454,7 +480,7 @@ namespace CLIPS {
             delete static_cast<double*>(m_value);
             break;
           case TYPE_INTEGER:
-            delete static_cast<long int*>(m_value);
+            delete static_cast<long long int*>(m_value);
             break;
           case TYPE_SYMBOL:
           case TYPE_STRING:
