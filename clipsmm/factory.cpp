@@ -170,12 +170,6 @@ namespace CLIPS {
   {
     void *p, *p2;
 
-    if (values.size() == 0 )
-      return NULL;
-
-    if ( values.size() == 1 )
-      return value_to_data_object_rawenv(env, values[0] );
-
     dataObject* clipsdo = obj;
     if (! clipsdo) {
       clipsdo = new dataObject;
