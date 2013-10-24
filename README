@@ -1,8 +1,19 @@
-Configuring:
-  Configuring:
-  Autoconf should take care of everything and puts the generated
-  config.h into the clipsmm source directory where it is needed. 
-  If you don't run autoconf, the source distribution contains a default 
-  config.h that you can modify to suit your needs.
+clipsmm: C++ bindings for CLIPS
+===============================
 
+CLIPS is a rule-based production system (or expert system) tool to develop
+and run applications of knowledge representation and inference. For details
+please visit http://clipsrules.sf.net.
+
+CLIPS comes with support for close integration with the C programming
+language. clipsmm provides a C++ API for these features allowing to interact
+with a CLIPS environment (asserting facts, querying data etc.) and providing
+functions for use in CLIPS. clipsmm relies on the sigc++ library to
+connect C++ methods with CLIPS functions
+
+The project was originally developed by Rick L. Vinyard. The project is now
+maintained and updated by Tim Niemueller.
+
+The documentation can be found on http://clipsmm.sf.net, the canonical code
+repository is at https://github.com/timn/clipsmm.
 
