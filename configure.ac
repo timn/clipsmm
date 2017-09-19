@@ -1,6 +1,6 @@
 #############################################################################
-##   Copyright (C) 2006 by Rick L. Vinyard, Jr.                            ##
-##   rvinyard@cs.nmsu.edu                                                  ##
+##   Copyright (C) 2006 by Rick L. Vinyard, Jr. <rvinyard@cs.nmsu.edu>     ##
+##   Copyright (C) 2012-2017 Tim Niemueller <tim@niemueller.de>            ##
 ##                                                                         ##
 ##   This file is part of the clipsmm library.                             ##
 ##                                                                         ##
@@ -23,10 +23,10 @@
 #########################################################################
 pushdef([PACKAGE_MAJOR_VERSION], [0])
 pushdef([PACKAGE_MINOR_VERSION], [3])
-pushdef([PACKAGE_MICRO_VERSION], [4])
+pushdef([PACKAGE_MICRO_VERSION], [5])
 pushdef([PKG_VERSION], PACKAGE_MAJOR_VERSION.PACKAGE_MINOR_VERSION.PACKAGE_MICRO_VERSION)
 
-AC_INIT([clipsmm], PKG_VERSION, [rvinyard@cs.nmsu.edu])
+AC_INIT([clipsmm], PKG_VERSION, [tim@niemueller.de])
 
 [PACKAGE_MAJOR_VERSION]=PACKAGE_MAJOR_VERSION
 [PACKAGE_MINOR_VERSION]=PACKAGE_MINOR_VERSION
@@ -75,7 +75,6 @@ AC_CHECK_PROGS(M4, gm4 m4, m4)
 AC_LANG_CPLUSPLUS
 AC_PROG_CXX
 AC_PROG_INSTALL
-AC_CXX_COMPILE_STDCXX_0X
 
 for top_builddir in . .. ../.. $ac_auxdir $ac_auxdir/..; do
 test -f $top_builddir/configure && break
@@ -99,58 +98,9 @@ AC_CHECK_LIB([clips],\
              )
 
 #########################################################################
-#  Look for smart pointers in either tr1 or boost
+#  Require C++11
 #########################################################################
-AC_DEFUN(
-  [CHECK_FOR_BOOST_SMART_POINTER],
-  [AC_MSG_CHECKING([for Boost smart pointers])
-   AC_CHECK_HEADER( [boost/shared_ptr.hpp],
-                     [AC_DEFINE(USE_BOOST_SMART_POINTER,[],[If defined, boost library smart pointers will be used])
-                     ],
-                     [AC_MSG_ERROR([No usable smart pointer library found])
-                     ]
-                   )
-  ]
-)
-
-AC_DEFUN(
-  [CHECK_FOR_TR1_SMART_POINTER],
-  [AC_MSG_CHECKING([for TR1 smart pointers])
-   AC_CHECK_HEADER( [tr1/boost_shared_ptr.h],
-                     [AC_DEFINE(USE_TR1_SMART_POINTER,[],[If defined TR1 smart pointers will be used])
-                     ],
-                     [CHECK_FOR_BOOST_SMART_POINTER
-                     ],
-                     [
-                       #include <typeinfo>
-                       #include <memory>
-                       #include <functional>
-                       #include <bits/concurrence.h>
-                       #include <ext/mt_allocator.h>
-                     ]
-                   )
-  ]
-)
-
-AC_MSG_CHECKING([for c++0x smart pointers])
-AS_IF([test "$ax_cv_cxx_compile_cxx0x_native" = yes ||
-       test "$ax_cv_cxx_compile_cxx0x_cxx" = yes],
-      [
-        AS_IF([test "$ax_cv_cxx_compile_cxx0x_cxx" = yes],
-              [ CXXFLAGS="$CXXFLAGS -std=c++0x"
-                AC_SUBST(CXXFLAGS)
-                CPP0XFLAGS="-std=c++0x"
-                AC_SUBST(CPP0XFLAGS) ])
-        AC_DEFINE(USE_CXX0X_SMART_POINTER,[],[If defined c++0x smart pointers will be used])
-        AC_MSG_RESULT(yes)
-      ],
-      [ AC_MSG_RESULT(no)
-        CPP0XFLAGS=""
-        AC_SUBST(CPP0XFLAGS)
-        CHECK_FOR_TR1_SMART_POINTER
-      ]
-     )
-
+AX_CXX_COMPILE_STDCXX_11
 
 #########################################################################
 #  pkgconfig package requirements

@@ -20,36 +20,15 @@
 
 #ifndef CLIPSPOINTER
 #define CLIPSPOINTER
-  // Headers for smart pointers
-  #ifdef CLIPSMM_USE_BOOST_SMART_POINTER
-    #include <boost/shared_ptr.hpp>
-    //#include <boost/weak_ptr.hpp>
-    #define CLIPSPointer boost::shared_ptr
-    #define CLIPSWeakPointer boost::weak_ptr
-    #define clips_static_pointer_cast  boost::static_pointer_cast
-    #define clips_const_pointer_cast   boost::const_pointer_cast
-    #define clips_dynamic_pointer_cast boost::dynamic_pointer_cast
-  #else
-    #ifdef CLIPSMM_USE_CXX0X_SMART_POINTER
-      #include <memory>
-      #define CLIPSPointer std::shared_ptr
-      #define CLIPSWeakPointer std::weak_ptr
-      #define clips_static_pointer_cast  std::static_pointer_cast
-      #define clips_const_pointer_cast   std::const_pointer_cast
-      #define clips_dynamic_pointer_cast std::dynamic_pointer_cast
-    #else
-      #include <typeinfo>
-      #include <memory>
-      #include <functional>
-      #include <bits/concurrence.h>
-      #include <ext/mt_allocator.h>
-      #include <tr1/boost_shared_ptr.h>
-      #define CLIPSPointer std::tr1::shared_ptr
-      #define CLIPSWeakPointer std::tr1::weak_ptr
-      #define clips_static_pointer_cast  std::tr1::static_pointer_cast
-      #define clips_const_pointer_cast   std::tr1::const_pointer_cast
-      #define clips_dynamic_pointer_cast std::tr1::dynamic_pointer_cast
-    #endif
-  #endif
+#if __cplusplus <= 199711L
+  #error clipsmm requires at least a C++11 compliant compiler
+#endif
+
+#include <memory>
+#define CLIPSPointer std::shared_ptr
+#define CLIPSWeakPointer std::weak_ptr
+#define clips_static_pointer_cast  std::static_pointer_cast
+#define clips_const_pointer_cast   std::const_pointer_cast
+#define clips_dynamic_pointer_cast std::dynamic_pointer_cast
 
 #endif
