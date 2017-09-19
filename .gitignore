@@ -14,6 +14,7 @@ aclocal.m4
 /clipsmm.kdevses
 /clipsmm.spec
 /clipsmm/clipsmm-config.h
+/compile
 /config.guess
 /config.h
 /config.h.in
