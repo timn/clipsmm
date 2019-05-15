@@ -802,7 +802,7 @@ void* Environment::get_function_context( void* env ) {
 }
 
 void Environment::set_return_values( void *env, void *rv, const Values &v ) {
-  void *mfptr = CreateMultifield(v.size());
+  void *mfptr = CreateMultifield2(env, v.size());
   for (unsigned int i = 0; i < v.size(); ++i) {
     unsigned int mfi = i + 1; // mfptr indices start at 1
     switch (v[i].type()) {
