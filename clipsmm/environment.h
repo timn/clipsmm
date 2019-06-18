@@ -811,7 +811,7 @@ namespace CLIPS {
       static void* get_function_context( void* env );
       static void  set_return_values( void *env, void *rv, const Values &v);
       static void  set_return_value( void *env, void *rv, const Value &v);
-      static void* add_symbol( const char* s );
+      static void* add_symbol( void *env, const char* s );
 
 
   };
@@ -1463,7 +1463,7 @@ namespace CLIPS {
       if ( get_arg_count( theEnv ) != 0 )
         throw std::logic_error( "clipsmm/string: wrong # args on slot callback; expected 0" );
       cb = static_cast<sigc::slot0<std::string>*>( cbptr );
-      return add_symbol( ( ( *cb ) ( )).c_str() );
+      return add_symbol( theEnv, ( ( *cb ) ( )).c_str() );
     }
     throw;
   }
@@ -1479,7 +1479,7 @@ namespace CLIPS {
         throw std::logic_error( "clipsmm: wrong # args on slot callback; expected 1" );
       get_argument( theEnv, 1, arg1 );
       cb = static_cast<sigc::slot1<std::string,T_arg1>*>( cbptr );
-      return add_symbol( ( ( *cb ) ( arg1 )).c_str() );
+      return add_symbol( theEnv, ( ( *cb ) ( arg1 )).c_str() );
     }
     throw;
   }
@@ -1497,7 +1497,7 @@ namespace CLIPS {
       get_argument( theEnv, 1, arg1 );
       get_argument( theEnv, 2, arg2 );
       cb = static_cast<sigc::slot2<std::string, T_arg1, T_arg2>*>( cbptr );
-      return add_symbol( ( ( *cb ) ( arg1, arg2 )).c_str() );
+      return add_symbol( theEnv, ( ( *cb ) ( arg1, arg2 )).c_str() );
     }
     throw;
   }
@@ -1517,7 +1517,7 @@ namespace CLIPS {
       get_argument( theEnv, 2, arg2 );
       get_argument( theEnv, 3, arg3 );
       cb = static_cast<sigc::slot3<std::string, T_arg1, T_arg2,T_arg3>*>( cbptr );
-      return add_symbol( ( ( *cb ) ( arg1, arg2, arg3 )).c_str() );
+      return add_symbol( theEnv, ( ( *cb ) ( arg1, arg2, arg3 )).c_str() );
     }
     throw;
   }
@@ -1541,7 +1541,7 @@ namespace CLIPS {
       get_argument( theEnv, 4, arg4 );
       cb = static_cast<sigc::slot4<std::string, T_arg1, T_arg2,T_arg3,T_arg4>*>( cbptr );
       s = ( *cb ) ( arg1, arg2, arg3, arg4 );
-      return add_symbol( s.c_str() );
+      return add_symbol( theEnv, s.c_str() );
     }
     throw;
   }
@@ -1565,7 +1565,7 @@ namespace CLIPS {
       get_argument( theEnv, 4, arg4 );
       get_argument( theEnv, 5, arg5 );
       cb = static_cast<sigc::slot5<std::string, T_arg1, T_arg2,T_arg3,T_arg4,T_arg5>*>( cbptr );
-      return add_symbol( ( ( *cb ) ( arg1, arg2, arg3, arg4, arg5 )).c_str() );
+      return add_symbol( theEnv, ( ( *cb ) ( arg1, arg2, arg3, arg4, arg5 )).c_str() );
     }
     throw;
   }
@@ -1591,7 +1591,7 @@ namespace CLIPS {
       get_argument( theEnv, 5, arg5 );
       get_argument( theEnv, 6, arg6 );
       cb = static_cast<sigc::slot6<std::string, T_arg1, T_arg2,T_arg3,T_arg4,T_arg5,T_arg6>*>( cbptr );
-      return add_symbol( ( ( *cb ) ( arg1, arg2, arg3, arg4, arg5, arg6 )).c_str() );
+      return add_symbol( theEnv, ( ( *cb ) ( arg1, arg2, arg3, arg4, arg5, arg6 )).c_str() );
     }
     throw;
   }
@@ -1619,7 +1619,7 @@ namespace CLIPS {
       get_argument( theEnv, 6, arg6 );
       get_argument( theEnv, 7, arg7 );
       cb = static_cast<sigc::slot7<std::string, T_arg1, T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7>*>( cbptr );
-      return add_symbol( ( ( *cb ) ( arg1, arg2, arg3, arg4, arg5, arg6, arg7 )).c_str() );
+      return add_symbol( theEnv, ( ( *cb ) ( arg1, arg2, arg3, arg4, arg5, arg6, arg7 )).c_str() );
     }
     throw;
   }
