@@ -853,8 +853,8 @@ void Environment::set_return_value( void *env, void *rv, const Value &v)
   value_to_data_object_rawenv(env, v, (struct dataObject *)rv);
 }
 
-void* Environment::add_symbol( const char* s ) {
-  return AddSymbol( const_cast<char*>(s) );
+void* Environment::add_symbol(void *env, const char* s ) {
+  return EnvAddSymbol(env, const_cast<char*>(s) );
 }
 
 }
