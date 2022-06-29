@@ -35,7 +35,8 @@ class FactsTest : public  CppUnit::TestFixture {
     CPPUNIT_TEST( check_ordered_fact_slots );
     CPPUNIT_TEST( check_template_fact_slot_values );
     CPPUNIT_TEST( check_ordered_fact_slot_values );
-    CPPUNIT_TEST( set_template_fact_slot_values );
+    CPPUNIT_TEST( set_template_existing_fact_slot_values );
+    CPPUNIT_TEST( set_template_new_fact_slot_values );
     CPPUNIT_TEST( template_fact_retraction );
     CPPUNIT_TEST( ordered_fact_retraction );
     CPPUNIT_TEST_SUITE_END();
@@ -92,16 +93,36 @@ class FactsTest : public  CppUnit::TestFixture {
       CPPUNIT_ASSERT( values[4] == 5 );
     }
 
-    void set_template_fact_slot_values() {
-      template_fact->set_slot( "object", "C3PO" );
-      template_fact->set_slot( "location", "Millenium Falcon" );
+    void set_template_new_fact_slot_values() {
+      Template::pointer templ = environment.get_template("in");
+      CPPUNIT_ASSERT(templ);
+      Fact::pointer new_fact = Fact::create(environment, templ);
+      CPPUNIT_ASSERT(new_fact);
+      CPPUNIT_ASSERT(new_fact->set_slot( "object", Value("C3PO", TYPE_SYMBOL)));
+      CPPUNIT_ASSERT(new_fact->set_slot( "location", Value("Millenium Falcon", TYPE_SYMBOL)));
+      Fact::pointer asserted_fact = environment.assert_fact(new_fact);
+      CPPUNIT_ASSERT(asserted_fact);
+      Values values;
+      values = asserted_fact->slot_value("object");
+      CPPUNIT_ASSERT( values.size() == 1 );
+      CPPUNIT_ASSERT_MESSAGE(std::string(values[0]), values[0] == "C3PO" );
+      values = asserted_fact->slot_value("location");
+      CPPUNIT_ASSERT( values.size() == 1 );
+      CPPUNIT_ASSERT_MESSAGE(std::string(values[0]), values[0] == "Millenium Falcon" );
+    }
+
+    void set_template_existing_fact_slot_values() {
+      // Modifying an existing fact does not work.
+      CPPUNIT_ASSERT(!template_fact->set_slot( "object", Value("C3PO", TYPE_SYMBOL)));
+      CPPUNIT_ASSERT(!template_fact->set_slot( "location", Value("Millenium Falcon", TYPE_SYMBOL)));
       Values values;
       values = template_fact->slot_value("object");
       CPPUNIT_ASSERT( values.size() == 1 );
-      CPPUNIT_ASSERT( values[0] == "C3PO" );
+      // The slot values have not changed.
+      CPPUNIT_ASSERT_MESSAGE(std::string(values[0]), values[0] == "R2D2" );
       values = template_fact->slot_value("location");
       CPPUNIT_ASSERT( values.size() == 1 );
-      CPPUNIT_ASSERT( values[0] == "Millenium Falcon" );
+      CPPUNIT_ASSERT_MESSAGE(std::string(values[0]), values[0] == "X-Wing" );
     }
 
     void template_fact_retraction() {
