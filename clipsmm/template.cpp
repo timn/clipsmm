@@ -62,7 +62,7 @@ namespace CLIPS {
     if ( m_cobj ) {
       EnvDeftemplateSlotAllowedValues( m_environment.cobj(),
                                        m_cobj,
-                                       const_cast<char*>( slot_name.c_str() ),
+                                       slot_name.c_str(),
                                        &clipsdo );
       return data_object_to_values( clipsdo );
     } else
@@ -74,7 +74,7 @@ namespace CLIPS {
     if ( m_cobj ) {
       EnvDeftemplateSlotCardinality( m_environment.cobj(),
                                      m_cobj,
-                                     const_cast<char*>( slot_name.c_str() ),
+                                     slot_name.c_str(),
                                      &clipsdo );
       return data_object_to_values( clipsdo );
     } else
@@ -85,7 +85,7 @@ namespace CLIPS {
     if ( m_cobj )
       return EnvDeftemplateSlotExistP( m_environment.cobj(),
                                        m_cobj,
-                                       const_cast<char*>( slot_name.c_str() ) );
+                                       slot_name.c_str() );
     else
       return false;
   }
@@ -94,7 +94,7 @@ namespace CLIPS {
     if ( m_cobj )
       return EnvDeftemplateSlotMultiP( m_environment.cobj(),
                                        m_cobj,
-                                       const_cast<char*>( slot_name.c_str() ) );
+                                       slot_name.c_str() );
     else
       return false;
   }
@@ -103,7 +103,7 @@ namespace CLIPS {
     if ( m_cobj )
       return EnvDeftemplateSlotSingleP( m_environment.cobj(),
                                         m_cobj,
-                                        const_cast<char*>( slot_name.c_str() ) );
+                                        slot_name.c_str() );
     else
       return false;
   }
@@ -121,7 +121,7 @@ namespace CLIPS {
   DefaultType Template::slot_default_type( const std::string & slot_name ) {
     if ( !m_cobj )
       return NO_DEFAULT;
-    return ( DefaultType ) EnvDeftemplateSlotDefaultP( m_environment.cobj(), m_cobj, const_cast<char*>( slot_name.c_str() ) );
+    return ( DefaultType ) EnvDeftemplateSlotDefaultP( m_environment.cobj(), m_cobj, slot_name.c_str() );
   }
 
   Values Template::slot_default_value( const std::string & slot_name ) {
@@ -130,7 +130,7 @@ namespace CLIPS {
       return Values();
     EnvDeftemplateSlotDefaultValue( m_environment.cobj(),
                                     m_cobj,
-                                    const_cast<char*>( slot_name.c_str() ),
+                                    slot_name.c_str(),
                                     &clipsdo );
     return data_object_to_values( clipsdo );
   }
@@ -141,7 +141,7 @@ namespace CLIPS {
       return Values();
     EnvDeftemplateSlotRange( m_environment.cobj(),
                              m_cobj,
-                             const_cast<char*>( slot_name.c_str() ),
+                             slot_name.c_str(),
                              &clipsdo );
     return data_object_to_values( clipsdo );
   }
