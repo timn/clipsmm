@@ -46,7 +46,7 @@
 #include <clipsmm/any.h>
 
 extern "C" {
-  int EnvDefineFunction2WithContext( void *, char *, int, int ( * ) ( void * ), char *, char *, void * );
+  int EnvDefineFunction2WithContext( void *, const char *, int, int ( * ) ( void * ), const char *, const char *, void * );
 }
 
 namespace CLIPS {
@@ -1633,10 +1633,10 @@ template < typename T_return >
     any holder = CLIPSPointer<sigc::slot0<T_return> >(scb);
     m_slots[name] = holder;
     return ( EnvDefineFunction2WithContext( m_cobj,
-                                 const_cast<char*>( name.c_str() ),
+                                 name.c_str(),
                                  retcode,
                                  get_callback(slot),
-                                 const_cast<char*>( name.c_str() ),
+                                 name.c_str(),
                                  argstring,
                                  ( void* ) scb ) );
   }
@@ -1650,10 +1650,10 @@ template < typename T_return >
     any holder = CLIPSPointer<sigc::slot1<T_return, T_arg1> >(scb);
     m_slots[name] = holder;
     return ( EnvDefineFunction2WithContext( m_cobj,
-                                 const_cast<char*>( name.c_str() ),
+                                 name.c_str(),
                                  retcode,
                                  get_callback(slot),
-                                 const_cast<char*>( name.c_str() ),
+                                 name.c_str(),
                                  argstring,
                                  scb ) );
   }
@@ -1667,10 +1667,10 @@ template < typename T_return >
     any holder = CLIPSPointer<sigc::slot2<T_return, T_arg1, T_arg2> >(scb);
     m_slots[name] = holder;
     return ( EnvDefineFunction2WithContext( m_cobj,
-                                 const_cast<char*>( name.c_str() ),
+                                 name.c_str(),
                                  retcode,
                                  get_callback(slot),
-                                 const_cast<char*>( name.c_str() ),
+                                 name.c_str(),
                                  argstring,
                                  scb ) );
   }
@@ -1685,10 +1685,10 @@ template < typename T_return >
     any holder = CLIPSPointer<sigc::slot3<T_return,T_arg1,T_arg2,T_arg3> >(scb);
     m_slots[name] = holder;
     return ( EnvDefineFunction2WithContext( m_cobj,
-                                 const_cast<char*>( name.c_str() ),
+                                 name.c_str(),
                                  retcode,
                                  get_callback(slot),
-                                 const_cast<char*>( name.c_str() ),
+                                 name.c_str(),
                                  argstring,
                                  scb )
            );
@@ -1704,10 +1704,10 @@ template < typename T_return >
     any holder = CLIPSPointer<sigc::slot4<T_return,T_arg1,T_arg2,T_arg3,T_arg4> >(scb);
     m_slots[name] = holder;
     return ( EnvDefineFunction2WithContext( m_cobj,
-                                 const_cast<char*>( name.c_str() ),
+                                 name.c_str(),
                                  retcode,
                                  get_callback(slot),
-                                 const_cast<char*>( name.c_str() ),
+                                 name.c_str(),
                                  argstring,
                                  scb )
            );
@@ -1724,10 +1724,10 @@ template < typename T_return >
     any holder = CLIPSPointer<sigc::slot5<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5> >(scb);
     m_slots[name] = holder;
     return ( EnvDefineFunction2WithContext( m_cobj,
-                                 const_cast<char*>( name.c_str() ),
+                                 name.c_str(),
                                  retcode,
                                  get_callback(slot),
-                                 const_cast<char*>( name.c_str() ),
+                                 name.c_str(),
                                  argstring,
                                  scb )
            );
@@ -1744,10 +1744,10 @@ template < typename T_return >
     any holder = CLIPSPointer<sigc::slot6<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6> >(scb);
     m_slots[name] = holder;
     return ( EnvDefineFunction2WithContext( m_cobj,
-                                 const_cast<char*>( name.c_str() ),
+                                 name.c_str(),
                                  retcode,
                                  get_callback(slot),
-                                 const_cast<char*>( name.c_str() ),
+                                 name.c_str(),
                                  argstring,
                                  scb )
            );
@@ -1764,10 +1764,10 @@ template < typename T_return >
     any holder = CLIPSPointer<sigc::slot7<T_return,T_arg1,T_arg2,T_arg3,T_arg4,T_arg5,T_arg6,T_arg7> >(scb);
     m_slots[name] = holder;
     return ( EnvDefineFunction2WithContext( m_cobj,
-                                 const_cast<char*>( name.c_str() ),
+                                 name.c_str(),
                                  retcode,
                                  get_callback(slot),
-                                 const_cast<char*>( name.c_str() ),
+                                 name.c_str(),
                                  argstring,
                                  scb )
            );

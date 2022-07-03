@@ -177,7 +177,7 @@ namespace CLIPS
     template<typename ValueType>
     const ValueType * any_cast(const any * operand)
     {
-        return any_cast<ValueType>(const_cast<any *>(operand));
+        return any_cast<ValueType>(operand);
     }
 
     template<typename ValueType>

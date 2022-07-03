@@ -102,7 +102,7 @@ Values Fact::slot_value( const std::string & name )
 //       result = EnvGetFactSlot( m_environment.cobj(), m_cobj, "", &data_object );
     }
     else
-  		result = EnvGetFactSlot( m_environment.cobj(), m_cobj, const_cast<char*>(name.c_str()), &data_object );
+  		result = EnvGetFactSlot( m_environment.cobj(), m_cobj, name.c_str(), &data_object );
 		if (result)
 			return data_object_to_values( data_object );
     else
@@ -143,7 +143,7 @@ bool Fact::set_slot( const std::string & slot_name, const Value & value )
   }
   bool rv = EnvPutFactSlot( m_environment.cobj(),
 			    m_cobj,
-			    const_cast<char*>(slot_name.c_str()),
+			    slot_name.c_str(),
 			    clipsdo);
   delete clipsdo;
   return rv;
@@ -158,7 +158,7 @@ bool Fact::set_slot( const std::string & slot_name, const Values & values )
   }
   bool rv = EnvPutFactSlot( m_environment.cobj(),
 			    m_cobj,
-			    const_cast<char*>(slot_name.c_str()),
+			    slot_name.c_str(),
 			    clipsdo);
   delete clipsdo;
   return rv;

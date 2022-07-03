@@ -66,19 +66,19 @@ Environment::~Environment()
 }
 
 bool Environment::batch_evaluate( const std::string& filename ) {
-  return EnvBatchStar( m_cobj, const_cast<char*>( filename.c_str() ) );
+  return EnvBatchStar( m_cobj, filename.c_str() );
 }
 
 bool Environment::binary_load( const std::string& filename ) {
-  return EnvBload( m_cobj, const_cast<char*>( filename.c_str() ) );
+  return EnvBload( m_cobj, filename.c_str() );
 }
 
 bool Environment::binary_save( const std::string& filename ) {
-  return EnvBsave( m_cobj, const_cast<char*>( filename.c_str() ) );
+  return EnvBsave( m_cobj, filename.c_str() );
 }
 
 bool Environment::build( const std::string& construct ) {
-  return EnvBuild( m_cobj, const_cast<char*>( construct.c_str() ) );
+  return EnvBuild( m_cobj, construct.c_str() );
 }
 
 void Environment::clear( ) {
@@ -87,7 +87,7 @@ void Environment::clear( ) {
 
 int Environment::load( const std::string& filename )
 {
-  return EnvLoad( m_cobj, const_cast<char*>( filename.c_str() ) );
+  return EnvLoad( m_cobj, filename.c_str() );
 }
 
 void Environment::reset( )
@@ -97,7 +97,7 @@ void Environment::reset( )
 
 bool Environment::save( const std::string& filename )
 {
-  return EnvSave( m_cobj, const_cast<char*>( filename.c_str() ) );
+  return EnvSave( m_cobj, filename.c_str() );
 }
 
 bool Environment::is_dribble_active( ) {
@@ -110,21 +110,21 @@ bool Environment::dribble_off( ) {
 
 bool Environment::dribble_on( const std::string& filename )
 {
-  return EnvDribbleOn( m_cobj, const_cast<char*>( filename.c_str() ) );
+  return EnvDribbleOn( m_cobj, filename.c_str() );
 }
 
 int Environment::is_watched( const std::string& item ) {
-  return EnvGetWatchItem( m_cobj, const_cast<char*>( item.c_str() ) );
+  return EnvGetWatchItem( m_cobj, item.c_str() );
 }
 
 bool Environment::watch( const std::string& item )
 {
-  return EnvWatch( m_cobj, const_cast<char*>( item.c_str() ) );
+  return EnvWatch( m_cobj, item.c_str() );
 }
 
 bool Environment::unwatch( const std::string& item )
 {
-  return EnvUnwatch( m_cobj, const_cast<char*>( item.c_str() ) );
+  return EnvUnwatch( m_cobj, item.c_str() );
 }
 
 long int Environment::run( long int runlimit )
@@ -285,7 +285,7 @@ Environment::get_facts()
 DefaultFacts::pointer Environment::get_default_facts( const std::string & default_facts_name )
 {
   void* deffacts;
-  deffacts = EnvFindDeffacts( m_cobj, const_cast<char*>(default_facts_name.c_str()) );
+  deffacts = EnvFindDeffacts( m_cobj, default_facts_name.c_str() );
   if ( deffacts )
     return DefaultFacts::create( *this, deffacts );
   else
@@ -334,7 +334,7 @@ Template::pointer Environment::get_template( const std::string & template_name )
   if ( ! m_cobj )
     return Template::pointer();
 
-  void* tem = EnvFindDeftemplate( m_cobj, const_cast<char*>( template_name.c_str() ) );
+  void* tem = EnvFindDeftemplate( m_cobj, template_name.c_str() );
 
   if ( !tem )
     return Template::pointer();
@@ -382,7 +382,7 @@ Template::pointer Environment::get_template_list_head( )
 Rule::pointer Environment::get_rule( const std::string & rule_name )
 {
   void* rule;
-  rule = EnvFindDefrule( m_cobj, const_cast<char*>(rule_name.c_str()) );
+  rule = EnvFindDefrule( m_cobj, rule_name.c_str() );
   if ( rule )
     return Rule::create( *this, rule );
   else
@@ -433,7 +433,7 @@ void Environment::remove_rules( )
 
 Fact::pointer Environment::assert_fact( const std::string& factstring )
 {
-  void* clips_fact = EnvAssertString( m_cobj, const_cast<char*>(factstring.c_str()) );
+  void* clips_fact = EnvAssertString( m_cobj, factstring.c_str() );
   if ( clips_fact )
     return Fact::create( *this, clips_fact );
   else
@@ -484,7 +484,7 @@ bool Environment::use_incremental_reset( bool use )
 Module::pointer Environment::get_module( const std::string & module_name )
 {
   void* module;
-  module = EnvFindDefmodule( m_cobj, const_cast<char*>(module_name.c_str()) );
+  module = EnvFindDefmodule( m_cobj, module_name.c_str() );
   if (module)
     return Module::create( *this, module );
   else
@@ -596,7 +596,7 @@ Values Environment::evaluate( const std::string& expression )
 {
   DATA_OBJECT clipsdo;
   int result;
-  result = EnvEval( m_cobj, const_cast<char*>(expression.c_str()), &clipsdo );
+  result = EnvEval( m_cobj, expression.c_str(), &clipsdo );
   if ( result )
     return data_object_to_values( clipsdo );
   else
@@ -609,8 +609,8 @@ Values Environment::function( const std::string & function_name,
   DATA_OBJECT clipsdo;
   int result;
   result = EnvFunctionCall( m_cobj,
-                            const_cast<char*>(function_name.c_str()),
-                            const_cast<char*>(arguments.c_str()),
+                            function_name.c_str(),
+                            arguments.c_str(),
                             &clipsdo);
   if ( !result )
     return data_object_to_values( clipsdo );
@@ -620,7 +620,7 @@ Values Environment::function( const std::string & function_name,
 
 bool Environment::remove_function( std::string name )
 {
-  bool result = UndefineFunction( m_cobj, const_cast<char*>(name.c_str()) );
+  bool result = UndefineFunction( m_cobj, name.c_str() );
   m_slots.erase(name);
   if (m_func_restr.find(name) != m_func_restr.end()) {
     free(m_func_restr[name]);
@@ -630,7 +630,7 @@ bool Environment::remove_function( std::string name )
 }
 
 Global::pointer Environment::get_global( const std::string& global_name ) {
-  void* clips_global = EnvFindDefglobal( m_cobj, const_cast<char*>(global_name.c_str()));
+  void* clips_global = EnvFindDefglobal( m_cobj, global_name.c_str());
   if ( clips_global )
     return Global::create( *this, clips_global );
   else
@@ -677,7 +677,7 @@ std::vector<std::string> Environment::get_globals_names( Module::pointer module 
 }
 
 Function::pointer Environment::get_function( const std::string& function_name ) {
-  void* clips_function = EnvFindDeffunction( m_cobj, const_cast<char*>(function_name.c_str()));
+  void* clips_function = EnvFindDeffunction( m_cobj, function_name.c_str());
   if ( clips_function )
     return Function::create( *this, clips_function );
   else
@@ -817,17 +817,17 @@ void Environment::set_return_values( void *env, void *rv, const Values &v ) {
     case TYPE_SYMBOL:
       SetMFType(mfptr, mfi, SYMBOL);
       SetMFValue(mfptr, mfi,
-                 EnvAddSymbol(env, const_cast<char*>(v[i].as_string().c_str())));
+                 EnvAddSymbol(env, v[i].as_string().c_str()));
       break;
     case TYPE_STRING:
       SetMFType(mfptr, mfi, STRING);
       SetMFValue(mfptr, mfi,
-                 EnvAddSymbol(env, const_cast<char*>(v[i].as_string().c_str())));
+                 EnvAddSymbol(env, v[i].as_string().c_str()));
       break;
     case TYPE_INSTANCE_NAME:
       SetMFType(mfptr, mfi, INSTANCE_NAME);
       SetMFValue(mfptr, mfi,
-                 EnvAddSymbol(env, const_cast<char*>(v[i].as_string().c_str())));
+                 EnvAddSymbol(env, v[i].as_string().c_str()));
       break;
     case TYPE_EXTERNAL_ADDRESS:
       SetMFType(mfptr, mfi, EXTERNAL_ADDRESS);
@@ -854,7 +854,7 @@ void Environment::set_return_value( void *env, void *rv, const Value &v)
 }
 
 void* Environment::add_symbol(void *env, const char* s ) {
-  return EnvAddSymbol(env, const_cast<char*>(s) );
+  return EnvAddSymbol(env, s);
 }
 
 }
